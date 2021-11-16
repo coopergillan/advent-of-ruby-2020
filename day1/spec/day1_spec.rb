@@ -1,39 +1,41 @@
 require "day1"
 
 describe Day1 do
-  before(:each) do
-    @day1 = Day1.from_file("spec/test_input.txt")
-  end
 
   it "converts a file path to an array" do
-    expect(@day1.expense_report).to match_array([21, 32, 10, 40, 55])
+    day1 = Day1.from_file("spec/test_input.txt")
+    expect(day1.expense_report).to match_array([21, 32, 10, 40, 55])
   end
 
-  context "#answer_part1" do
-    context "when two numbers equal the given sum" do
-      it "returns the product" do
-        expect(@day1.answer_part1(87)).to eq(32 * 55)
+  context "answer methods" do
+    subject { Day1.new([2, 3, 4, 5, 7]) }
+
+    context "#answer_part1" do
+      it "returns the product when two numbers equal the given sum" do
+        expect(subject.answer_part1(8)).to eq(3 * 5)
       end
 
       it "returns the product when repeating an element would equal same sum" do
-        expect(@day1.answer_part1(42)).to eq(320)
+        expect(subject.answer_part1(10)).to eq(7 * 3)  # Instead of 5 repeating twice
+      end
+
+      it "returns nil when no combination can be found that equals the sum" do
+        expect(subject.answer_part1(200)).to be_nil
       end
     end
 
-    context "when no combination can be found that equals the sum" do
-      it "returns nil" do
-        expect(@day1.answer_part1(200)).to be_nil
+    context "#answer_part2" do
+      it "returns the product when three numbers equal the given sum" do
+        expect(subject.answer_part2(16)).to eq(4 * 5 * 7)
       end
-    end
-  end
 
-  context "#answer_part2" do
-    it "returns the product when three numbers equal the given sum" do
-      expect(@day1.answer_part2(82)).to eq(32 * 10 * 40)
-    end
+      it "returns the product when three numbers equal the given sum when two also could" do
+        expect(subject.answer_part2(9)).to eq(2 * 3 * 4)  # 4 and 5 would make nine, but three numbers are desired
+      end
 
-    it "returns nil when no combination equaling the given sum can be found" do
-      expect(@day1.answer_part1(3141)).to be_nil
+      it "returns nil when no combination equaling the given sum can be found" do
+        expect(subject.answer_part1(3141)).to be_nil
+      end
     end
   end
 end
