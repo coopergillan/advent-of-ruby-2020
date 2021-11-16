@@ -6,11 +6,7 @@ class Day1
   end
 
   def self.from_file(filepath)
-    expense_report_data = []
-    File.foreach(filepath).each do |line|
-      expense_report_data.append(line.chomp.to_i)
-    end
-    new(expense_report_data)
+    new(File.foreach(filepath).map { |line| line.chomp.to_i })
   end
 
   def answer_part1(desired_sum)
@@ -26,7 +22,7 @@ class Day1
   def answer_part2(desired_sum)
     @expense_report.each_with_index do |elem, idx|
       next_desired_sum = desired_sum - elem
-      all_others = @expense_report[(idx + 1)..] + @expense_report[0...idx]
+      all_others = @expense_report[0...idx] + @expense_report[(idx + 1)..]
       second, third = find_sum_elements(next_desired_sum, all_others)
       if [second, third].all?
         puts "Found #{elem}, #{second}, #{third} - sum is #{desired_sum}"
@@ -42,7 +38,7 @@ class Day1
   def find_sum_elements(desired_sum, array_to_search)
     array_to_search.each_with_index do |line, idx|
       desired_element = desired_sum - line.to_i
-      all_others = array_to_search[(idx + 1)..] + array_to_search[0...idx]
+      all_others = array_to_search[0...idx] + array_to_search[(idx + 1)..]
       if all_others.include?(desired_element)
         return line, desired_element
       end
