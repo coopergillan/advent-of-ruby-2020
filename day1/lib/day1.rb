@@ -13,7 +13,7 @@ class Day1
     new(expense_report_data)
   end
 
-  def calculate_answer(desired_sum)
+  def answer_part1(desired_sum)
     element1, element2 = find_sum_elements(desired_sum)
     if [element1, element2].all?
       puts "Found #{element1} and #{element2} that sum to #{@desired_sum}"
@@ -37,7 +37,7 @@ end
 
 def answer_part1
   part1 = Day1.from_file("lib/day1_part1.txt")
-  answer = part1.calculate_answer(2020)
+  answer = part1.answer_part1(2020)
   puts "Got answer: #{answer}"
 end
 

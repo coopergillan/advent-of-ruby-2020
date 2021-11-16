@@ -9,20 +9,20 @@ describe Day1 do
     expect(@day1.expense_report).to match_array([21, 32, 10, 40, 55])
   end
 
-  context "#calculate_answer" do
+  context "#answer_part1" do
     context "when two numbers equal the given sum" do
       it "returns the product" do
-        expect(@day1.calculate_answer(87)).to eq(32 * 55)
+        expect(@day1.answer_part1(87)).to eq(32 * 55)
       end
 
       it "returns the product when repeating an element would equal same sum" do
-        expect(@day1.calculate_answer(42)).to eq(320)
+        expect(@day1.answer_part1(42)).to eq(320)
       end
     end
 
     context "when no combination can be found that equals the sum" do
       it "returns nil" do
-        expect(@day1.calculate_answer(200)).to be_nil
+        expect(@day1.answer_part1(200)).to be_nil
       end
     end
   end
