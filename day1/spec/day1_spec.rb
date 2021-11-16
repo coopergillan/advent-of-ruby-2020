@@ -26,4 +26,14 @@ describe Day1 do
       end
     end
   end
+
+  context "#answer_part2" do
+    it "returns the product when three numbers equal the given sum" do
+      expect(@day1.answer_part2(82)).to eq(32 * 10 * 40)
+    end
+
+    it "returns nil when no combination equaling the given sum can be found" do
+      expect(@day1.answer_part1(3141)).to be_nil
+    end
+  end
 end
