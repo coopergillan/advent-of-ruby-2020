@@ -16,8 +16,10 @@ class Day1
   def answer_part1(desired_sum)
     element1, element2 = find_sum_elements(desired_sum)
     if [element1, element2].all?
-      puts "Found #{element1} and #{element2} that sum to #{@desired_sum}"
-      element1 * element2
+      puts "Found #{element1} and #{element2} that sum to #{element1 + element2}"
+      product = element1 * element2
+      puts "Product is #{product}"
+      product
     end
   end
 
@@ -42,6 +44,8 @@ def answer_part1
 end
 
 if $PROGRAM_NAME  == __FILE__
+  day1 = Day1.from_file("lib/day1_data.txt")
+
   puts "Answering part 1"
-  answer_part1
+  day1.answer_part1(2020)
 end
