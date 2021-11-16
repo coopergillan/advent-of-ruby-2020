@@ -36,7 +36,7 @@ class Day1
 end
 
 def answer_part1
-  part1 = Day1.from_file("lib/day1_part1.txt")
+  part1 = Day1.from_file("lib/day1_data.txt")
   answer = part1.answer_part1(2020)
   puts "Got answer: #{answer}"
 end
