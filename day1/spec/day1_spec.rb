@@ -3,7 +3,7 @@ require "day1"
 describe Day1 do
 
   it "converts a file path to an array" do
-    day1 = Day1.from_file("spec/test_input.txt")
+    day1 = Day1.from_file("spec/day1_test_input.txt")
     expect(day1.expense_report).to match_array([21, 32, 10, 40, 55])
   end
 
