@@ -29,9 +29,9 @@ describe Day2 do
 
     context "#new" do
       it "instantiates each attribute from raw string" do
-        day2_valid = subject.new(valid_entry)
+        day2_part1_valid = subject.new(valid_entry)
 
-        expect(day2_valid).to have_attributes(
+        expect(day2_part1_valid).to have_attributes(
           min_chars: 1,
           max_chars: 4,
           char: "j",
