@@ -52,4 +52,37 @@ describe Day2 do
       end
     end
   end
+
+  describe Day2::Part2::Entry do
+    subject { Day2::Part2::Entry }
+
+    context "#new" do
+      it "instantiates each attribute from raw string" do
+        day2_part2_valid = subject.new("5-6 c: abcdef")
+        expect(day2_part2_valid).to have_attributes(
+          position1: 5,
+          position2: 6,
+          char: "c",
+          password: "abcdef",
+        )
+      end
+    end
+
+    context "checking for valid or invalid entries" do
+      it "identifies a valid password where one position matches" do
+        valid_entry = "10-11 j: abcdefghijk"
+        expect(subject.new(valid_entry).valid?).to be true
+      end
+
+      it "identifies an invalid password when neither position matches" do
+        no_matches_entry = "6-8 j: abcdefghijk"
+        expect(subject.new(no_matches_entry).valid?).to be false
+      end
+
+      it "identifies an invalid password when both positions match" do
+        two_matches_entry = "1-3 g: gaggle"
+        expect(subject.new(two_matches_entry).valid?).to be false
+      end
+    end
+  end
 end
