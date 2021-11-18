@@ -12,6 +12,7 @@ describe Day2 do
           "5-7 w: ghwwdrr",
           "4-6 z: nzzjzk",
           "7-8 s: szsssswfs",
+          "3-8 d: ffdsassp",
         ])
       end
     end
@@ -19,6 +20,10 @@ describe Day2 do
     context "#count_valid_entries" do
       it "counts valid entries for given file using Part1 definition of Entry" do
         expect(subject.count_valid_entries(Day2::Part1::Entry)).to eq(1)
+      end
+
+      it "counts valid entries for given file using Part2 definition of Entry" do
+        expect(subject.count_valid_entries(Day2::Part2::Entry)).to eq(2)
       end
     end
   end
