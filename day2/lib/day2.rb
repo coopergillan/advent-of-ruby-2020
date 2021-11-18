@@ -39,7 +39,7 @@ module Day2
 
       def initialize(raw_entry)
         char_positions, raw_char, @password = raw_entry.split(" ")
-        @position1, @position2 = char_positions.split("-").map { |raw_char| raw_char.to_i }
+        @position1, @position2 = char_positions.split("-").map(&:to_i)
         @char = raw_char.split(":").first
       end
 
