@@ -25,20 +25,16 @@ module Day3
         @rise = rise
       end
 
-      def tree_count(terrain)
+      def count_trees(terrain)
         horizontal_pos = 0
-        tree_count = 0
-        (@rise...terrain.detail.size).step(@rise).each do |vert_pos|
+        (@rise...terrain.detail.size).step(@rise).each.reduce(0) do |tree_count, vertical_pos|
           horizontal_pos += @run
           if horizontal_pos >= terrain.width
             horizontal_pos -= terrain.width
           end
 
-          if terrain.detail[vert_pos][horizontal_pos] == "#"
-            tree_count += 1
-          end
+          tree_count += terrain.detail[vertical_pos][horizontal_pos] == "#" ? 1 : 0
         end
-        tree_count
       end
 
       private
@@ -55,6 +51,6 @@ if $PROGRAM_NAME  == __FILE__
   day3 = Day3::Terrain.from_file("lib/day3_data.txt")
 
   puts "Answering part 1"
-  tree_count = Day3::Part1::Journey.new(3, 1).tree_count(day3)
-  puts "Got #{tree_count} trees"
+  part1_count = Day3::Part1::Journey.new(3, 1).count_trees(day3)
+  puts "Got #{part1_count} trees"
 end

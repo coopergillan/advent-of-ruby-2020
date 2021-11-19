@@ -33,7 +33,7 @@ describe Day3 do
         "#.##...#...",
         "#...##....#",
       ])
-      expect(subject.tree_count(terrain)).to eq(6)
+      expect(subject.count_trees(terrain)).to eq(6)
     end
   end
 end
