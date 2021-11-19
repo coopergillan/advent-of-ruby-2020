@@ -1,13 +1,18 @@
 module Day3
   class Terrain
-    attr_accessor :detail
+    attr_accessor :detail, :width
 
     def initialize(detail)
       @detail = detail
+      @width = detail.first.size
     end
 
     def self.from_file(filepath)
-      new(File.foreach(filepath).map(&:chomp)) # { |line| line.chomp } )
+      new(File.foreach(filepath).map(&:chomp))
+    end
+
+    def width
+      @width |= detail.first.size
     end
   end
 
@@ -23,13 +28,13 @@ module Day3
       def tree_count(terrain)
         horizontal_pos = 0
         tree_count = 0
-        (@rise...terrain.detail.size).step(@rise).each do |vert|
-          curr_line = terrain.detail[vert]
-
+        (@rise...terrain.detail.size).step(@rise).each do |vert_pos|
           horizontal_pos += @run
-          horizontal_pos = set_horizontal_position(horizontal_pos, curr_line)
+          if horizontal_pos >= terrain.width
+            horizontal_pos -= terrain.width
+          end
 
-          if curr_line[horizontal_pos] == "#"
+          if terrain.detail[vert_pos][horizontal_pos] == "#"
             tree_count += 1
           end
         end
@@ -47,7 +52,6 @@ end
 
 
 if $PROGRAM_NAME  == __FILE__
-  puts "hello world"
   day3 = Day3::Terrain.from_file("lib/day3_data.txt")
 
   puts "Answering part 1"
