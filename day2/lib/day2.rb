@@ -1,6 +1,6 @@
 module Day2
   class PasswordList
-    attr_accessor :password_list, :entry_counts
+    attr_accessor :password_list
 
     def initialize(password_list)
       @password_list = password_list
