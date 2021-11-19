@@ -7,11 +7,13 @@ module Day2
     end
 
     def self.from_file(filepath)
-      new(File.foreach(filepath).map { |line| line.chomp })
+      new(File.foreach(filepath).map(&:chomp))
     end
 
     def count_valid_entries(entry_klass)
-      @password_list.map { |raw_entry| entry_klass.new(raw_entry).valid? }.count(true)
+      @password_list.reduce(0) do |valid_entries, raw_entry|
+        valid_entries + (entry_klass.new(raw_entry).valid? ? 1 : 0)
+      end
     end
   end
 
@@ -21,7 +23,7 @@ module Day2
 
       def initialize(raw_entry)
         char_limits, raw_char, @password = raw_entry.split(" ")
-        @min_chars, @max_chars = char_limits.split("-").map { |raw_char| raw_char.to_i }
+        @min_chars, @max_chars = char_limits.split("-").map(&:to_i)
         @char = raw_char.split(":").first
       end
 
