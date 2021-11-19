@@ -10,10 +10,6 @@ module Day3
     def self.from_file(filepath)
       new(File.foreach(filepath).map(&:chomp))
     end
-
-    def width
-      @width |= detail.first.size
-    end
   end
 
   class Part1
@@ -28,19 +24,11 @@ module Day3
       def count_trees(terrain)
         horizontal_pos = 0
         (@rise...terrain.detail.size).step(@rise).each.reduce(0) do |tree_count, vertical_pos|
-          horizontal_pos += @run
-          if horizontal_pos >= terrain.width
+          if (horizontal_pos += @run) >= terrain.width
             horizontal_pos -= terrain.width
           end
-
           tree_count += terrain.detail[vertical_pos][horizontal_pos] == "#" ? 1 : 0
         end
-      end
-
-      private
-
-      def set_horizontal_position(curr_position, curr_line)
-        curr_position >= curr_line.size ? curr_position - curr_line.size : curr_position
       end
     end
   end
