@@ -45,4 +45,22 @@ describe Day4 do
         ).valid?).to be(false)
     end
   end
+
+  describe Day4::Part2::Passport do
+    context "#from_raw" do
+      it "instantiates all attributes with raw entry" do
+        raw_entry = "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd byr:1937 iyr:2017 cid:147 hgt:183cm"
+        passport = described_class.from_raw(raw_entry)
+        expect(passport).to have_attributes(
+          byr: "1937",
+          iyr: "2017",
+          eyr: "2020",
+          hgt: "183cm",
+          hcl: "#fffffd",
+          ecl: "gry",
+          pid: "860033327",
+        )
+      end
+    end
+  end
 end

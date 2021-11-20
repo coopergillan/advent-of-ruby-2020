@@ -47,8 +47,50 @@ module Day4
       private
 
       def fields
-        @raw_entry.split(" ").map { |raw_field| raw_field.split(":").first }
+        @raw_entry.split(" ").map { |raw_field| jaw_field.split(":").to_h }
       end
+    end
+  end
+
+  class Part2
+    class Passport
+      attr_accessor :byr, :iyr, :eyr, :hgt, :hcl, :ecl, :pid
+
+      def self.from_raw(raw_entry)
+        new(raw_entry.split(" ").map { |raw_field| raw_field.split(":") }.to_h { |k, v| [k.to_sym, v] })
+      end
+
+      def initialize(attributes)
+        puts attributes
+        @byr = attributes[:byr]
+        @iyr = attributes[:iyr]
+        @eyr = attributes[:eyr]
+        @hgt = attributes[:hgt]
+        @hcl = attributes[:hcl]
+        @ecl = attributes[:ecl]
+        @pid = attributes[:pid]
+      end
+    end
+
+    class BirthYear
+    end
+
+    class IssueYear
+    end
+
+    class ExpirationYear
+    end
+
+    class Height
+    end
+
+    class HairColor
+    end
+
+    class EyeColor
+    end
+
+    class PassportId
     end
   end
 end
