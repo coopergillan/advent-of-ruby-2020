@@ -32,6 +32,27 @@ module Day3
       end
     end
   end
+
+  class Part2
+    class JourneyLog
+      attr_accessor :slopes, :terrain
+
+      def initialize(slopes, terrain)
+        @slopes = slopes
+        @terrain = terrain
+      end
+
+      def answer_part2
+        log_tree_counts.reduce(1, :*)
+      end
+
+      def log_tree_counts
+        @slopes.map do |(run, rise)|
+          Part1::Journey.new(run, rise).count_trees(@terrain)
+        end
+      end
+    end
+  end
 end
 
 
@@ -41,4 +62,15 @@ if $PROGRAM_NAME  == __FILE__
   puts "Answering part 1"
   part1_count = Day3::Part1::Journey.new(3, 1).count_trees(day3)
   puts "Got #{part1_count} trees"
+
+  puts "Answering part 2"
+  slopes = [
+      [1, 1],
+      [3, 1],
+      [5, 1],
+      [7, 1],
+      [1, 2],
+  ]
+  part2_answer = Day3::Part2::JourneyLog.new(slopes, day3).answer_part2
+  puts "Got #{part2_answer} for part 2 answer"
 end
