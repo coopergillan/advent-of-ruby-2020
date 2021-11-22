@@ -73,6 +73,13 @@ module Day4
     end
 
     class BirthYear
+      def initialize(year)
+        @year = year.to_i
+      end
+
+      def valid?
+        @year >= 1920 && @year <= 2002
+      end
     end
 
     class IssueYear

@@ -63,4 +63,23 @@ describe Day4 do
       end
     end
   end
+
+  describe "Part 2 attribute classes" do
+    context Day4::Part2::BirthYear do
+      it "accepts a string and returns true for a BirthYear in the given range" do
+        birth_year = described_class.new("1937")
+        expect(birth_year.valid?).to be(true)
+      end
+
+      it "accepts a string and returns true for a BirthYear on the edge of the given range" do
+        birth_year = described_class.new("1920")
+        expect(birth_year.valid?).to be(true)
+      end
+
+      it "accepts a string and returns false for a BirthYear outside the given range" do
+        birth_year = described_class.new("2003")
+        expect(birth_year.valid?).to be(false)
+      end
+    end
+  end
 end
