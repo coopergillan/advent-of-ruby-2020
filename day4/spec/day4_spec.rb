@@ -98,5 +98,22 @@ describe Day4 do
         expect(issue_year.valid?).to be(false)
       end
     end
+
+    context Day4::Part2::ExpirationYear do
+      it "accepts a string and returns true for an ExpirationYear in the given range" do
+        expiration_year = described_class.new("2025")
+        expect(expiration_year.valid?).to be(true)
+      end
+
+      it "accepts a string and returns true for an ExpirationYear on the edge of the given range" do
+        expiration_year = described_class.new("2030")
+        expect(expiration_year.valid?).to be(true)
+      end
+
+      it "accepts a string and returns false for a ExpirationYear outside the given range" do
+        expiration_year = described_class.new("2019")
+        expect(expiration_year.valid?).to be(false)
+      end
+    end
   end
 end

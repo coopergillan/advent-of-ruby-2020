@@ -93,6 +93,13 @@ module Day4
     end
 
     class ExpirationYear
+      def initialize(year)
+        @year = year.to_i
+      end
+
+      def valid?
+        @year >= 2020 && @year <= 2030
+      end
     end
 
     class Height
