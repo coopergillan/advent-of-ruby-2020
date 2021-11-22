@@ -81,5 +81,22 @@ describe Day4 do
         expect(birth_year.valid?).to be(false)
       end
     end
+
+    context Day4::Part2::IssueYear do
+      it "accepts a string and returns true for an IssueYear in the given range" do
+        issue_year = described_class.new("2014")
+        expect(issue_year.valid?).to be(true)
+      end
+
+      it "accepts a string and returns true for an IssueYear on the edge of the given range" do
+        issue_year = described_class.new("2020")
+        expect(issue_year.valid?).to be(true)
+      end
+
+      it "accepts a string and returns false for an IssueYear outside the given range" do
+        issue_year = described_class.new("2009")
+        expect(issue_year.valid?).to be(false)
+      end
+    end
   end
 end

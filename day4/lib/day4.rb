@@ -83,6 +83,13 @@ module Day4
     end
 
     class IssueYear
+      def initialize(year)
+        @year = year.to_i
+      end
+
+      def valid?
+        @year >= 2010 && @year <= 2020
+      end
     end
 
     class ExpirationYear
