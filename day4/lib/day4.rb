@@ -1,9 +1,9 @@
 module Day4
   class PassportList
-    attr_accessor :raw_list
+    attr_accessor :entries
 
-    def initialize(raw_list)
-      @raw_list = raw_list
+    def initialize(entries)
+      @entries = entries
     end
 
     def self.from_file(filepath)
@@ -14,9 +14,15 @@ module Day4
       )
     end
 
-    def count_valid_passports
-      @raw_list.reduce(0) do |valid_entries, raw_entry|
+    def count_valid_passports_part1
+      @entries.reduce(0) do |valid_entries, raw_entry|
         valid_entries + (Part1::Passport.new(raw_entry).valid? ? 1 : 0)
+      end
+    end
+
+    def count_valid_passports_part2
+      @entries.reduce(0) do |valid_entries, raw_entry|
+        valid_entries + (Part2::Passport.from_raw(raw_entry).valid? ? 1 : 0)
       end
     end
   end
@@ -53,24 +59,6 @@ module Day4
   end
 
   class Part2
-    class Passport
-      attr_accessor :byr, :iyr, :eyr, :hgt, :hcl, :ecl, :pid
-
-      def self.from_raw(raw_entry)
-        new(raw_entry.split(" ").map { |raw_field| raw_field.split(":") }.to_h { |k, v| [k.to_sym, v] })
-      end
-
-      def initialize(attributes)
-        @byr = attributes[:byr]
-        @iyr = attributes[:iyr]
-        @eyr = attributes[:eyr]
-        @hgt = attributes[:hgt]
-        @hcl = attributes[:hcl]
-        @ecl = attributes[:ecl]
-        @pid = attributes[:pid]
-      end
-    end
-
     class BirthYear
       def initialize(year)
         @year = year.to_i
@@ -104,26 +92,31 @@ module Day4
     class Height
       attr_accessor :height, :units
 
-      def initialize(height, units)
-        @height = height
-        @units = units
-      end
-
-      def self.from_raw(raw_input)
-        height = raw_input.match(/^\d+/).to_s.to_i
-        units = raw_input.match(/\D{2}$/).to_s
-        new(height, units)
+      def initialize(raw_input)
+        if !raw_input.nil?
+          matcher = raw_input.match(/(?<height>^\d+)(?<units>(cm|in))/)
+          if matcher
+            @height = matcher[:height].to_s.to_i
+            @units = matcher[:units].to_s
+          end
+        else
+          @height = nil
+          @units = nil
+        end
       end
 
       def valid?
-        if @units == "in"
-          min = 59
-          max = 76
-        elsif @units == "cm"
-          min = 150
-          max = 193
+        if [@units, @height].all?
+          if @units == "in"
+            min = 59
+            max = 76
+          elsif @units == "cm"
+            min = 150
+            max = 193
+          end
+          return @height >= min && @height <= max
         end
-        @height >= min && @height <= max
+        false
       end
     end
 
@@ -164,6 +157,64 @@ module Day4
         @id_number.match?(/^\d{9}$/)
       end
     end
+
+    class Passport
+      REQUIRED_FIELDS = [
+        :byr,
+        :iyr,
+        :eyr,
+        :hgt,
+        :hcl,
+        :ecl,
+        :pid,
+      ]
+      ATTR_CLASSES = {
+        iyr: Part2::IssueYear,
+        byr: Part2::BirthYear,
+        eyr: Part2::ExpirationYear,
+        hgt: Part2::Height,
+        hcl: Part2::HairColor,
+        ecl: Part2::EyeColor,
+        pid: Part2::PassportId,
+      }
+
+      attr_accessor :attributes
+      # attr_accessor :byr, :iyr, :eyr, :hgt, :hcl, :ecl, :pid
+
+      def self.from_raw(raw_entry)
+        attributes = raw_entry.split(" ").map { |raw_field| raw_field.split(":") }.to_h { |k, v| [k.to_sym, v] }
+        new(attributes)
+        # new(raw_entry.split(" ").map { |raw_field| raw_field.split(":") }.to_h { |k, v| [k.to_sym, v] })
+      end
+
+      def initialize(attributes)
+        @attributes = attributes
+        # @byr = attributes[:byr]
+        # @iyr = attributes[:iyr]
+        # @eyr = attributes[:eyr]
+        # @hgt = attributes[:hgt]
+        # @hcl = attributes[:hcl]
+        # @ecl = attributes[:ecl]
+        # @pid = attributes[:pid]
+
+        # @byr = Part2::BirthYear.new(attributes[:byr])
+        # @iyr = Part2::IssueYear.new(attributes[:iyr])
+        # @eyr = Part2::ExpirationYear.new(attributes[:eyr])
+        # @hgt = Part2::Height.new(attributes[:hgt])
+        # @hcl = Part2::HairColor.new(attributes[:hcl])
+        # @ecl = Part2::EyeColor.new(attributes[:ecl])
+        # @pid = Part2::PassportId.new(attributes[:pid])
+      end
+
+      def valid?
+        REQUIRED_FIELDS.map do |req_field|
+          if (input_value = @attributes[req_field])
+          # input_value = @attributes[req_field]
+            ATTR_CLASSES[req_field].new(input_value).valid?
+          end
+        end.all?
+      end
+    end
   end
 end
 
@@ -172,6 +223,6 @@ if $PROGRAM_NAME  == __FILE__
   raw_passport_list = Day4::PassportList.from_file("lib/day4_data.txt")
 
   puts "Answering part 1"
-  valid_passports = raw_passport_list.count_valid_passports
+  valid_passports = raw_passport_list.count_valid_passports_part1
   puts "Got #{valid_passports} valid passports"
 end
