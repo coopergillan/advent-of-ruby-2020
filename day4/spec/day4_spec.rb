@@ -168,5 +168,17 @@ describe Day4 do
         expect(hair_color.valid?).to be(false)
       end
     end
+
+    context Day4::Part2::EyeColor do
+      it "returns true for an accepted value" do
+        eye_color = described_class.new("gry")
+        expect(eye_color.valid?).to be(true)
+      end
+
+      it "returns false for a different value" do
+        eye_color = described_class.new("purple")
+        expect(eye_color.valid?).to be(false)
+      end
+    end
   end
 end

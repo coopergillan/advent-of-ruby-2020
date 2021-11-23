@@ -110,8 +110,8 @@ module Day4
       end
 
       def self.from_raw(raw_input)
-        height = raw_input.match(/\d+/).to_s.to_i
-        units = raw_input.match(/\D{2}/).to_s
+        height = raw_input.match(/^\d+/).to_s.to_i
+        units = raw_input.match(/\D{2}$/).to_s
         new(height, units)
       end
 
@@ -135,11 +135,22 @@ module Day4
       end
 
       def valid?
-        @color.match?(/#[abcdef0-9]{6}/)
+        @color.match?(/^#[abcdef0-9]{6}$/)
       end
     end
 
     class EyeColor
+      VALID_COLORS = %w{amb blu brn gry grn hzl oth}
+
+      attr_accessor :color
+
+      def initialize(color)
+        @color = color
+      end
+
+      def valid?
+        VALID_COLORS.include?(@color)
+      end
     end
 
     class PassportId
