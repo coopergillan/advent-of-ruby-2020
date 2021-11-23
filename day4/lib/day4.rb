@@ -128,6 +128,15 @@ module Day4
     end
 
     class HairColor
+      attr_accessor :color
+
+      def initialize(color)
+        @color = color
+      end
+
+      def valid?
+        @color.match?(/#[abcdef0-9]{6}/)
+      end
     end
 
     class EyeColor

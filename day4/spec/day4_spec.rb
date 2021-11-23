@@ -151,5 +151,22 @@ describe Day4 do
         end
       end
     end
+
+    context Day4::Part2::HairColor do
+      it "returns true for a valid hex color" do
+        hair_color = described_class.new("#602fce")
+        expect(hair_color.valid?).to be(true)
+      end
+
+      it "returns false for an invalid hex color" do
+        hair_color = described_class.new("#602qrs")
+        expect(hair_color.valid?).to be(false)
+      end
+
+      it "returns false for non-hex input" do
+        hair_color = described_class.new("Brown")
+        expect(hair_color.valid?).to be(false)
+      end
+    end
   end
 end
