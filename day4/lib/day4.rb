@@ -8,8 +8,8 @@ module Day4
 
     def self.from_file(filepath)
       new(
-        File.read(filepath, chomp: true).split("\n\n").map do |line|
-          line.chomp.gsub("\n", " ")
+        File.read(filepath, chomp: true).split(/\n\n/).map do |line|
+          line.chomp.gsub(/\n/, " ")
         end
       )
     end
