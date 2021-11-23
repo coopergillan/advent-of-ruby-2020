@@ -117,10 +117,13 @@ module Day4
 
       def valid?
         if @units == "in"
-          return @height >= 59 && @height <= 76
+          min = 59
+          max = 76
         elsif @units == "cm"
-          return @height >= 150 && @height <= 193
+          min = 150
+          max = 193
         end
+        @height >= min && @height <= max
       end
     end
 
