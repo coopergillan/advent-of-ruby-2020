@@ -180,5 +180,36 @@ describe Day4 do
         expect(eye_color.valid?).to be(false)
       end
     end
+
+    context Day4::Part2::PassportId do
+      context "given valid nine-digit input" do
+        it "returns true" do
+          passport_id = described_class.new("314159265")
+          expect(passport_id.valid?).to be(true)
+        end
+
+        it "returns true even when value starts with leading zeroes" do
+          passport_id = described_class.new("023332718")
+          expect(passport_id.valid?).to be(true)
+        end
+      end
+
+      context "given invalid input" do
+        it "returns false for not enough digits" do
+          passport_id = described_class.new("12345678")
+          expect(passport_id.valid?).to be(false)
+        end
+
+        it "returns false for too many digits" do
+          passport_id = described_class.new("1234567890")
+          expect(passport_id.valid?).to be(false)
+        end
+
+        it "returns false for non-digit input" do
+          passport_id = described_class.new("sweden")
+          expect(passport_id.valid?).to be(false)
+        end
+      end
+    end
   end
 end

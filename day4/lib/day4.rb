@@ -154,6 +154,15 @@ module Day4
     end
 
     class PassportId
+      attr_accessor :id_number
+
+      def initialize(id_number)
+        @id_number = id_number.to_s
+      end
+
+      def valid?
+        @id_number.match?(/^\d{9}$/)
+      end
     end
   end
 end
