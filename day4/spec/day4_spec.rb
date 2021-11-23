@@ -115,5 +115,41 @@ describe Day4 do
         expect(expiration_year.valid?).to be(false)
       end
     end
+
+    context Day4::Part2::Height do
+      context "when height given in inches" do
+        it "returns true for a value within the range" do
+          height = described_class.from_raw("62in")
+          expect(height.valid?).to be(true)
+        end
+
+        it "returns false for a value outside the range" do
+          height = described_class.from_raw("80in")
+          expect(height.valid?).to be(false)
+        end
+
+        it "returns true for a value at the edge of the range" do
+          height = described_class.from_raw("76in")
+          expect(height.valid?).to be(true)
+        end
+      end
+
+      context "when height given in centimeters" do
+        it "returns true for a value within the range" do
+          height = described_class.from_raw("165cm")
+          expect(height.valid?).to be(true)
+        end
+
+        it "returns false for a value outside the range" do
+          height = described_class.from_raw("140cm")
+          expect(height.valid?).to be(false)
+        end
+
+        it "returns true for a value at the edge of the range" do
+          height = described_class.from_raw("193cm")
+          expect(height.valid?).to be(true)
+        end
+      end
+    end
   end
 end

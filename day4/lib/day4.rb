@@ -47,7 +47,7 @@ module Day4
       private
 
       def fields
-        @raw_entry.split(" ").map { |raw_field| jaw_field.split(":").to_h }
+        @raw_entry.split(" ").map { |raw_field| raw_field.split(":") }.to_h
       end
     end
   end
@@ -61,7 +61,6 @@ module Day4
       end
 
       def initialize(attributes)
-        puts attributes
         @byr = attributes[:byr]
         @iyr = attributes[:iyr]
         @eyr = attributes[:eyr]
@@ -103,6 +102,26 @@ module Day4
     end
 
     class Height
+      attr_accessor :height, :units
+
+      def initialize(height, units)
+        @height = height
+        @units = units
+      end
+
+      def self.from_raw(raw_input)
+        height = raw_input.match(/\d+/).to_s.to_i
+        units = raw_input.match(/\D{2}/).to_s
+        new(height, units)
+      end
+
+      def valid?
+        if @units == "in"
+          return @height >= 59 && @height <= 76
+        elsif @units == "cm"
+          return @height >= 150 && @height <= 193
+        end
+      end
     end
 
     class HairColor
