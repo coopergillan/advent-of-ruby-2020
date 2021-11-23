@@ -65,7 +65,7 @@ module Day4
       end
 
       def valid?
-        @year >= 1920 && @year <= 2002
+        @year.between?(1920, 2002)
       end
     end
 
@@ -75,7 +75,7 @@ module Day4
       end
 
       def valid?
-        @year >= 2010 && @year <= 2020
+        @year.between?(2010, 2020)
       end
     end
 
@@ -85,7 +85,7 @@ module Day4
       end
 
       def valid?
-        @year >= 2020 && @year <= 2030
+        @year.between?(2020, 2030)
       end
     end
 
@@ -114,7 +114,7 @@ module Day4
             min = 150
             max = 193
           end
-          return @height >= min && @height <= max
+          return @height.between?(min, max)
         end
         false
       end
@@ -179,37 +179,19 @@ module Day4
       }
 
       attr_accessor :attributes
-      # attr_accessor :byr, :iyr, :eyr, :hgt, :hcl, :ecl, :pid
 
       def self.from_raw(raw_entry)
         attributes = raw_entry.split(" ").map { |raw_field| raw_field.split(":") }.to_h { |k, v| [k.to_sym, v] }
         new(attributes)
-        # new(raw_entry.split(" ").map { |raw_field| raw_field.split(":") }.to_h { |k, v| [k.to_sym, v] })
       end
 
       def initialize(attributes)
         @attributes = attributes
-        # @byr = attributes[:byr]
-        # @iyr = attributes[:iyr]
-        # @eyr = attributes[:eyr]
-        # @hgt = attributes[:hgt]
-        # @hcl = attributes[:hcl]
-        # @ecl = attributes[:ecl]
-        # @pid = attributes[:pid]
-
-        # @byr = Part2::BirthYear.new(attributes[:byr])
-        # @iyr = Part2::IssueYear.new(attributes[:iyr])
-        # @eyr = Part2::ExpirationYear.new(attributes[:eyr])
-        # @hgt = Part2::Height.new(attributes[:hgt])
-        # @hcl = Part2::HairColor.new(attributes[:hcl])
-        # @ecl = Part2::EyeColor.new(attributes[:ecl])
-        # @pid = Part2::PassportId.new(attributes[:pid])
       end
 
       def valid?
         REQUIRED_FIELDS.map do |req_field|
           if (input_value = @attributes[req_field])
-          # input_value = @attributes[req_field]
             ATTR_CLASSES[req_field].new(input_value).valid?
           end
         end.all?
