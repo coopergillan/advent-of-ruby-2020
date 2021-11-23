@@ -225,4 +225,8 @@ if $PROGRAM_NAME  == __FILE__
   puts "Answering part 1"
   valid_passports = raw_passport_list.count_valid_passports_part1
   puts "Got #{valid_passports} valid passports"
+
+  puts "Answering part 2"
+  valid_passports = raw_passport_list.count_valid_passports_part2
+  puts "Got #{valid_passports} valid passports"
 end
