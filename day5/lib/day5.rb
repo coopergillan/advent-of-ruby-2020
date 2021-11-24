@@ -39,7 +39,16 @@ module Day5
       end
 
       def column
-        "hello world"
+        col_finder = COLUMNS.to_a
+        @column_data.each_char do |char|
+          new_size = col_finder.size / 2
+          if char == "L"
+            col_finder = col_finder.first(new_size)
+          elsif char == "R"
+            col_finder = col_finder.last(new_size)
+          end
+        end
+        col_finder.first
       end
     end
   end

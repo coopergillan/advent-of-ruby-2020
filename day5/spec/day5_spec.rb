@@ -37,12 +37,12 @@ describe Day5 do
       expect(subject.column).to eq(7)
     end
 
-    # context "#read_pass" do
-    #   it "identifies the row and column of the seat" do
-    #     expect(described_class.read_pass).to include(
-    #       row: 10, column: 5,
-    #     )
-    #   end
-    # end
+    context "#read_pass" do
+      it "identifies the row and column of the seat" do
+        expect(described_class.read_pass).to include(
+          row: 10, column: 5,
+        )
+      end
+    end
   end
 end
