@@ -7,16 +7,17 @@ describe Day5 do
     context "#from_file" do
       it "reads the list of boarding passes from a raw file" do
         expect(subject.passes).to match_array([
-          "FBFBFBFLLR",
-          "BBFBFFBLRR",
-          "BBBFFFFLLR",
-          "FBFFFFFLRL",
-          "BFBFFFFLRL",
+          "BFFFBBFRRR", # 567
+          "FFFBBBFRRR", # 119
+          "BBFFBBFRLL", # 820
         ])
       end
     end
 
     context "#answer_part1"
+    it "gets the highest seat_id for a list of boarding passes" do
+      expect(subject.answer_part1).to eq(820)
+    end
   end
 
   describe Day5::Part1::BoardingPass do
@@ -37,11 +38,9 @@ describe Day5 do
       expect(subject.column).to eq(7)
     end
 
-    context "#read_pass" do
-      it "identifies the row and column of the seat" do
-        expect(described_class.read_pass).to include(
-          row: 10, column: 5,
-        )
+    context "#seat_id" do
+      it "gets the seat_id per instructions" do
+        expect(subject.seat_id).to eq(567)
       end
     end
   end

@@ -9,6 +9,17 @@ module Day5
     def self.from_file(filepath)
       new(File.foreach(filepath).map(&:chomp))
     end
+
+    def answer_part1
+      max_id = 0
+      @passes.each do |pass_input|
+        boarding_pass = Part1::BoardingPass.new(pass_input)
+        if boarding_pass.seat_id > max_id
+          max_id = boarding_pass.seat_id
+        end
+      end
+      max_id
+    end
   end
 
   class Part1
@@ -50,6 +61,10 @@ module Day5
         end
         col_finder.first
       end
+
+      def seat_id
+        (row * 8) + column
+      end
     end
   end
 end
@@ -57,20 +72,9 @@ end
 
 if $PROGRAM_NAME  == __FILE__
   puts "hello world"
-  # day5 = Day5::Terrain.from_file("lib/day5_data.txt")
-  #
-  # puts "Answering part 1"
-  # part1_count = Day5::Part1::Journey.new(3, 1).count_trees(day5)
-  # puts "Got #{part1_count} trees"
-  #
-  # puts "Answering part 2"
-  # slopes = [
-  #     [1, 1],
-  #     [3, 1],
-  #     [5, 1],
-  #     [7, 1],
-  #     [1, 2],
-  # ]
-  # part2_answer = Day5::Part2::JourneyLog.new(slopes, day5).answer_part2
-  # puts "Got #{part2_answer} for part 2 answer"
+  boarding_pass_list = Day5::BoardingPassList.from_file("lib/day5_data.txt")
+
+  puts "Answering part 1"
+  part1_answer = boarding_pass_list.answer_part1
+  puts "Max seat_id for the group is: #{part1_answer}"
 end
