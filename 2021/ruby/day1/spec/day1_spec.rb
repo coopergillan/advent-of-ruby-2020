@@ -13,13 +13,13 @@ describe SonarSweeper do
 
   context "#answer_part1" do
     it "gets the number of increased elevations compared to the previous level" do
-      expect(subject.answer_part1).to eq(7)  # Taken directly from instructions
+      expect(subject.count_increases(1)).to eq(7)  # Taken directly from instructions
     end
   end
 
   context "#answer_part2" do
     it "gets the number of increased elevations using new 3-part window logic" do
-      expect(subject.answer_part2).to eq(5)  # Taken directly from instructions
+      expect(subject.count_increases(3)).to eq(5)  # Taken directly from instructions
     end
   end
 end
