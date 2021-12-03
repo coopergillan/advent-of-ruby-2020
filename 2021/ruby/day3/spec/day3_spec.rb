@@ -21,7 +21,6 @@ describe DiagnosticReport do
     it "converts a file path to an array" do
       expect(subject.bits.class).to eq(Array)
       expect(subject.bits).to match_array(bits)
-      expect(subject.entry_length).to eq(5)
     end
   end
 

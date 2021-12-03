@@ -1,9 +1,8 @@
 class DiagnosticReport
-  attr_accessor :bits, :entry_length
+  attr_accessor :bits
 
   def initialize(bits)
     @bits = bits.to_a
-    @entry_length = @bits.first.size
   end
 
   def self.from_file(filepath)
@@ -97,7 +96,7 @@ class DiagnosticReport
 
   private
 
-  def default_bit_counts(length = @entry_length)
+  def default_bit_counts(length)
     {}.tap do |bit_counts_data|
       (0...length).each do |i|
         bit_counts_data[i] = 0
