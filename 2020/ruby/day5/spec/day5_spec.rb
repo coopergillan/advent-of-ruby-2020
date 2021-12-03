@@ -20,7 +20,7 @@ describe Day5 do
     end
   end
 
-  describe Day5::Part1::BoardingPass do
+  describe Day5::BoardingPass do
     subject { described_class.new("BFFFBBFRRR") }
 
     it "reads the row and column data correctly" do
