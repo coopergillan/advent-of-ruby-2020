@@ -11,11 +11,8 @@ class DiagnosticReport
   end
 
   def bit_counts(bits)
-    bit_counts_data = default_bit_counts
-    puts "bits: #{bits}"
+    bit_counts_data = default_bit_counts(bits.first.size)
     bits.each do |line|
-      puts "line: #{line}"
-      puts "line.class: #{line.class}"
       line.each_char.to_a.each_with_index do |bit, idx|
         bit_counts_data[idx.to_i] += bit.to_i
       end
@@ -27,7 +24,7 @@ class DiagnosticReport
     counts_hash = bit_counts(bits)
     {}.tap do |hash|
       counts_hash.each do |bit_position, count|
-        hash[bit_position] = (counts_hash[bit_position] > bits.size / 2 ? 1 : 0)
+        hash[bit_position] = (counts_hash[bit_position] >= (bits.size / 2.to_f)) ? 1 : 0
       end
     end
   end
@@ -57,64 +54,47 @@ class DiagnosticReport
     gamma_rate * epsilon_rate
   end
 
-  # def oxygen_generator_rating_binary
-  #   bits_data = common_bit_by_position(@bits)
-  #   # bits_data = common_bit_by_position(bit_counts(@bits), @report_length)
-  #
-  #   chars = []
-  #   (0...bits_data.size).each do |idx|
-  #     # puts "bits_data: #{bits_data}"
-  #     # puts "idx: #{idx}"
-  #     # puts "most_common: #{most_common}"
-  #     # puts
-  #     @bits.each do |bit|
-  #       # puts "bit: #{bit}"
-  #       # puts "bit.chars[idx]: #{bit.chars[idx]}"
-  #       # puts "bit.chars[idx].class: #{bit.chars[idx].class}"
-  #       # puts "most_common: #{most_common}"
-  #       # puts "most_common.class: #{most_common.class}"
-  #       most_common = bits_data[idx]
-  #       if bit.chars[idx].to_i == most_common
-  #         chars.push(bit)
-  #       end
-  #     end
-  #   end
-  #   if chars.size == 1
-  #     return chars.first
-  #   else
-  #     chars = filter_bits(chars, common_bit_by_position(chars)
-  #     # chars = filter_bits(chars, common_bit_by_position(bit_counts(chars), chars.first.size))
-  #     if chars.size == 1
-  #       return chars.first
-  #     else
-  #       chars = filter_bits(chars, common_bit_by_position(chars)
-  #       # chars = filter_bits(chars, common_bit_by_position(bit_counts(chars), chars.first.size))
-  #     end
-  #   end
-  #   chars
-  # end
+  def recursion_time(bits, start_position = 0)
+    most_common = most_common_bit_by_position(bits)
+    chars = []
+
+    bits.each do |bit|
+      if bit.chars[start_position].to_i == most_common[start_position]
+        chars.push(bit)
+      end
+    end
+    if chars.size == 1
+      return chars.first
+    end
+    start_position += 1
+    recursion_time(chars, start_position)
+  end
+
+  def oxygen_generator_rating_binary
+    recursion_time(@bits)
+  end
 
   def oxygen_generator_rating
     oxygen_generator_rating_binary.to_i(2)
   end
 
-  def co2_scrubber_rating
-    5
-  end
-
-  def life_support_rating
-    oxygen_generator_rating * co2_scrubber_rating
-  end
-
-  def part2
-    life_support_rating
-  end
+  # def co2_scrubber_rating
+  #   5
+  # end
+  #
+  # def life_support_rating
+  #   oxygen_generator_rating * co2_scrubber_rating
+  # end
+  #
+  # def part2
+  #   life_support_rating
+  # end
 
   private
 
-  def default_bit_counts
+  def default_bit_counts(length = @entry_length)
     {}.tap do |bit_counts_data|
-      (0...@entry_length).each do |i|
+      (0...length).each do |i|
         bit_counts_data[i] = 0
       end
     end

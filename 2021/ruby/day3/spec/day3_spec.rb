@@ -68,15 +68,17 @@ describe DiagnosticReport do
   end
 
   context "answering part2" do
-    xit "finds the oxygen generator rating in binary" do
+    it "runs a recursive check for matching criteria" do
+      expect(subject.recursion_time(bits)).to eq("10111")
+    end
+
+    it "finds the oxygen generator rating in binary" do
       expect(subject.oxygen_generator_rating_binary).to eq("10111")
     end
 
-    xit "finds the oxygen generator rating" do
+    it "finds the oxygen generator rating" do
       expect(subject.oxygen_generator_rating).to eq(23)
     end
-
-    it "gets the oxygen generator rating"
 
     it "gets the CO2 scrubber rating"
 
