@@ -2,7 +2,7 @@ require "day5"
 
 describe Day5 do
   describe Day5::BoardingPassList do
-    subject { described_class.from_file("spec/day5_test_input.txt") }
+    subject { described_class.from_file("spec/test_input.txt") }
 
     context "#from_file" do
       it "reads the list of boarding passes from a raw file" do
