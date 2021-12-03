@@ -53,48 +53,34 @@ class DiagnosticReport
     gamma_rate * epsilon_rate
   end
 
-  def o2_recursion_time(bits, start_position = 0)
+  def recursion_time(bits, start_position = 0, checking_o2: true)
     most_common = most_common_bit_by_position(bits)
     chars = []
 
     bits.each do |bit|
-      if bit.chars[start_position].to_i == most_common[start_position]
+      bit_char = bit.chars[start_position].to_i
+      meets_o2_criteria = meets_o2_criteria?(bit_char, most_common[start_position])
+
+      if (checking_o2 && meets_o2_criteria) || (!checking_o2 && !meets_o2_criteria)
         chars.push(bit)
       end
     end
-    if chars.size == 1
-      return chars.first
-    end
+    return chars.first if chars.one?
+
     start_position += 1
-    o2_recursion_time(chars, start_position)
+    recursion_time(chars, start_position, checking_o2: checking_o2)
   end
 
   def oxygen_generator_rating_binary
-    o2_recursion_time(@bits)
+    recursion_time(@bits)
   end
 
   def oxygen_generator_rating
     oxygen_generator_rating_binary.to_i(2)
   end
 
-  def co2_recursion_time(bits, start_position = 0)
-    most_common = most_common_bit_by_position(bits)
-    chars = []
-
-    bits.each do |bit|
-      if bit.chars[start_position].to_i != most_common[start_position]
-        chars.push(bit)
-      end
-    end
-    if chars.size == 1
-      return chars.first
-    end
-    start_position += 1
-    co2_recursion_time(chars, start_position)
-  end
-
   def co2_scrubber_rating_binary
-    co2_recursion_time(@bits)
+    recursion_time(@bits, checking_o2: false)
   end
 
   def co2_scrubber_rating
@@ -117,6 +103,10 @@ class DiagnosticReport
         bit_counts_data[i] = 0
       end
     end
+  end
+
+  def meets_o2_criteria?(char, most_common_char)
+    return char == most_common_char
   end
 end
 
