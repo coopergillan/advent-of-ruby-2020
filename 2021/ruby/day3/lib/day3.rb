@@ -40,7 +40,6 @@ class DiagnosticReport
   end
 
   def epsilon_rate_binary
-    binary_number = ""
     most_common_bit_by_position(@bits).reduce("") do |binary_number, (_, most_common)|
       binary_number += (most_common.zero? ? 1 : 0).to_s
     end
@@ -54,7 +53,7 @@ class DiagnosticReport
     gamma_rate * epsilon_rate
   end
 
-  def recursion_time(bits, start_position = 0)
+  def o2_recursion_time(bits, start_position = 0)
     most_common = most_common_bit_by_position(bits)
     chars = []
 
@@ -67,28 +66,48 @@ class DiagnosticReport
       return chars.first
     end
     start_position += 1
-    recursion_time(chars, start_position)
+    o2_recursion_time(chars, start_position)
   end
 
   def oxygen_generator_rating_binary
-    recursion_time(@bits)
+    o2_recursion_time(@bits)
   end
 
   def oxygen_generator_rating
     oxygen_generator_rating_binary.to_i(2)
   end
 
-  # def co2_scrubber_rating
-  #   5
-  # end
-  #
-  # def life_support_rating
-  #   oxygen_generator_rating * co2_scrubber_rating
-  # end
-  #
-  # def part2
-  #   life_support_rating
-  # end
+  def co2_recursion_time(bits, start_position = 0)
+    most_common = most_common_bit_by_position(bits)
+    chars = []
+
+    bits.each do |bit|
+      if bit.chars[start_position].to_i != most_common[start_position]
+        chars.push(bit)
+      end
+    end
+    if chars.size == 1
+      return chars.first
+    end
+    start_position += 1
+    co2_recursion_time(chars, start_position)
+  end
+
+  def co2_scrubber_rating_binary
+    co2_recursion_time(@bits)
+  end
+
+  def co2_scrubber_rating
+    co2_scrubber_rating_binary.to_i(2)
+  end
+
+  def life_support_rating
+    oxygen_generator_rating * co2_scrubber_rating
+  end
+
+  def part2
+    life_support_rating
+  end
 
   private
 
@@ -106,4 +125,7 @@ if $PROGRAM_NAME  == __FILE__
 
   part1_power = diagnostic_report.part1
   puts "Got #{part1_power} for part 1"
+
+  part2_power = diagnostic_report.part2
+  puts "Got #{part2_power} for part 2"
 end

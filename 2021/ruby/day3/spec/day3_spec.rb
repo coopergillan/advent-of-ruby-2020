@@ -68,22 +68,36 @@ describe DiagnosticReport do
   end
 
   context "answering part2" do
-    it "runs a recursive check for matching criteria" do
-      expect(subject.recursion_time(bits)).to eq("10111")
+    it "runs a recursive check for to get the matching Oxygen generator rating binary" do
+      expect(subject.o2_recursion_time(bits)).to eq("10111")
     end
 
     it "finds the oxygen generator rating in binary" do
       expect(subject.oxygen_generator_rating_binary).to eq("10111")
     end
 
-    it "finds the oxygen generator rating" do
+    it "finds the oxygen generator rating in decimal" do
       expect(subject.oxygen_generator_rating).to eq(23)
     end
 
-    it "gets the CO2 scrubber rating"
+    it "uses a recursive check to get matching CO2 scrubber rating binary" do
+      expect(subject.co2_recursion_time(bits)).to eq("01010")
+    end
 
-    xit "calculates the life support rating by multiplying the oxygen generator rating by the CO2 scrubber rating" do
-      expect(subject.part2).to eq(23 * 10) # 230
+    it "finds CO2 scrubber rating in binary" do
+      expect(subject.co2_scrubber_rating_binary).to eq("01010")
+    end
+
+    it "finds CO2 scrubber rating in binary" do
+      expect(subject.co2_scrubber_rating).to eq(10)
+    end
+
+    it "calculates the life support rating by multiplying the oxygen generator rating by the CO2 scrubber rating" do
+      expect(subject.life_support_rating).to eq(23 * 10) # 230
+    end
+
+    it "gets the answer for part2" do
+      expect(subject.part2).to eq(230)
     end
   end
 end
