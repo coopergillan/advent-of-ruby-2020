@@ -14,9 +14,28 @@ describe Day5 do
       end
     end
 
-    context "#answer_part1"
-    it "gets the highest seat_id for a list of boarding passes" do
-      expect(subject.answer_part1).to eq(820)
+    context "#answer_part1" do
+      it "gets the highest seat_id for a list of boarding passes" do
+        expect(subject.answer_part1).to eq(820)
+      end
+    end
+
+    context "answering part 2" do
+      let(:seat_map) { [0, 1, 2, 119, 567, 714, 820, 850, 851, 852] }
+      it "gets a seats_map with all ids" do
+        expect(subject.default_seats_map.first).to eq(0)
+        expect(subject.default_seats_map.last).to eq(1023)
+      end
+
+      it "removes seat_ids that are found and leaves others" do
+        expect(subject.remove_existing_passes(seat_map)).to match_array(
+          [0, 1, 2, 714, 850, 851, 852]
+        )
+      end
+
+      it "finds the only seat_id that does not have a +1 or -1 neighbor" do
+        expect(subject.answer_part2(seat_map)).to eq(714)
+      end
     end
   end
 
