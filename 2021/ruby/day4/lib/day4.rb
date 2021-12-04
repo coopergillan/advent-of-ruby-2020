@@ -2,19 +2,22 @@ class BingoGame
   attr_accessor :drawn_numbers, :boards
 
   def initialize(drawn_numbers, boards)
-    @drawn_numbers = raw_input.split(/\n\n/).first
+    @drawn_numbers = drawn_numbers
     @boards = boards
   end
 
   def self.from_file(filepath)
-    File.readlines(filepath, chomp: true).each_with_index do |line, idx|
-      if idx.zero?
-        drawn_numbers = line
-        puts "drawn_numbers:  #{drawn_numbers}"
-        next
-      end
-      puts "line: #{line}"
+    raw_content = File.read(filepath, chomp: true).split("\n\n")
+    puts "raw_content: #{raw_content}"
+    drawn_numbers = raw_content.first.split(",").map(&:to_i)
+    puts "drawn_numbers: #{drawn_numbers}"
+
+    boards = raw_content[1..].map do |raw_board|
+      BingoBoard.from_raw(raw_board)
     end
+    puts "@boards: #{@boards}"
+
+    new(drawn_numbers, boards)
   end
 end
 

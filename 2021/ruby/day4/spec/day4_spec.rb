@@ -6,8 +6,9 @@ describe BingoGame do
   context "#from_file" do
     it "converts a file path to an array" do
       expect(subject.drawn_numbers).to match_array(
-        %w{7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1}
+        [7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1]
       )
+      expect(subject.boards.first.class).to eq(BingoBoard)
     end
   end
 
