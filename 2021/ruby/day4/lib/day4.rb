@@ -22,7 +22,24 @@ class BingoGame
       @boards.each do |board|
         board.call_number(number)
         if board.has_win?
-          return board.uncalled_numbers.reduce(:+) * number
+          return board.final_score(number)
+        end
+      end
+    end
+  end
+
+  def part2
+    boards_in_play = @boards.clone
+    @drawn_numbers.each do |number|
+      @boards.each do |board|
+        board.call_number(number)
+
+        if !board.won && board.has_win?
+          if boards_in_play.one?
+            return board.final_score(number)
+          end
+          board.won = true
+          boards_in_play.delete(board)
         end
       end
     end
@@ -30,11 +47,11 @@ class BingoGame
 end
 
 class BingoBoard
-  attr_accessor :board
+  attr_accessor :board, :won
 
   def initialize(board)
     @board = board
-    @called_numbers = []
+    @won = false
   end
 
   def self.from_raw(raw_board)
@@ -71,6 +88,10 @@ class BingoBoard
     has_row_win? || has_column_win?
   end
 
+  def final_score(called_number)
+    uncalled_numbers.reduce(:+) * called_number
+  end
+
   private
 
   def has_row_win?
@@ -85,8 +106,11 @@ end
 
 
 if $PROGRAM_NAME  == __FILE__
-  bingo_game = BingoGame.from_file("lib/input.txt")
-
-  part1_answer = bingo_game.part1
+  bingo_game1 = BingoGame.from_file("lib/input.txt")
+  part1_answer = bingo_game1.part1
   puts "Answer for part 1: #{part1_answer}"
+
+  bingo_game2 = BingoGame.from_file("lib/input.txt")
+  part2_answer = bingo_game2.part2
+  puts "Answer for part 2: #{part2_answer}"
 end
