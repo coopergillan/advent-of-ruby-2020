@@ -4,16 +4,20 @@ describe BingoGame do
   subject { described_class.from_file("spec/test_input.txt") }
 
   context "#from_file" do
-    it "converts a file path to an array" do
+    it "converts a file path to array of numbers to draw and an array of bingo boards" do
       expect(subject.drawn_numbers).to match_array(
         [7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1]
       )
+
       expect(subject.boards.first.class).to eq(BingoBoard)
+      expect(subject.boards.size).to eq(3)
     end
   end
 
   context "answering part 1" do
-    it "hopefully does something soon"
+    it "draws a number, marks each board while checking for a winner, and gets it" do
+      expect(subject.part1).to eq(188 * 24)
+    end
   end
 end
 

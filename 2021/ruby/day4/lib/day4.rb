@@ -8,16 +8,24 @@ class BingoGame
 
   def self.from_file(filepath)
     raw_content = File.read(filepath, chomp: true).split("\n\n")
-    puts "raw_content: #{raw_content}"
     drawn_numbers = raw_content.first.split(",").map(&:to_i)
-    puts "drawn_numbers: #{drawn_numbers}"
 
     boards = raw_content[1..].map do |raw_board|
       BingoBoard.from_raw(raw_board)
     end
-    puts "@boards: #{@boards}"
 
     new(drawn_numbers, boards)
+  end
+
+  def part1
+    @drawn_numbers.each do |number|
+      @boards.each do |board|
+        board.call_number(number)
+        if board.has_win?
+          return board.uncalled_numbers.reduce(:+) * number
+        end
+      end
+    end
   end
 end
 
@@ -77,8 +85,8 @@ end
 
 
 if $PROGRAM_NAME  == __FILE__
-  puts "Hello world - it's time for part 4"
+  bingo_game = BingoGame.from_file("lib/input.txt")
 
-  day4 = Day4.from_file("lib/input.txt")
-  puts "Got input for day4: #{day4.input}"
+  part1_answer = bingo_game.part1
+  puts "Answer for part 1: #{part1_answer}"
 end
