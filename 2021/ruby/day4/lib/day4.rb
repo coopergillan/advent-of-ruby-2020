@@ -8,11 +8,9 @@ class BingoGame
 
   def self.from_file(filepath)
     raw_content = File.read(filepath, chomp: true).split("\n\n")
-    drawn_numbers = raw_content.first.split(",").map(&:to_i)
 
-    boards = raw_content[1..].map do |raw_board|
-      BingoBoard.from_raw(raw_board)
-    end
+    drawn_numbers = raw_content.shift.split(",").map(&:to_i)
+    boards = raw_content.map { |raw_board| BingoBoard.from_raw(raw_board) }
 
     new(drawn_numbers, boards)
   end
@@ -65,9 +63,7 @@ class BingoBoard
   def call_number(number)
     @board.each do |row|
       row.each do |spot|
-        if number == spot[:value]
-          spot[:called] = true
-        end
+        spot[:called] = true if number == spot[:value]
       end
     end
   end
@@ -76,9 +72,7 @@ class BingoBoard
     uncalled = []
     @board.each do |row|
       row.each do |spot|
-        if spot[:called] == false
-          uncalled.push(spot[:value])
-        end
+        uncalled.push(spot[:value]) if spot[:called] == false
       end
     end
     uncalled
@@ -101,7 +95,6 @@ class BingoBoard
   def has_column_win?
     @board.transpose.map { |row| row.map { |spot| spot[:called] }.all? }.any?
   end
-
 end
 
 
