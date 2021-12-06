@@ -1,107 +1,206 @@
 require "day6"
 
 describe FishPopulation do
-  subject { described_class.from_file("spec/test_input.txt") }
-
   context "#from_file" do
+    subject { described_class.from_file("spec/test_input.txt") }
+
     it "creates array of fish days" do
-      expect(subject.fish_population).to match_array([3,4,3,1,2])
+      expect(subject.fish_population).to include({
+        0 => 0,
+        1 => 1,
+        2 => 1,
+        3 => 2,
+        4 => 1,
+        5 => 0,
+        6 => 0,
+        7 => 0,
+        8 => 0,
+      })
     end
   end
 
-  context "answering part 1" do
-    let(:start_population) { [3,4,3,1,2] }
+  context "answering each part" do
+    let(:start_population) { [3, 4, 3, 1, 2] }
     subject { described_class.new(start_population) }
-    context "#simulate_day" do
 
-      it "decrements day for each fish after one day" do
-        subject.simulate_day
-        expect(subject.fish_population).to match_array([2,3,2,0,1])
+    context "answering part 1" do
+      context "#simulate_day" do
+
+        it "updates counts for each fish after one day" do
+          subject.simulate_day
+          expect(subject.fish_population).to include({
+            0 => 1,
+            1 => 1,
+            2 => 2,
+            3 => 1,
+            4 => 0,
+            5 => 0,
+            6 => 0,
+            7 => 0,
+            8 => 0,
+          })
+        end
+
+        it "updates counts for each fish after two days" do
+          2.times { subject.simulate_day }
+          expect(subject.fish_population).to include({
+            0 => 1,
+            1 => 2,
+            2 => 1,
+            3 => 0,
+            4 => 0,
+            5 => 0,
+            6 => 1,
+            7 => 0,
+            8 => 1,
+          })
+        end
+
+        it "handles changes for all 11 days" do
+          11.times { subject.simulate_day }
+          expect(subject.fish_population).to include({
+            0 => 2,
+            1 => 2,
+            2 => 1,
+            3 => 0,
+            4 => 1,
+            5 => 1,
+            6 => 4,
+            7 => 1,
+            8 => 3,
+          })
+        end
+
+        it "handles changes for all 18 days" do
+          18.times { subject.simulate_day }
+          expect(subject.fish_population).to include({
+            0 => 3,
+            1 => 5,
+            2 => 3,
+            3 => 2,
+            4 => 2,
+            5 => 1,
+            6 => 5,
+            7 => 1,
+            8 => 4,
+          })
+        end
       end
 
-      it "decrements again and spawns new fish after two days" do
-        2.times { subject.simulate_day }
-        expect(subject.fish_population).to match_array([1, 2, 1, 6, 0, 8])
+      context "#part1" do
+        it "counts the fish population after 18 days" do
+          days_to_simulate = 18
+          expect(subject.part1(18)).to eq(26)
+        end
+
+        it "counts the fish population after 80 days" do
+          expect(subject.part1).to eq(5934)
+        end
       end
 
-      it "handles changes for all 18 days" do
-        18.times { subject.simulate_day }
-        expect(subject.fish_population).to match_array([
-          6,0,6,4,5,6,0,1,1,2,6,0,1,1,1,2,2,3,3,4,6,7,8,8,8,8,
-        ])
-      end
-    end
-    context "#part1" do
-      it "counts the fish population after 18 days" do
-        days_to_simulate = 18
-        expect(subject.part1(18)).to eq(26)
-      end
+      context "#part2" do
+        it "counts the fish population after 256 days" do
+          expect(subject.part2).to eq(26984457539)
+        end
 
-      it "counts the fish population after 80 days" do
-        expect(subject.part1).to eq(5934)
+        it "counts the fish population after 80 days" do
+          expect(subject.part1).to eq(5934)
+        end
       end
     end
   end
-
-  context "answering part 2"
-
-end
-
-# describe VentLine do
-#   subject { described_class.new(x1, y1, x2, y2) }
-#   context "#coordinates" do
-#     context "when the x coordinates match and make a vertical line" do
-#       let(:x1) { 1 }
-#       let(:y1) { 1 }
-#       let(:x2) { 1 }
-#       let(:y2) { 3 }
-#       it "gets each coordinate to be plotted with x the same and y incremental" do
-#         expect(subject.coordinates).to match_array([
-#           [1, 1], [1, 2], [1, 3],
-#         ])
+#   context "answering each part" do
+#     let(:start_population) { [3,4,3,1,2] }
+#     subject { described_class.new(start_population) }
+#
+#     context "answering part 1" do
+#       context "#simulate_day" do
+#
+#         it "decrements day for each fish after one day" do
+#           subject.simulate_day
+#           expect(subject.fish_population).to match_array([2,3,2,0,1])
+#         end
+#
+#         it "decrements again and spawns new fish after two days" do
+#           2.times { subject.simulate_day }
+#           expect(subject.fish_population).to match_array([1, 2, 1, 6, 0, 8])
+#         end
+#
+#         it "handles changes for all 18 days" do
+#           18.times { subject.simulate_day }
+#           expect(subject.fish_population).to match_array([
+#             6,0,6,4,5,6,0,1,1,2,6,0,1,1,1,2,2,3,3,4,6,7,8,8,8,8,
+#           ])
+#         end
+#       end
+#       context "#part1" do
+#         it "counts the fish population after 18 days" do
+#           days_to_simulate = 18
+#           expect(subject.part1(18)).to eq(26)
+#         end
+#
+#         it "counts the fish population after 80 days" do
+#           expect(subject.part1).to eq(5934)
+#         end
+#       end
+#
+#       context "#part1_better_hopefully" do
+#         it "counts the fish population after 18 days" do
+#           days_to_simulate = 18
+#           expect(subject.part1_better_hopefully(days_to_simulate)).to eq(26)
+#         end
+#
+#         it "counts the fish population after 80 days" do
+#           days_to_simulate = 80
+#           expect(subject.part1_better_hopefully(days_to_simulate)).to eq(5934)
+#         end
 #       end
 #     end
 #
-#     context "when the y coordinates match and make a horizontal line" do
-#       let(:x1) { 2 }
-#       let(:y1) { 5 }
-#       let(:x2) { 6 }
-#       let(:y2) { 5 }
-#       it "gets each coordinate to be plotted with x the same and y incremental" do
-#         expect(subject.coordinates).to match_array([
-#           [2, 5], [3, 5], [4, 5], [5, 5], [6, 5],
-#         ])
-#       end
-#     end
-#
-#     context "when the x and y coordinates do not match for a diagonal line" do
-#       context "when parsing a SW/NE diagonal" do
-#       let(:x1) { 9 }
-#       let(:y1) { 7 }
-#       let(:x2) { 7 }
-#       let(:y2) { 9 }
-#       it "gets each coordinate to be plotted with x the same and y incremental" do
-#         expect(subject.coordinates(check_diagonals: true)).to match_array([
-#           [9,7], [8, 8], [7, 9],
-#         ])
-#       end
-#     end
-#       context "when parsing a NW/SE diagonal" do
-#         let(:x1) { 1 }
-#         let(:y1) { 1 }
-#         let(:x2) { 3 }
-#         let(:y2) { 3 }
-#         it "gets each coordinate to be plotted" do
-#           expect(subject.coordinates(check_diagonals: true)).to match_array([
-#             [1, 1], [2, 2], [3, 3],
-#           ])
-#         end
-#         it "gets each coordinate to be plotted" do
-#           expect(subject.coordinates(check_diagonals: true)).to match_array([
-#             [1, 1], [2, 2], [3, 3],
-#           ])
-#         end
+#     context "answering part 2" do
+#       it "counts the fish population after 256 days" do
+#         expect(subject.part2).to eq(26984457539)
 #       end
 #     end
 #   end
 # end
+#
+# describe "Stuff" do
+#   it "gets the correct empty hash" do
+#     expect(figure_it_out).to include({
+#       0 => 0,
+#       1 => 0,
+#       2 => 0,
+#       3 => 0,
+#       4 => 0,
+#       5 => 0,
+#       6 => 0,
+#       7 => 0,
+#       8 => 0,
+#     })
+#   end
+#   # it "simulates population simply" do
+#   #   expect(simulate(
+#   #     [0,1,0,5,6,0,1,2,2,3,0,1,2,2,2,3,3,4,4,5,7,8], 1
+#   #   )).to eq(
+#   #     [6,0,6,4,5,6,0,1,1,2,6,0,1,1,1,2,2,3,3,4,6,7,8,8,8,8]
+#   #   )
+#   # end
+#   #
+#   # it "ret8urns poopulation if xzero days given" do
+#   #   expect(simulate([3,4,3,1,2], 0)).to match_array([3,4,3,1,2])
+#   # end
+#   #
+#   # it "simulates another population" do
+#   #   expect(simulate([3,4,3,1,2], 2)).to match_array([1, 2, 1, 6, 0, 8])
+#   # end
+#   #
+#   # it "returns poopulation if xzero days given" do
+#   #   expect(simulate([3,4,3,1,2], 1)).to match_array([2,3,2,0,1])
+#   # end
+#   #
+#   # it "returns poopulation if 18 days given" do
+#   #   expect(
+#   #   expect(simulate([3,4,3,1,2], 18)).to match_array([2,3,2,0,1])
+#   # end
+end
