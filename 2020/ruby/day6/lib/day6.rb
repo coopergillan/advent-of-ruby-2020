@@ -8,16 +8,21 @@ class QuestionLog
   def self.from_file(filepath)
     new(
       File.read(filepath, chomp: true).split(/\n\n/).map do |line|
-        # line.chomp.gsub(/\n/, " ")
         puts "line: #{line}"
         line.chomp.split(/\n/).flatten
       end
      )
   end
+
+  def part1
+    @question_groups.map { |group| group.uniq.join.each_char.uniq.size }.reduce(:+)
+  end
 end
 
 
 if $PROGRAM_NAME  == __FILE__
-  puts "hello world"
-  # question_log = QuestionLog.from_file("lib/input.txt")
+  question_log = QuestionLog.from_file("lib/input.txt")
+
+  part1_answer = question_log.part1
+  puts "Got part1_answer: #{part1_answer}"
 end
