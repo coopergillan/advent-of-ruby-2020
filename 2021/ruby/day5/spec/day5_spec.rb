@@ -112,7 +112,7 @@ describe VentLine do
       let(:x2) { 7 }
       let(:y2) { 9 }
       it "gets each coordinate to be plotted with x the same and y incremental" do
-        expect(subject.coordinates_with_diagonals).to match_array([
+        expect(subject.coordinates(check_diagonals: true)).to match_array([
           [9,7], [8, 8], [7, 9],
         ])
       end
@@ -123,12 +123,12 @@ describe VentLine do
         let(:x2) { 3 }
         let(:y2) { 3 }
         it "gets each coordinate to be plotted" do
-          expect(subject.coordinates_with_diagonals).to match_array([
+          expect(subject.coordinates(check_diagonals: true)).to match_array([
             [1, 1], [2, 2], [3, 3],
           ])
         end
         it "gets each coordinate to be plotted" do
-          expect(subject.coordinates_with_diagonals).to match_array([
+          expect(subject.coordinates(check_diagonals: true)).to match_array([
             [1, 1], [2, 2], [3, 3],
           ])
         end
