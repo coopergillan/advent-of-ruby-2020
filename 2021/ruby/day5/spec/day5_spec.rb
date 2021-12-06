@@ -72,7 +72,7 @@ describe OceanFloor do
   end
 
   context "answering part 2" do
-    xit "Gives total count of plots including diagonals" do
+    it "Gives total count of plots including diagonals" do
       expect(subject.part2).to eq(12)
     end
   end
@@ -106,14 +106,32 @@ describe VentLine do
     end
 
     context "when the x and y coordinates do not match for a diagonal line" do
+      context "when parsing a SW/NE diagonal" do
       let(:x1) { 9 }
       let(:y1) { 7 }
       let(:x2) { 7 }
       let(:y2) { 9 }
-      xit "gets each coordinate to be plotted with x the same and y incremental" do
-        expect(subject.coordinates).to match_array([
+      it "gets each coordinate to be plotted with x the same and y incremental" do
+        expect(subject.coordinates_with_diagonals).to match_array([
           [9,7], [8, 8], [7, 9],
         ])
+      end
+    end
+      context "when parsing a NW/SE diagonal" do
+        let(:x1) { 1 }
+        let(:y1) { 1 }
+        let(:x2) { 3 }
+        let(:y2) { 3 }
+        it "gets each coordinate to be plotted" do
+          expect(subject.coordinates_with_diagonals).to match_array([
+            [1, 1], [2, 2], [3, 3],
+          ])
+        end
+        it "gets each coordinate to be plotted" do
+          expect(subject.coordinates_with_diagonals).to match_array([
+            [1, 1], [2, 2], [3, 3],
+          ])
+        end
       end
     end
   end
