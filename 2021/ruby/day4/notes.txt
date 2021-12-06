@@ -1,0 +1,21 @@
+Notes for part 4
+
+Need a game manager that will
+  store:
+    - the numbers to be drawn
+    - an array of the bingo boards
+  do:
+    - read input and store the above ^^^
+    - Call the next number after which it will:
+        - Go through each board and through each row, marking the given number as called
+    - After marking, check each board for whether there is a matched row or column
+    - Get the uncalled numbers and multiply by the last called number
+
+
+Bingo Boards need to be able to
+  store:
+    - The numbers for each position and whether they have been called yet [x]
+  do:
+    - Mark a spot as called (boolean) [x]
+    - quickly get a list of uncalled numbers [x]
+    - quickly check for a matched row or column [x]
