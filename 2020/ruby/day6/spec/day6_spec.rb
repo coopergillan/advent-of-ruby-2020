@@ -20,4 +20,10 @@ describe QuestionLog do
       expect(subject.part1).to eq(11)
     end
   end
+
+  context "answering part 2" do
+    it "counts the questions answered by all in each group" do
+      expect(subject.part2).to eq(6)
+    end
+  end
 end
