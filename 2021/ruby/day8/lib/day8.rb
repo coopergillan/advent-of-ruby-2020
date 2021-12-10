@@ -13,35 +13,16 @@ class Solver
   def part1
     @signal_combos.map { |combo| combo.unique_chars_count }.reduce(:+)
   end
-end
 
-class DigitSignal
-  attr_accessor :chars
-
-  FIXED_SIGNAL_LENGTHS = {
-    2 => 1,
-    3 => 7,
-    4 => 4,
-    # 5 => [2, 3, 5],
-    # 6 => [0, 6, 9],
-    7 => 8,
-  }
-
-  def initialize(chars)
-    @chars = chars
-  end
-
-  def chars_length
-    @chars.size
-  end
-
-  def shares(other_digit_signal)
-    # Which characters are shared between two
-    @chars.each_char.to_i & other_digit_signal.chars.each_char.to_a
-  end
-
-  def decode
-    FIXED_SIGNAL_LENGTHS[chars_length]
+  def part2
+    thesum = 0
+    @signal_combos.each do |combo|
+      puts "Checking combo: #{combo}"
+      combo.build_hash
+      output_number = combo.output_to_number
+      # puts "Got output_number: #{output_number}"
+    #   output_number
+    end
   end
 end
 
@@ -131,6 +112,13 @@ class SignalCombo
     fives = sorted_signals.pop(3)
 
     fives.cycle do |chars|
+      # Now find 2 - it should contain all of the difference between 8 and four (while five does not)
+      eight_to_four_diff = arrayify(digit_to_chars[8]) - arrayify(digit_to_chars[4])
+      # puts "eight_to_four_diff: #{eight_to_four_diff}"
+      if arrayify(chars).intersection(eight_to_four_diff).size == eight_to_four_diff.size
+        digit_to_chars[2] = fives.delete(chars)
+      end
+
       # Find the number 3 - it's the only five-digit that has both of 1's chars
       char_to_one = arrayify(chars).intersection(arrayify(digit_to_chars[1]))
       # puts "char_to_one: #{char_to_one}"
@@ -139,34 +127,35 @@ class SignalCombo
         digit_to_chars[3] = fives.delete(chars)
       end
 
-      # Now find 2 - it should contain all of the difference between 8 and four (while five does not)
-      eight_to_four_diff = arrayify(digit_to_chars[8]) - arrayify(digit_to_chars[4])
-      # puts "eight_to_four_diff: #{eight_to_four_diff}"
-      if arrayify(chars).intersection(eight_to_four_diff).size == eight_to_four_diff.size
-        digit_to_chars[2] = fives.delete(chars)
-      end
-
       # 5 is left over
-      digit_to_chars[5] = fives.pop if fives.one?
+      if fives.one?
+        digit_to_chars[5] = fives.pop
+      end
     end
 
+    puts "finished mapping the chars - digit_to_chars: #{digit_to_chars}"
     @numbers_hash = digit_to_chars.invert
+    raise if @numbers_hash.size != 10
   end
 
   def output_to_number
+    puts "Checking @numbers_hash: #{@numbers_hash}"
     sorted_key_numbers_hash = {}.tap do |hash|
       @numbers_hash.each do |chars, digit|
+        puts "chars: #{chars}"
+        puts "digit: #{digit}"
+        puts "=================="
         hash[chars.each_char.sort.join] = digit
       end
     end
-    @output_values.reduce("") do |num, val|
+    output_string = @output_values.reduce("") do |num, val|
       sorted_val = val.each_char.sort.join
       num += sorted_key_numbers_hash[sorted_val].to_s
-    end.to_i
+    end
+    output_string.to_i
   end
 
   def unique_chars_count
-    # unique_chars = [2, 3, 4, 7]
     @output_values.map { |char| (FIXED_SIGNAL_LENGTHS.keys.include?(char.size) ? 1 : 0) }.reduce(:+)
   end
 end
@@ -189,3 +178,34 @@ end
 #   :bottom_right,
 #   :bottom,
 # ]
+
+# class DigitSignal
+#   attr_accessor :chars
+#
+#   FIXED_SIGNAL_LENGTHS = {
+#     2 => 1,
+#     3 => 7,
+#     4 => 4,
+#     # 5 => [2, 3, 5],
+#     # 6 => [0, 6, 9],
+#     7 => 8,
+#   }
+#
+#   def initialize(chars)
+#     @chars = chars
+#   end
+#
+#   def chars_length
+#     @chars.size
+#   end
+#
+#   def shares(other_digit_signal)
+#     # Which characters are shared between two
+#     @chars.each_char.to_i & other_digit_signal.chars.each_char.to_a
+#   end
+#
+#   def decode
+#     FIXED_SIGNAL_LENGTHS[chars_length]
+#   end
+# end
+

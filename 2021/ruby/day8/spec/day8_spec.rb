@@ -1,54 +1,71 @@
 require "day8"
 
+describe Solver do
+  subject { described_class.from_file("spec/test_input.txt") }
+  context "#part1" do
+    it "gets the count of 1, 4, 7, and 8 characters in output values" do
+      expect(subject.part1).to eq(26)
+    end
+  end
+
+  context "#part2" do
+    it "gets the sum of the decode output values" do
+      expect(subject.part2).to eq(61229)
+    end
+  end
+end
+
 describe SignalCombo do
   context "#new" do
     subject { described_class.from_raw("be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe") }
+
     it "gets attributes" do
-      expect(subject.chars).to match_array([
+      expect(subject.signal_patterns).to match_array([
+        "be", "cfbegad", "cbdgef", "fgaecd", "cgeb", "fdcge", "agebfd", "fecdb", "fabcd", "edb",
+      ])
+      expect(subject.output_values).to match_array([
         "fdgacbe", "cefdb", "cefbgd", "gcbe",
       ])
     end
     it "gets number of chars that represent with 1, 4, 7, or 8" do
       expect(subject.unique_chars_count).to eq(2)
     end
-  end
-end
 
-describe DigitSignal do
-  let (:signals) {
-    {
-    8 => "acedgfb", # "abcdefg"
-    5=> "cdfbe",    # "bcdef"
-    2=> "gcdfa",    # "acdfg"
-    3=> "fbcad",    # "fbcad"
-    7=> "dab",      # "dab"
-    9=> "cefabd",   # "cefabd"
-    6=> "cdfgeb",   # "cdfgeb"
-    4=> "eafb",     # "eafb"
-    0=> "cagedb",   # "cagedb"
-    1=> "ab",       # "ab"
-    }
-  }
-  context "#decode" do
-    it "decodes the simpler, unique combos" do
-      expect(described_class.new("ag").decode).to eq(1)
-      expect(described_class.new("agf").decode).to eq(7)
-      expect(described_class.new("decb").decode).to eq(4)
-      expect(described_class.new("acedgfb").decode).to eq(8)
-    end
-
-    it "can find shared characters" do
-      expect(described_class.new("agf")).to eq(7)
-    end
-    xit "decodes the combos with other lengths" do
-      expect(described_class.new("acdgfb").decode).to eq(0)
-      expect(described_class.new("acdgfb").decode).to eq(0)
+    # expect(subject.numbers_hash).to include(
+    #     "cagedb" => 0,
+    #     "ab" => 1,
+    #     "gcdfa" => 2,
+    #     "fbcad" => 3,
+    #     "eafb" => 4,
+    #     "cdfbe" => 5,
+    #     "cdfgeb" => 6,
+    #     "dab" => 7,
+    #     "acedgfb" => 8,
+    #     "cefabd" => 9,
+    #     )
+    it "builds the correct numbers hash" do
+      subject.build_hash
+      expect(subject.numbers_hash).to include(
+        "fgaecd" => 0,
+        "be" => 1,
+        "fabcd" => 2,
+        "fecdb" => 3,
+        "cgeb" => 4,
+        "fdcge" => 5,
+        "agebfd" => 6,
+        "edb" => 7,
+        "cfbegad" => 8,
+        "cbdgef" => 9,
+      )
     end
   end
 end
 
 describe SignalCombo do
-  subject { described_class.from_raw("acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf") }
+  subject { described_class.from_raw(
+    "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"
+  ) }
+
   context "#new" do
     it "gets attributes" do
       expect(subject.signal_patterns).to match_array(
@@ -89,24 +106,16 @@ describe SignalCombo do
     end
   end
 
-  context "answering part 1" do
+  context "answering part 2" do
     it "parses the output into a four-digit number" do
       subject.build_hash
       expect(subject.output_to_number).to eq(5353)
     end
   end
 
-  context "#unique_chars_count" do
-    it "gets number of chars that represent with 1, 4, 7, or 8" do
-      expect(subject.unique_chars_count).to eq(2)
-    end
-  end
-end
-
-describe Solver do
-  subject { described_class.from_file("spec/test_input.txt") }
-
-  it "gets total count of number of chars with 1, 4, 7, or 8 size" do
-    expect(subject.part1).to eq(26)
-  end
+  # context "#unique_chars_count" do
+  #   it "gets number of chars that represent with 1, 4, 7, or 8" do
+  #     expect(subject.unique_chars_count).to eq(2)
+  #   end
+  # end
 end
