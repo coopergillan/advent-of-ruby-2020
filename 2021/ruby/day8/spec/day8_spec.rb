@@ -31,28 +31,16 @@ describe SignalCombo do
       expect(subject.unique_chars_count).to eq(2)
     end
 
-    # expect(subject.numbers_hash).to include(
-    #     "cagedb" => 0,
-    #     "ab" => 1,
-    #     "gcdfa" => 2,
-    #     "fbcad" => 3,
-    #     "eafb" => 4,
-    #     "cdfbe" => 5,
-    #     "cdfgeb" => 6,
-    #     "dab" => 7,
-    #     "acedgfb" => 8,
-    #     "cefabd" => 9,
-    #     )
     it "builds the correct numbers hash" do
       subject.build_hash
       expect(subject.numbers_hash).to include(
-        "fgaecd" => 0,
+        "agebfd" => 0,
         "be" => 1,
         "fabcd" => 2,
         "fecdb" => 3,
         "cgeb" => 4,
         "fdcge" => 5,
-        "agebfd" => 6,
+        "fgaecd" => 6,
         "edb" => 7,
         "cfbegad" => 8,
         "cbdgef" => 9,
@@ -112,10 +100,4 @@ describe SignalCombo do
       expect(subject.output_to_number).to eq(5353)
     end
   end
-
-  # context "#unique_chars_count" do
-  #   it "gets number of chars that represent with 1, 4, 7, or 8" do
-  #     expect(subject.unique_chars_count).to eq(2)
-  #   end
-  # end
 end
