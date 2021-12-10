@@ -89,6 +89,13 @@ describe SignalCombo do
     end
   end
 
+  context "answering part 1" do
+    it "parses the output into a four-digit number" do
+      subject.build_hash
+      expect(subject.output_to_number).to eq(5353)
+    end
+  end
+
   context "#unique_chars_count" do
     it "gets number of chars that represent with 1, 4, 7, or 8" do
       expect(subject.unique_chars_count).to eq(2)

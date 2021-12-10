@@ -83,7 +83,7 @@ class SignalCombo
     digit_to_chars = {}
     sorted_signals = @signal_patterns.sort_by(&:length)
 
-    # The largest chars set must be 8
+    # The largest chars set must be 8 - sort the chars to make later reference easier
     digit_to_chars[8] = sorted_signals.pop
 
     # The first three are those known
@@ -95,13 +95,13 @@ class SignalCombo
     sixes = sorted_signals.pop(3)
     cycle_count = 0
     sixes.cycle do |chars|
-      puts "Checking sixes with size: #{sixes.size}"
-      puts "chars: #{chars}"
-      puts "sixes: #{sixes}"
+      # puts "Checking sixes with size: #{sixes.size}"
+      # puts "chars: #{chars}"
+      # puts "sixes: #{sixes}"
 
       # Find number 6 - does not share all of 1
       if !sort_chars(chars).include?(sort_chars(digit_to_chars[1]))
-        puts "Found 6, right? #{chars}"
+        # puts "Found 6, right? #{chars}"
         digit_to_chars[6] = sixes.delete(chars)
       end
 
@@ -120,41 +120,49 @@ class SignalCombo
       #   digit_to_chars[9] = sixes.delete(chars)
       # end
       cycle_count += 1
-      puts "Finished checking #{chars}"
-      puts "Finished the cycle! Run number #{cycle_count}"
-      puts "digit_to_chars: #{digit_to_chars}"
-      puts "============================="
-      if sixes.one?
-        digit_to_chars[0] = sixes.pop
-        break
-      end
+      # puts "Finished checking #{chars}"
+      # puts "Finished the cycle! Run number #{cycle_count}"
+      # puts "digit_to_chars: #{digit_to_chars}"
+      # puts "============================="
+      digit_to_chars[0] = sixes.pop if sixes.one?
     end
 
     # Now pull the fives out and do more elimination
     fives = sorted_signals.pop(3)
 
-    fives.cycle(10) do |chars|
+    fives.cycle do |chars|
       # Find the number 3 - it's the only five-digit that has both of 1's chars
       char_to_one = arrayify(chars).intersection(arrayify(digit_to_chars[1]))
-      puts "char_to_one: #{char_to_one}"
-      puts "digit_to_chars: #{digit_to_chars}"
+      # puts "char_to_one: #{char_to_one}"
+      # puts "digit_to_chars: #{digit_to_chars}"
       if char_to_one.size == digit_to_chars[1].size
         digit_to_chars[3] = fives.delete(chars)
       end
 
       # Now find 2 - it should contain all of the difference between 8 and four (while five does not)
       eight_to_four_diff = arrayify(digit_to_chars[8]) - arrayify(digit_to_chars[4])
-      puts "eight_to_four_diff: #{eight_to_four_diff}"
+      # puts "eight_to_four_diff: #{eight_to_four_diff}"
       if arrayify(chars).intersection(eight_to_four_diff).size == eight_to_four_diff.size
         digit_to_chars[2] = fives.delete(chars)
       end
 
       # 5 is left over
-      if fives.one?
-        digit_to_chars[5] = fives.delete(chars)
+      digit_to_chars[5] = fives.pop if fives.one?
+    end
+
+    @numbers_hash = digit_to_chars.invert
+  end
+
+  def output_to_number
+    sorted_key_numbers_hash = {}.tap do |hash|
+      @numbers_hash.each do |chars, digit|
+        hash[chars.each_char.sort.join] = digit
       end
     end
-    @numbers_hash = digit_to_chars.invert
+    @output_values.reduce("") do |num, val|
+      sorted_val = val.each_char.sort.join
+      num += sorted_key_numbers_hash[sorted_val].to_s
+    end.to_i
   end
 
   def unique_chars_count
