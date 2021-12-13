@@ -54,4 +54,43 @@ describe LavaTubeSurfer do
       end
     end
   end
+
+  context "methods to finish part1" do
+    let(:has_higher) { [
+      [0, 1],
+      [0, 9],
+      [2, 2],
+      [4, 6],
+    ] }
+    let(:not_higher) { [
+      [0, 2],
+      [3, 6],
+      [4, 9],
+      [4, 3],
+    ] }
+    context "#higher_neighbors?" do
+      it "can find whether all neighbors are higher or not" do
+        has_higher.each do |coords|
+          expect(subject.higher_neighbors?(coords)).to be(true)
+        end
+
+        not_higher.each do |coords|
+          expect(subject.higher_neighbors?(coords)).to be(false)
+        end
+      end
+    end
+
+    context "#risk_level" do
+      it "calculates risk_level" do
+        expect(subject.risk_level(has_higher.first)).to eq(2)
+        expect(subject.risk_level(has_higher.last)).to eq(6)
+      end
+    end
+  end
+
+  context "#part1" do
+    it "can answer part1 by counting points with all higher neighbors" do
+      expect(subject.part1).to eq(15)
+    end
+  end
 end
