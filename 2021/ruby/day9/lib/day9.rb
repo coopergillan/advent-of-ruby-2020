@@ -1,8 +1,10 @@
 class LavaTubeSurfer
-  attr_accessor :heightmap
+  attr_accessor :heightmap, :height, :width
 
   def initialize(heightmap)
     @heightmap = heightmap
+    @height = heightmap.transpose.first.size
+    @width = heightmap.first.size
   end
 
   def self.from_file(filepath)
@@ -14,12 +16,27 @@ class LavaTubeSurfer
 
   def neighbors(coordinates)
     row, column = coordinates
-    # new_row = row + 1
-    # new_column = column + 1
 
-    point1 = @heightmap[row][column + 1]
-    point2 = @heightmap[row + 1][column]
-    return [point1, point2]
+    # Check the row
+    previous_row = row - 1
+    next_row = row + 1
+
+    # Check the columns
+    previous_column = column - 1
+    next_column = column + 1
+
+    neighbors = [
+      [row, previous_column],
+      [previous_row, column],
+      [row, next_column],
+      [next_row, column],
+    ]
+    puts "Getting readhy to check neighboard: #{neighbors}"
+
+    neighbors.map do |(row_check, column_check)|
+      next unless row_check.between?(0, @height - 1) && column_check.between?(0, @width - 1)
+        @heightmap[row_check][column_check]
+    end.compact
   end
 
   def part1
