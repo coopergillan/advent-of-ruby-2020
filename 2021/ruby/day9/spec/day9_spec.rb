@@ -125,6 +125,7 @@ describe LavaTubeSurfer do
       let(:low_point1) { [0, 1] }
       let(:low_point2) { [0, 9] }
       let(:low_point3) { [2, 2] }
+      let(:low_point4) { [4, 6] }
       it "can identify whether a point is in a basin" do
         expect(subject.in_basin?([0, 0])).to be(false)
         expect(subject.in_basin?([1, 1])).to be(true)
@@ -135,9 +136,10 @@ describe LavaTubeSurfer do
       end
 
       it "counts the size of the basin for a low point" do
-        # expect(subject.basin_size(low_point1)).to eq(3)
-        # expect(subject.basin_size(low_point2)).to eq(9)
-        expect(subject.basin_size(low_point2)).to eq(14)
+        expect(subject.basin_size(low_point1)).to eq(3)
+        expect(subject.basin_size(low_point2)).to eq(9)
+        expect(subject.basin_size(low_point3)).to eq(14)
+        expect(subject.basin_size(low_point4)).to eq(9)
       end
     end
 
