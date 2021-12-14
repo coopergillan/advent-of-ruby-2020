@@ -77,26 +77,74 @@ class LavaTubeSurfer
   end
 
   def basin_size(coordinates, visited = [])
-    puts "Checkingn coords: #{coordinates}"
-    unvisited = coordinates - visited
+  # def basin_size(coordinates, size = 0, visited = [])
+    puts "Begin coordinates check for coordinates: #{coordinates}"
+    unvisited = [coordinates] - visited
     puts "unvisited: #{unvisited}"
-    return if unvisited.empty?
-    visited << coordinates
-    puts "visited: #{visited}"
-    return in_basin?(coordinates) ? 1 : 0
+    return if (!in_basin?(coordinates) || unvisited.empty?)
+    # size += 1
+    # puts "Size is #{size} after increment"
 
-    if (raw_neighbors = raw_neighbor_coords(coordinates))
-      neighbors_to_check = raw_neighbors - visited
-    else
-      neighbors_to_check = []
-    end
-    found_neighbors = neighbors_to_check.map do |neighbor_coords|
-      basin_size(neighbor_coords, visited)
+    puts "visited before adding: #{visited}"
+    # if
+    visited << coordinates
+    puts "visited after adding: #{visited}"
+    neighbors_check = raw_neighbor_coords(coordinates) - visited
+    neighbors_check.each do |n|
+      puts "About to run for neighbor #{n} - visited: #{visited}"
       puts ""
+      # basin_size(n, size, visited)
+      basin_size(n, visited)
     end
-    return 1
-    puts "found_neighbors: #{found_neighbors}"
+    puts "visited: #{visited}"
+    visited.size
+    # size
   end
+
+"""
+0, 9 should be 1
+0, 8 should be 1
+0, 7 should be 1
+0, 6 should be 1
+0, 5 should be 1
+0, 4 should be 0
+
+1, 9 should be 1
+1, 8 should be 1
+1, 7 should be 0
+1, 6 should be 1
+1, 5 should be 0
+
+2, 9 should be 1
+2, 8 should be 0
+"""
+
+
+  # def basin_size(coordinates, size = 0, visited = [])
+  #   puts "========================"
+  #   puts "Beginning check for: #{coordinates}"
+  #   unvisited = coordinates - visited
+  #   if (unvisited.empty? || !in_basin?(coordinates))
+  #     puts "unvisited: #{unvisited}"
+  #     puts "in_basin?(coordinates): #{in_basin?(coordinates)}"
+  #     puts "We are in the su;posed base case and size is: #{size}"
+  #     return size
+  #   end
+  #   visited << coordinates
+  #   size += 1
+  #
+  #   if (raw_neighbors = raw_neighbor_coords(coordinates))
+  #     neighbors_to_check = raw_neighbors - visited
+  #   else
+  #     neighbors_to_check = []
+  #   end
+  #   neighbors_to_check.map do |neighbor_coords|
+  #     puts "Checking neighbor_coords: #{neighbor_coords} with size: #{size}"
+  #     basin_size(neighbor_coords, size, visited)
+  #   end
+  #   puts ""
+  #   size
+  # end
 
   # def basin_size(coordinates, size = 0, visited = [])
   #   unvisited = coordinates - visited
@@ -109,12 +157,15 @@ class LavaTubeSurfer
   #   if !in_basin?(coordinates)
   #     puts "coordinates: #{coordinates} are not in a basin"
   #     puts "returning size: #{size}"
-  #     return 0
+  #     return size
   #   end
   #   puts "coordinates: #{coordinates} are in a basin"
+  #   puts "size stands at #{size} before increment"
   #
   #   # Increment by 1 if it is in a basin
-  #   size = 1
+  #   size += 1
+  #   puts "size stands at #{size} after increment"
+  #   puts ""
   #
   #   if (raw_neighbors = raw_neighbor_coords(coordinates))
   #     neighbors_to_check = raw_neighbors - visited
@@ -127,9 +178,9 @@ class LavaTubeSurfer
   #     # puts "Now going to check neighbor_coords: #{neighbor_coords}"
   #     # puts "Size is at #{size}"
   #     # break if size >= 16
-  #     basin_size(neighbor_coords, size, visited)
-  #     puts ""
+  #     return basin_size(neighbor_coords, size, visited)
   #   end
+  #   puts ""
   #   size
   # end
 
