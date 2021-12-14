@@ -49,9 +49,15 @@ describe LavaTubeSurfer do
         expect(subject.raw_neighbor_coords(left_border)).to eq([
           [1, 0], [2, 1], [3, 0],
         ])
-        # expect(subject.raw_neighbor_coords(right_border)).to eq([8, 2, 8])
-        # expect(subject.raw_neighbor_coords(top_border)).to eq([4, 2, 4])
-        # expect(subject.raw_neighbor_coords(bottom_border)).to eq([9, 9, 5])
+        expect(subject.raw_neighbor_coords(right_border)).to eq([
+          [3, 8], [2, 9], [4, 9],
+        ])
+        expect(subject.raw_neighbor_coords(top_border)).to eq([
+          [0, 5], [0, 7], [1, 6],
+        ])
+        expect(subject.raw_neighbor_coords(bottom_border)).to eq([
+          [4, 4], [3, 5], [4, 6]
+        ])
       end
 
       it "can get the neighboring points" do
@@ -126,14 +132,6 @@ describe LavaTubeSurfer do
       let(:low_point2) { [0, 9] }
       let(:low_point3) { [2, 2] }
       let(:low_point4) { [4, 6] }
-      it "can identify whether a point is in a basin" do
-        expect(subject.in_basin?([0, 0])).to be(false)
-        expect(subject.in_basin?([1, 1])).to be(true)
-      end
-
-      it "returns nil if a point is not a low point" do
-        expect(subject.basin_size([0, 0])).to be(nil)
-      end
 
       it "counts the size of the basin for a low point" do
         expect(subject.basin_size(low_point1)).to eq(3)
