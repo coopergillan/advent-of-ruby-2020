@@ -15,10 +15,9 @@ class SyntaxChecker
   end
 
   def part2
-    raw_completed_lines = @syntax_lines.map { |line| line.part2_score }
-    completed_lines = raw_completed_lines.delete_if { |line| line.zero? }.sort
-    mid_point_idx = (completed_lines.size / 2)
-    completed_lines[mid_point_idx]
+    completed_lines = @syntax_lines.map { |line| line.part2_score }.delete_if { |line| line.zero? }.sort
+    midpoint_idx = (completed_lines.size / 2).floor
+    completed_lines[midpoint_idx]
   end
 end
 
