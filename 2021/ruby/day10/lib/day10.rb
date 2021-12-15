@@ -15,7 +15,10 @@ class SyntaxChecker
   end
 
   def part2
-    @signal_combos.map { |combo| combo.output_to_number }.reduce(:+)
+    raw_completed_lines = @syntax_lines.map { |line| line.part2_score }
+    completed_lines = raw_completed_lines.delete_if { |line| line.zero? }.sort
+    mid_point_idx = (completed_lines.size / 2)
+    completed_lines[mid_point_idx]
   end
 end
 
@@ -26,11 +29,17 @@ class SyntaxLine
   OPEN_CHARS = ["(", "[", "{", "<"]
   CLOSE_CHARS = [")", "]", "}", ">"]
   CLOSE_TO_OPEN = CLOSE_CHARS.zip(OPEN_CHARS).to_h
-  POINTS = {
+  PART1_POINTS = {
     ")" => 3,
     "]" => 57,
     "}" => 1197,
     ">" => 25137,
+  }
+  PART2_POINTS = {
+    ")" => 1,
+    "]" => 2,
+    "}" => 3,
+    ">" => 4,
   }
 
   def initialize(chars)
@@ -40,22 +49,43 @@ class SyntaxLine
   def parse
     tracking = []
     @chars.each_char.each do |char|
-      puts "Checking char: #{char}"
-      if CLOSE_CHARS.include?(char)
-        puts "char #{char} in CLOSE_CHARS"
-        last_char = tracking.pop
-        puts "last_char: #{last_char}"
-        if last_char != CLOSE_TO_OPEN[char]
-          puts "last_char: #{last_char}"
+      if closing_char?(char)
+        if (last_char = tracking.pop) != CLOSE_TO_OPEN[char]
           return char
         end
       end
-      tracking.push(char) if OPEN_CHARS.include?(char)
+      tracking.push(char) if opening_char?(char)
     end
+    tracking
   end
 
   def score
-    POINTS.fetch(parse, 0)
+    PART1_POINTS.fetch(parse, 0)
+  end
+
+  def complete_line
+    parsed_line = parse
+    return if parsed_line.is_a?(String)
+    parse.reverse.map{ |char| CLOSE_TO_OPEN.invert[char] }.join
+  end
+
+  def part2_score
+    score = 0
+    complete_line&.each_char do |char|
+      score *= 5
+      score += PART2_POINTS[char]
+    end
+    score
+  end
+
+  private
+
+  def closing_char?(char)
+    CLOSE_CHARS.include?(char)
+  end
+
+  def opening_char?(char)
+    OPEN_CHARS.include?(char)
   end
 end
 
@@ -64,5 +94,5 @@ if $PROGRAM_NAME  == __FILE__
   checker = SyntaxChecker.from_file("lib/input.txt")
 
   puts "Answer for part 1: #{checker.part1}"
-  # puts "Answer for part 2: #{solver.part2}"
+  puts "Answer for part 2: #{checker.part2}"
 end
