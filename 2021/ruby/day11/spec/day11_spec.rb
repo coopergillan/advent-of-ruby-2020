@@ -4,10 +4,12 @@ describe Cavern do
   subject { described_class.from_file("spec/test_input.txt") }
 
   context "#new" do
-    it "gets a 10x10 array of octopus energy levels" do
+    it "gets a 10x10 array of Octopus objects" do
       expect(subject.octopus_map).to be_a(Array)
-      expect(subject.octopus_map.height).to eq(10)
-      expect(subject.octopus_map.width).to eq(10)
+      expect(subject.height).to eq(10)
+      expect(subject.width).to eq(10)
+
+      expect(subject.octopus_map.first.first).to be_a(Octopus)
     end
   end
 
@@ -81,4 +83,43 @@ describe Cavern do
     end
   end
 
+  context "when a step occurs" do
+    subject { described_class.new([
+      [4, 5, 8, 5],
+      [6, 4, 5, 5],
+      [4, 1, 3, 3],
+      [5, 7, 3, 8],
+    ]) }
+    it "increments each square" do
+      subject.step
+      expect(subject.octopus_map).to match_array([
+        [5, 6, 9, 6],
+        [7, 5, 6, 6],
+        [5, 2, 4, 4],
+        [6, 8, 4, 9],
+      ])
+    end
+  end
+end
+
+describe Octopus do
+  subject { described_class.new(6) }
+  context "#increment_and_flash" do
+    context "when below energy level 9" do
+      it "increments its energy level by 1 when below 9 and does not flash" do
+        expect(subject.energy_level).to eq(6)
+        expect(subject.increment_and_flash).to eq(0)
+        expect(subject.energy_level).to eq(7)
+      end
+    end
+
+    context "when at energy level 9" do
+      subject { described_class.new(9) }
+      it "goes to 0 energy level when incremented from 9 and returns one flash" do
+        expect(subject.energy_level).to eq(9)
+        expect(subject.increment_and_flash).to eq(1)
+        expect(subject.energy_level).to eq(0)
+      end
+    end
+  end
 end

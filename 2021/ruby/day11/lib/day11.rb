@@ -8,9 +8,19 @@ class Cavern
   end
 
   def self.from_file(filepath)
-    new(
-      File.foreach(filepath, chomp: true).map { |line| line.each_char.map(&:to_i) }
-    )
+    octopus_map = File.foreach(filepath, chomp: true).map do |line|
+      line.each_char.map do |octo|
+        Octopus.new(octo.to_i)
+      end
+    end
+    new(octopus_map)
+  end
+
+  def step
+    # @octopus_map.each do |row|
+    #   row.each.do |col|
+    #
+    # end
   end
 
   # def neighbors(coordinates)
@@ -97,6 +107,26 @@ class Cavern
     row, column = coordinates
     return false if @heightmap[row][column] == 9
     true
+  end
+end
+
+
+class Octopus
+  attr_accessor :energy_level
+
+  def initialize(energy_level)
+    @energy_level = energy_level
+  end
+
+  def increment_and_flash
+    flash = 0
+    if @energy_level == 9
+      @energy_level = 0
+      flash += 1
+    else
+      @energy_level += 1
+    end
+    flash
   end
 end
 
