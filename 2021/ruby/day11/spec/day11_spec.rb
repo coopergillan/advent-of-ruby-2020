@@ -1,9 +1,13 @@
 require "day11"
 
+def octo(energy_level)
+  Octopus.new(energy_level)
+end
+
 describe Cavern do
   subject { described_class.from_file("spec/test_input.txt") }
 
-  context "#new" do
+  context "when map is created" do
     it "gets a 10x10 array of Octopus objects" do
       expect(subject.octopus_map).to be_a(Array)
       expect(subject.height).to eq(10)
@@ -12,6 +16,7 @@ describe Cavern do
       expect(subject.octopus_map.first.first).to be_a(Octopus)
     end
   end
+
 
   context "given a point on the map" do
     context "when checking corners" do
@@ -85,14 +90,14 @@ describe Cavern do
 
   context "when a step occurs" do
     subject { described_class.new([
-      [4, 5, 8, 5],
-      [6, 4, 5, 5],
-      [4, 1, 3, 3],
-      [5, 7, 3, 8],
+      [octo(4), octo(5), octo(8), octo(5)],
+      [octo(6), octo(4), octo(5), octo(5)],
+      [octo(4), octo(1), octo(3), octo(3)],
+      [octo(5), octo(7), octo(3), octo(8)],
     ]) }
     it "increments each square" do
       subject.step
-      expect(subject.octopus_map).to match_array([
+      expect(subject.map_energies).to match_array([
         [5, 6, 9, 6],
         [7, 5, 6, 6],
         [5, 2, 4, 4],
