@@ -88,21 +88,92 @@ describe Cavern do
     end
   end
 
-  context "when a step occurs" do
-    subject { described_class.new([
-      [octo(4), octo(5), octo(8), octo(5)],
-      [octo(6), octo(4), octo(5), octo(5)],
-      [octo(4), octo(1), octo(3), octo(3)],
-      [octo(5), octo(7), octo(3), octo(8)],
-    ]) }
-    it "increments each square" do
-      subject.step
-      expect(subject.map_energies).to match_array([
-        [5, 6, 9, 6],
-        [7, 5, 6, 6],
-        [5, 2, 4, 4],
-        [6, 8, 4, 9],
-      ])
+  context "#step" do
+    context "when running for a smaller example" do
+      subject { described_class.new([
+        [octo(4), octo(5), octo(8), octo(5)],
+        [octo(6), octo(4), octo(5), octo(5)],
+        [octo(4), octo(1), octo(3), octo(3)],
+        [octo(5), octo(7), octo(3), octo(8)],
+      ]) }
+      it "increments each square by one for one step" do
+        subject.step
+        expect(subject.map_energies).to match_array([
+          [5, 6, 9, 6],
+          [7, 5, 6, 6],
+          [5, 2, 4, 4],
+          [6, 8, 4, 9],
+        ])
+      end
+
+      it "increments each square and neighbors of flashing octopi, counts flashes" do
+        2.times { subject.step }
+        expect(subject.map_energies).to match_array([
+          [6, 8, 0, 8],
+          [8, 7, 8, 8],
+          [6, 3, 6, 6],
+          [7, 9, 6, 0],
+        ])
+        expect(subject.flashes).to eq(2)
+      end
+
+      it "increments each square and neighbors of flashing octopi, counts flashes" do
+        4.times { subject.step }
+        expect(subject.map_energies).to match_array([
+          [0, 1, 1, 9],
+          [0, 9, 9, 9],
+          [9, 6, 8, 7],
+          [9, 0, 8, 1],
+        ])
+        expect(subject.flashes).to eq(3)
+      end
+    end
+
+    context "when running for the main example" do
+      subject { described_class.from_file("spec/test_input.txt") }
+
+      it "increments and counts flashes for 2 steps" do
+        expect(subject.map_energies).to match_array([
+          [5, 4, 8, 3, 1, 4, 3, 2, 2, 3],
+          [2, 7, 4, 5, 8, 5, 4, 7, 1, 1],
+          [5, 2, 6, 4, 5, 5, 6, 1, 7, 3],
+          [6, 1, 4, 1, 3, 3, 6, 1, 4, 6],
+          [6, 3, 5, 7, 3, 8, 5, 4, 7, 8],
+          [4, 1, 6, 7, 5, 2, 4, 6, 4, 5],
+          [2, 1, 7, 6, 8, 4, 1, 7, 2, 1],
+          [6, 8, 8, 2, 8, 8, 1, 1, 3, 4],
+          [4, 8, 4, 6, 8, 4, 8, 5, 5, 4],
+          [5, 2, 8, 3, 7, 5, 1, 5, 2, 6],
+        ])
+        expect(subject.flashes).to eq(0)
+
+        2.times { subject.step }
+
+        expect(subject.flashes).to eq(35)
+        # expect(subject.map_energies).to match_array([
+        #   [8, 8, 0, 7, 4, 7, 6, 5, 5, 5],
+        #   [5, 0, 8, 9, 0, 8, 7, 0, 5, 4],
+        #   [8, 5, 9, 7, 8, 8, 9, 6, 0, 8],
+        #   [8, 4, 8, 5, 7, 6, 9, 6, 0, 0],
+        #   [8, 7, 0, 0, 9, 0, 8, 8, 0, 0],
+        #   [6, 6, 0, 0, 0, 8, 8, 9, 8, 9],
+        #   [6, 8, 0, 0, 0, 0, 5, 9, 4, 3],
+        #   [0, 0, 0, 0, 0, 0, 7, 4, 5, 6],
+        #   [9, 0, 0, 0, 0, 0, 0, 8, 7, 6],
+        #   [8, 7, 0, 0, 0, 0, 6, 8, 4, 8],
+        # ])
+      end
+
+      it "increments each square and neighbors of flashing octopi, counts flashes" do
+        2.times { subject.step }
+        expect(subject.map_energies).to match_array([
+          [6, 8, 0, 8],
+          [8, 7, 8, 8],
+          [6, 3, 6, 6],
+          [7, 9, 6, 0],
+        ])
+        expect(subject.flashes).to eq(2)
+      end
     end
   end
 end
@@ -113,7 +184,7 @@ describe Octopus do
     context "when below energy level 9" do
       it "increments its energy level by 1 when below 9 and does not flash" do
         expect(subject.energy_level).to eq(6)
-        expect(subject.increment_and_flash).to eq(0)
+        expect(subject.increment_and_flash).to be(nil)
         expect(subject.energy_level).to eq(7)
       end
     end
