@@ -23,6 +23,12 @@ describe Cavern do
     end
   end
 
+  context "answering part 2" do
+    it "gets the answer to part2" do
+      expect(subject.part2).to eq(195)
+    end
+  end
+
 
   context "given a point on the map" do
     context "when checking corners" do

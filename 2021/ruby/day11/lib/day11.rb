@@ -18,24 +18,7 @@ class Cavern
     new(octopus_map)
   end
 
-  # def map_energies
-  #   @octopus_map.map do |row|
-  #     row.map do |octo|
-  #       octo.energy_level
-  #     end
-  #   end
-  # end
-
   def flash_check(row, column, flashed)
-    puts "incre3meitng and falshing for row: #{row} column: #{column}"
-    return if flashed.include?([row, column]) || @octopus_map[row][column] <= 9
-    # puts "increment and flash for octo_energy: #{octo_energy}"
-    # @octopus_map[row][column] += 1
-    # if (@octopus_map[row][column] <= 9 && !flashed.include?([row, column]))
-    #   puts "WE ARE IN THE LESS THAN!"
-      # puts "octo_energy before: #{octo_energy}"
-      # puts "Incremeneted below nine: octo_energy: #{octo_energy}"
-      # return 0
     if @octopus_map[row][column] > 9
       puts "About to flash for row: #{row} - column: #{column} - @flashes: #{@flashes}"
       @flashes += 1
@@ -54,8 +37,6 @@ class Cavern
         end
       end
     end
-    # puts "Going to return flahses: #{flashes} now"
-    # return flashes
   end
 
   def step
@@ -87,6 +68,7 @@ class Cavern
     puts BANNER
     puts "Finished wthstep! @ocotopus_Map: #{@octopus_map}"
     puts BANNER
+    return flashed
   end
 
   def raw_neighbor_coords(row, column)
@@ -119,7 +101,20 @@ class Cavern
   end
 
   def part2
+    cavern_size = @height * @width
 
+    flashed = []
+    step_number = 0
+
+    while flashed.size < cavern_size
+      puts "Step number: #{step_number}"
+      flashed = step
+      step_number += 1
+      if flashed.size == cavern_size
+        puts "Step number #{step_number} - cavern_size: #{cavern_size} - flashed.size: #{flashed.size}"
+        return step_number
+      end
+    end
   end
 end
 
@@ -137,6 +132,6 @@ end
 if $PROGRAM_NAME  == __FILE__
   cavern = Cavern.from_file("lib/input.txt")
 
-  puts "Answer for part 1: #{cavern.part1}"
-  # puts "Answer for part 2: #{lava_tube.part2}"
+  # puts "Answer for part 1: #{cavern.part1}"
+  puts "Answer for part 2: #{cavern.part2}"
 end
