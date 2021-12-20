@@ -1,4 +1,5 @@
 class CaveMap
+  BANNER = "================================================="
   attr_accessor :connections
 
   def initialize(connections)
@@ -28,12 +29,40 @@ class CaveMap
     new(connections)
   end
 
+  def build_paths(start_cave = "start", current_path = [], visited = [], all_paths = [])
+    current_path.push(start_cave) if current_path.empty?
+
+    @connections[start_cave].each do |conn|
+      if conn == "end"
+        all_paths.push(current_path + [conn])
+        puts "Finished one: all_paths: #{all_paths}"
+        next
+      elsif !visited.include?(conn) || !small_cave?(conn)
+        next_path = current_path + [conn]
+
+        # Mark a small cave as visited
+        visited.push(start_cave) if small_cave?(start_cave)
+
+        puts "About to do recursive with conn: #{conn} - current_path: #{current_path}"
+        build_paths(conn, next_path, visited, all_paths)  # current_path [start, A] find branch from b, end
+      end
+      puts BANNER
+    end
+    all_paths
+  end
+
   def part1
 
   end
 
   def part2
 
+  end
+
+  private
+
+  def small_cave?(cave)
+    cave != cave.upcase
   end
 end
 
