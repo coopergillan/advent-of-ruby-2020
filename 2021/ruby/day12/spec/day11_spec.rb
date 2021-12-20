@@ -15,6 +15,20 @@ describe CaveMap do
     end
   end
 
+  context "when a larger map is created" do
+    subject { described_class.from_file("spec/test_input_larger.txt") }
+    it "builds a hash of connections" do
+      expect(subject.connections).to include(
+        "dc" => ["end", "HN", "LN", "kj"],
+        "start" => ["HN", "kj", "dc"],
+        "kj" => ["sa", "HN", "dc"],
+        "HN" => ["dc", "end", "kj"],
+        "LN" => ["dc"],
+        "sa" => ["kj"],
+      )
+    end
+  end
+
   context "#build_paths" do
 
     let(:paths_hash) { {"start" => ["end"]} }
@@ -88,8 +102,18 @@ describe CaveMap do
   end
 
   context "#part1" do
-    xit "gets the count of paths to answer part1" do
-      expect(subject.part1).to eq(10)
+    context "when trying the smaller example" do
+      it "gets the count of paths to answer part1" do
+        expect(subject.part1).to eq(10)
+      end
+    end
+
+    context "when trying the next larger example" do
+      subject { described_class.from_file("spec/test_input_larger.txt") }
+
+      it "gets the count of paths to answer part1" do
+        expect(subject.part1).to eq(19)
+      end
     end
   end
 

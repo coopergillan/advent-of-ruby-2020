@@ -39,7 +39,7 @@ class CaveMap
       puts "Checking connecting_cave: #{connecting_cave} for start_cave: #{start_cave}"
       # Yep, since I still don't know how to get this to stop
       counter += 1
-      # break if counter > 9
+      break if counter > 9
 
       if visited.include?(connecting_cave)
         puts "It says we have already visited connecting_cave: #{connecting_cave} - visited: #{visited}"
@@ -72,7 +72,7 @@ class CaveMap
   end
 
   def part1
-
+    build_paths.size
   end
 
   def part2
@@ -91,5 +91,5 @@ if $PROGRAM_NAME  == __FILE__
   cave_map = CaveMap.from_file("lib/input.txt")
 
   puts "Answer for part 1: #{cave_map.part1}"
-  puts "Answer for part 2: #{cave_map.part2}"
+  # puts "Answer for part 2: #{cave_map.part2}"
 end
