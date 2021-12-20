@@ -68,13 +68,15 @@ describe CaveMap do
         "d" => ["b"],
         }
       }
-     xit "constructs each possible path" do
+      it "constructs each possible path" do
+        # asdf = subject.build_paths
+        # expect(asdf.size).to eq(10)
         expect(subject.build_paths).to match_array([
           ["start", "A", "b", "A", "c", "A", "end"],
           ["start", "A", "b", "A", "end"],
           ["start", "A", "b", "end"],
-          ["start", "A", "c", "A","b", "A", "end"],
-          ["start", "A", "c", "A","b", "end"],
+          ["start", "A", "c", "A", "b", "A", "end"],
+          ["start", "A", "c", "A", "b", "end"],
           ["start", "A", "c", "A","end"],
           ["start", "A", "end"],
           ["start", "b", "A", "c", "A", "end"],
