@@ -9,16 +9,20 @@ class CaveMap
     connections = Hash.new([])
     File.foreach(filepath, chomp: true).map do |line|
       start_cave, end_cave = line.split("-")
+      puts "Processing raw line: #{line} - start_cave: #{start_cave} end_cave: #{end_cave}"
       if connections.has_key?(start_cave)
         connections[start_cave].append(end_cave)
       else
         connections[start_cave] = [end_cave]
       end
 
-      if connections.has_key?(end_cave)
-        connections[end_cave].append(start_cave)
-      else
-        connections[end_cave] = [start_cave]
+      if end_cave != "end" && start_cave != "start"
+        puts "Starting the reverse insert: end_cave: #{end_cave} start_cave: #{start_cave}"
+        if connections.has_key?(end_cave)
+          connections[end_cave].append(start_cave)
+        else
+          connections[end_cave] = [start_cave]
+        end
       end
     end
     new(connections)

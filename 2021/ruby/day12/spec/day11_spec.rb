@@ -7,8 +7,8 @@ describe CaveMap do
     it "builds a hash of connections" do
       expect(subject.connections).to include(
         "start" => ["A", "b"],
-        "A" => ["b", "c", "end"],
-        "b" => ["d", "A", "end"],
+        "A" => ["c", "b", "end"],
+        "b" => ["A", "d", "end"],
         "c" => ["A"],
         "d" => ["b"],
       )
