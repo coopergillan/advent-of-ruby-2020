@@ -133,8 +133,7 @@ end
 if $PROGRAM_NAME  == __FILE__
   cave_map_conns = CaveMap.build_connections("lib/input.txt")
   cave_map = CaveMap.new(cave_map_conns)
-  require "pry"; binding.pry
 
+	# This spits out the wrong answer, but pasting connections into a test gives right answer
   puts "Answer for part 1: #{cave_map.part1}"
-  # puts "Answer for part 2: #{cave_map.part2}"
 end

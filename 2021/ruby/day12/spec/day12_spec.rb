@@ -200,6 +200,50 @@ describe CaveMap do
         # ])
       end
     end
+
+    context "when running with the main input" do
+      let(:paths_hash) {
+        {
+          "start"=>["kc", "zw", "UI"],
+          "pd"=>["NV", "UI", "ih", "kc", "ks", "MF"],
+          "NV"=>["pd", "ih", "zw", "ks"],
+          "UI"=>["pd", "kc", "zw"],
+          "HK"=>["end", "zw", "kc", "ih", "ks"],
+          "kc"=>["UI", "zw", "HK", "pd", "MF"],
+          "ih"=>["pd", "end", "HK", "NV"],
+          "zw"=>["kc", "HK", "UI", "NV"],
+          "ks"=>["end", "LF", "pd", "HK", "NV"],
+          "MF"=>["mq", "pd", "kc"],
+          "mq"=>["MF"],
+          "LF"=>["ks"]
+        }
+      }
+      it "constructs each possible path" do
+        asdf = subject.build_paths
+        expect(asdf.size).to eq(4720)
+        # expect(subject.build_paths).to match_array([
+        #   ["start", "HN", "dc", "HN", "end"],      # got it
+        #   ["start", "HN", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "HN", "dc", "end"],      # got it
+        #   ["start", "HN", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "HN", "end"],      # got it
+        #   ["start", "HN", "kj", "HN", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "HN", "kj", "HN", "dc", "end"],      # got it
+        #   ["start", "HN", "kj", "HN", "end"],      # got it
+        #   ["start", "HN", "kj", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "HN", "kj", "dc", "end"],      # got it
+        #   ["start", "dc", "HN", "end"],      # got it
+        #   ["start", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "dc", "end"],      # got it
+        #   ["start", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "kj", "HN", "dc", "HN", "end"],      # got it
+        #   ["start", "kj", "HN", "dc", "end"],      # got it
+        #   ["start", "kj", "HN", "end"],      # got it
+        #   ["start", "kj", "dc", "HN", "end"],
+        #   ["start", "kj", "dc", "end"],
+        # ])
+      end
+    end
   end
 
   context "#part1" do
