@@ -194,6 +194,7 @@ describe CaveMap do
         it "gets the number of paths allowing for two visits to small caves" do
           part2_paths = subject.build_paths_part2
           # expect(part2_paths.size).to eq(36)
+          # require "pry"; binding.pry
           expect(part2_paths).to match_array([
             ["start", "A", "b", "A", "b", "A", "c", "A", "end"],
             ["start", "A", "b", "A", "b", "A", "end"],
@@ -232,6 +233,29 @@ describe CaveMap do
             ["start", "b", "d", "b", "end"],
             ["start", "b", "end"],
           ])
+        end
+      end
+
+      context "when running the main example" do
+        let(:paths_hash) {
+          {
+            "start"=>["kc", "zw", "UI"],
+            "pd"=>["NV", "UI", "ih", "kc", "ks", "MF"],
+            "NV"=>["pd", "ih", "zw", "ks"],
+            "UI"=>["pd", "kc", "zw"],
+            "HK"=>["end", "zw", "kc", "ih", "ks"],
+            "kc"=>["UI", "zw", "HK", "pd", "MF"],
+            "ih"=>["pd", "end", "HK", "NV"],
+            "zw"=>["kc", "HK", "UI", "NV"],
+            "ks"=>["end", "LF", "pd", "HK", "NV"],
+            "MF"=>["mq", "pd", "kc"],
+            "mq"=>["MF"],
+            "LF"=>["ks"]
+          }
+        }
+        xit "gets the number of paths allowing for two visits to small caves" do
+          part2_paths = subject.build_paths_part2
+          expect(part2_paths.size).to eq(36)
         end
       end
     end

@@ -93,26 +93,33 @@ class CaveMap
 
     puts "Starting build_paths_part2 for start_cave: #{start_cave}"
 
-    @connections[start_cave].each do |connecting_cave|
-      if visited.has_key?(start_cave)
-        puts "Okay, checking for visited to start_cave: #{start_cave} - visited: #{visited}"
-        next if visited.values.any? { |c| c == 2 }
-      end
-      puts "Checking connecting_cave: #{connecting_cave} for start_cave: #{start_cave}"
+    @connections[start_cave].each_with_index do |connecting_cave, idx|
+      # if visited.has_key?(start_cave)
+      #   puts "Okay, checking for visited to start_cave: #{start_cave} - visited: #{visited}"
+      #   next if visited.values.any? { |c| c == 2 }
+      # end
+      puts "Checking connecting_cave: #{connecting_cave} for start_cave: #{start_cave} - visited: #{visited}"
       # Yep, since I still don't know how to get this to stop
       # counter += 1
-      # break if counter > 19
+      # puts "counter: #{counter}"
+      # break if counter > 18
 
-      if visited.has_key?(connecting_cave)
+      if small_cave?(connecting_cave)
+        # if visited.has_key?(connecting_cave)
         if visited.values.any? { |c| c == 2 }
           puts "It says that one cave has already been visited twice: #{visited}"
-          # puts "It says we have already visited connecting_cave: #{connecting_cave} - visited: #{visited}"
-          next
+          if visited.fetch(connecting_cave, 0) > 0
+            puts "It says we have already visited connecting_cave: #{connecting_cave} once or more - visited: #{visited} - so move on"
+            next
+          end
+          puts "While visited: #{visited} has a cave with two visits, connecting_cave: #{connecting_cave} is not - so move on"
         end
+        # end
       end
+
       # Don't bother if it's a small cave with only small cave connections
       # if (small_cave?(start_cave) && @connections[connecting_cave]&.all? { |cave| @connections[cave]&.all? { |another| small_cave?(another) } } )
-      #   # puts "start_cave: #{start_cave} is a small cave and all connecting_caves: #{@connections[connecting_cave]} are also - skipping"
+      #   puts "start_cave: #{start_cave} is a small cave and all connecting_caves: #{@connections[connecting_cave]} are also - skipping"
       #   next
       # end
 
@@ -123,11 +130,11 @@ class CaveMap
         if !all_paths.include?(next_path)
 
           # Now check that the path only has one repeated small cave
-          small_caves_keys = @connections.keys { |conn_key| small_cave?(conn_key) }
-          if (next_path.count { |val| small_caves_keys.include?(val) } / small_caves_keys.size) < 2
+          # small_caves_keys = @connections.keys { |conn_key| small_cave?(conn_key) }
+          # if (next_path.count { |val| small_caves_keys.include?(val) } / small_caves_keys.size) < 2
             all_paths.push(next_path)
             puts "Finished adding next_path: #{next_path} to all_paths: #{all_paths}"
-          end
+          # end
         end
       elsif !small_cave?(connecting_cave) || (small_cave?(connecting_cave) && (!visited.values.any? { |c| c == 2 }) && current_path.count(connecting_cave) < 2)
         next_path = current_path + [connecting_cave]
@@ -148,7 +155,8 @@ class CaveMap
         puts "About to do recursive with connecting_cave: #{connecting_cave} - next_path/current_path: #{next_path}"
         build_paths_part2(connecting_cave, next_path, visited, all_paths)
       end
-      # puts BANNER
+      # TODO: fix this problem where visited is getting reset when the connections loop finishes
+      # no matter where we are in the recursive tree
       visited = {}
     end
     all_paths
