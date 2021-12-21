@@ -76,17 +76,17 @@ describe CaveMap do
     context "when running with a slightly larger example" do
       let(:paths_hash) {
         {
-        "start" => ["A", "b"],
-        "A" => ["c", "b", "end"],
-        "b" => ["A", "d", "end"],
-        "c" => ["A"],
-        "d" => ["b"],
+          "start" => ["A", "b"],
+          "A" => ["c", "b", "end"],
+          "b" => ["A", "d", "end"],
+          "c" => ["A"],
+          "d" => ["b"],
         }
       }
       it "constructs each possible path" do
-        # asdf = subject.build_paths
-        # expect(asdf.size).to eq(10)
-        expect(subject.build_paths).to match_array([
+        all_paths = subject.build_paths
+        expect(all_paths.size).to eq(10)
+        expect(all_paths).to match_array([
           ["start", "A", "b", "A", "c", "A", "end"],
           ["start", "A", "b", "A", "end"],
           ["start", "A", "b", "end"],
@@ -140,27 +140,6 @@ describe CaveMap do
     end
 
     context "when running with the largest given example" do
-    #   """
-    #   fs-end
-    #   he-DX
-    #   fs-he
-    #   start-DX
-    #   pj-DX
-    # end-zg
-    # zg-sl
-    # zg-pj
-    # pj-he
-    # RW-he
-    # fs-DX
-    # pj-RW
-    # zg-RW
-    # start-pj
-    # he-WI
-    # zg-he
-    # pj-fs
-    #
-    # start-RW
-    #   """
       let(:paths_hash) {
         {
           "fs" => ["end", "he", "DX", "pj"],
@@ -175,29 +154,7 @@ describe CaveMap do
         }
       }
       it "constructs each possible path" do
-        asdf = subject.build_paths
-        expect(asdf.size).to eq(226)
-        # expect(subject.build_paths).to match_array([
-        #   ["start", "HN", "dc", "HN", "end"],      # got it
-        #   ["start", "HN", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "HN", "dc", "end"],      # got it
-        #   ["start", "HN", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "HN", "end"],      # got it
-        #   ["start", "HN", "kj", "HN", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "HN", "kj", "HN", "dc", "end"],      # got it
-        #   ["start", "HN", "kj", "HN", "end"],      # got it
-        #   ["start", "HN", "kj", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "HN", "kj", "dc", "end"],      # got it
-        #   ["start", "dc", "HN", "end"],      # got it
-        #   ["start", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "dc", "end"],      # got it
-        #   ["start", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "kj", "HN", "dc", "HN", "end"],      # got it
-        #   ["start", "kj", "HN", "dc", "end"],      # got it
-        #   ["start", "kj", "HN", "end"],      # got it
-        #   ["start", "kj", "dc", "HN", "end"],
-        #   ["start", "kj", "dc", "end"],
-        # ])
+        expect(subject.part1).to eq(226)
       end
     end
 
@@ -219,36 +176,70 @@ describe CaveMap do
         }
       }
       it "constructs each possible path" do
-        asdf = subject.build_paths
-        expect(asdf.size).to eq(4720)
-        # expect(subject.build_paths).to match_array([
-        #   ["start", "HN", "dc", "HN", "end"],      # got it
-        #   ["start", "HN", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "HN", "dc", "end"],      # got it
-        #   ["start", "HN", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "HN", "end"],      # got it
-        #   ["start", "HN", "kj", "HN", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "HN", "kj", "HN", "dc", "end"],      # got it
-        #   ["start", "HN", "kj", "HN", "end"],      # got it
-        #   ["start", "HN", "kj", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "HN", "kj", "dc", "end"],      # got it
-        #   ["start", "dc", "HN", "end"],      # got it
-        #   ["start", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "dc", "end"],      # got it
-        #   ["start", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-        #   ["start", "kj", "HN", "dc", "HN", "end"],      # got it
-        #   ["start", "kj", "HN", "dc", "end"],      # got it
-        #   ["start", "kj", "HN", "end"],      # got it
-        #   ["start", "kj", "dc", "HN", "end"],
-        #   ["start", "kj", "dc", "end"],
-        # ])
+        expect(subject.part1).to eq(4720)
+      end
+    end
+
+    context "#part2 since the other doesn't work" do
+      context "when running the first example" do
+        let(:paths_hash) {
+          {
+            "start" => ["A", "b"],
+            "A" => ["c", "b", "end"],
+            "b" => ["A", "d", "end"],
+            "c" => ["A"],
+            "d" => ["b"],
+          }
+        }
+        it "gets the number of paths allowing for two visits to small caves" do
+          part2_paths = subject.build_paths_part2
+          # expect(part2_paths.size).to eq(36)
+          expect(part2_paths).to match_array([
+            ["start", "A", "b", "A", "b", "A", "c", "A", "end"],
+            ["start", "A", "b", "A", "b", "A", "end"],
+            ["start", "A", "b", "A", "b", "end"],
+            ["start", "A", "b", "A", "c", "A", "b", "A", "end"],
+            ["start", "A", "b", "A", "c", "A", "b", "end"],
+            ["start", "A", "b", "A", "c", "A", "c", "A", "end"],
+            ["start", "A", "b", "A", "c", "A", "end"],
+            ["start", "A", "b", "A", "end"],
+            ["start", "A", "b", "d", "b", "A", "c", "A", "end"],
+            ["start", "A", "b", "d", "b", "A", "end"],
+            ["start", "A", "b", "d", "b", "end"],
+            ["start", "A", "b", "end"],
+            ["start", "A", "c", "A", "b", "A", "b", "A", "end"],
+            ["start", "A", "c", "A", "b", "A", "b", "end"],
+            ["start", "A", "c", "A", "b", "A", "c", "A", "end"],
+            ["start", "A", "c", "A", "b", "A", "end"],
+            ["start", "A", "c", "A", "b", "d", "b", "A", "end"],
+            ["start", "A", "c", "A", "b", "d", "b", "end"],
+            ["start", "A", "c", "A", "b", "end"],
+            ["start", "A", "c", "A", "c", "A", "b", "A", "end"],
+            ["start", "A", "c", "A", "c", "A", "b", "end"],
+            ["start", "A", "c", "A", "c", "A", "end"],
+            ["start", "A", "c", "A", "end"],
+            ["start", "A", "end"],
+            ["start", "b", "A", "b", "A", "c", "A", "end"],
+            ["start", "b", "A", "b", "A", "end"],
+            ["start", "b", "A", "b", "end"],
+            ["start", "b", "A", "c", "A", "b", "A", "end"],
+            ["start", "b", "A", "c", "A", "b", "end"],
+            ["start", "b", "A", "c", "A", "c", "A", "end"],
+            ["start", "b", "A", "c", "A", "end"],
+            ["start", "b", "A", "end"],
+            ["start", "b", "d", "b", "A", "c", "A", "end"],
+            ["start", "b", "d", "b", "A", "end"],
+            ["start", "b", "d", "b", "end"],
+            ["start", "b", "end"],
+          ])
+        end
       end
     end
   end
 
   context "#part1" do
     context "when trying the smaller example" do
-      it "gets the count of paths to answer part1" do
+      xit "gets the count of paths to answer part1" do
         expect(subject.part1).to eq(10)
       end
     end
@@ -257,7 +248,7 @@ describe CaveMap do
       let(:connections) { described_class.build_connections("spec/test_input_larger.txt") }
       subject { described_class.new(connections) }
 
-      it "gets expected paths" do
+      xit "gets expected paths" do
         expect(subject.build_paths).to match_array([
           ["start", "HN", "dc", "HN", "end"],      # got it
           ["start", "HN", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
