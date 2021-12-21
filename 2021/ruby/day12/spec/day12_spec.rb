@@ -17,6 +17,7 @@ describe CaveMap do
 
   context "when a larger map is created" do
     subject { described_class.from_file("spec/test_input_larger.txt") }
+
     it "builds a hash of connections" do
       expect(subject.connections).to include(
         "dc" => ["end", "HN", "LN", "kj"],
@@ -102,42 +103,101 @@ describe CaveMap do
 
     context "when running with an even larger example" do
       let(:paths_hash) {
-				{
-          # "dc" => ["HN", "LN", "kj", "end"],
-					"dc" => ["end", "HN", "LN", "kj"],
-					"start" => ["HN", "kj", "dc"],
-					# "HN" => ["dc", "kj", "end"],
-					"HN" => ["dc", "end", "kj"],
-					"LN" => ["dc"],
-					"kj" => ["sa", "HN", "dc"],
-					"sa" => ["kj"]
-				}
+        {
+          "dc" => ["end", "HN", "LN", "kj"],
+          "start" => ["HN", "kj", "dc"],
+          "HN" => ["dc", "end", "kj"],
+          "LN" => ["dc"],
+          "kj" => ["sa", "HN", "dc"],
+          "sa" => ["kj"],
+        }
       }
       it "constructs each possible path" do
-        # asdf = subject.build_paths
-				# require "pry"; binding.pry
-        # expect(asdf.size).to eq(19)
+        asdf = subject.build_paths
+        expect(asdf.size).to eq(19)
         expect(subject.build_paths).to match_array([
-					["start", "HN", "dc", "HN", "end"],      # got it
-					["start", "HN", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-					["start", "HN", "dc", "end"],      # got it
-					["start", "HN", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-					["start", "HN", "end"],      # got it
-					["start", "HN", "kj", "HN", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-					["start", "HN", "kj", "HN", "dc", "end"],      # got it
-					["start", "HN", "kj", "HN", "end"],      # got it
-					["start", "HN", "kj", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-					["start", "HN", "kj", "dc", "end"],      # got it
-					["start", "dc", "HN", "end"],      # got it
-					["start", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-					["start", "dc", "end"],      # got it
-					["start", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
-					["start", "kj", "HN", "dc", "HN", "end"],      # got it
-					["start", "kj", "HN", "dc", "end"],      # got it
-					["start", "kj", "HN", "end"],      # got it
-					["start", "kj", "dc", "HN", "end"],
-					["start", "kj", "dc", "end"],
-				])
+          ["start", "HN", "dc", "HN", "end"],      # got it
+          ["start", "HN", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "HN", "dc", "end"],      # got it
+          ["start", "HN", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "HN", "end"],      # got it
+          ["start", "HN", "kj", "HN", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "HN", "kj", "HN", "dc", "end"],      # got it
+          ["start", "HN", "kj", "HN", "end"],      # got it
+          ["start", "HN", "kj", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "HN", "kj", "dc", "end"],      # got it
+          ["start", "dc", "HN", "end"],      # got it
+          ["start", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "dc", "end"],      # got it
+          ["start", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "kj", "HN", "dc", "HN", "end"],      # got it
+          ["start", "kj", "HN", "dc", "end"],      # got it
+          ["start", "kj", "HN", "end"],      # got it
+          ["start", "kj", "dc", "HN", "end"],
+          ["start", "kj", "dc", "end"],
+        ])
+      end
+    end
+
+    context "when running with the largest given example" do
+    #   """
+    #   fs-end
+    #   he-DX
+    #   fs-he
+    #   start-DX
+    #   pj-DX
+    # end-zg
+    # zg-sl
+    # zg-pj
+    # pj-he
+    # RW-he
+    # fs-DX
+    # pj-RW
+    # zg-RW
+    # start-pj
+    # he-WI
+    # zg-he
+    # pj-fs
+    #
+    # start-RW
+    #   """
+      let(:paths_hash) {
+        {
+          "fs" => ["end", "he", "DX", "pj"],
+          "he" => ["DX", "fs", "pj", "RW", "WI", "zg"],
+          "DX" => ["he", "pj", "fs"],
+          "start" => ["DX", "pj", "RW"],
+          "pj" => ["DX", "zg", "he", "RW", "fs"],
+          "zg" => ["end", "sl", "pj", "RW", "he"],
+          "sl" => ["zg"],
+          "RW" => ["he", "pj", "zg"],
+          "WI" => ["he"],
+        }
+      }
+      it "constructs each possible path" do
+        asdf = subject.build_paths
+        expect(asdf.size).to eq(226)
+        # expect(subject.build_paths).to match_array([
+        #   ["start", "HN", "dc", "HN", "end"],      # got it
+        #   ["start", "HN", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "HN", "dc", "end"],      # got it
+        #   ["start", "HN", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "HN", "end"],      # got it
+        #   ["start", "HN", "kj", "HN", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "HN", "kj", "HN", "dc", "end"],      # got it
+        #   ["start", "HN", "kj", "HN", "end"],      # got it
+        #   ["start", "HN", "kj", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "HN", "kj", "dc", "end"],      # got it
+        #   ["start", "dc", "HN", "end"],      # got it
+        #   ["start", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "dc", "end"],      # got it
+        #   ["start", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+        #   ["start", "kj", "HN", "dc", "HN", "end"],      # got it
+        #   ["start", "kj", "HN", "dc", "end"],      # got it
+        #   ["start", "kj", "HN", "end"],      # got it
+        #   ["start", "kj", "dc", "HN", "end"],
+        #   ["start", "kj", "dc", "end"],
+        # ])
       end
     end
   end
@@ -150,11 +210,34 @@ describe CaveMap do
     end
 
     context "when trying the next larger example" do
-      subject { described_class.from_file("spec/test_input_larger.txt") }
+      let(:connections) { described_class.build_connections("spec/test_input_larger.txt") }
+      subject { described_class.new(connections) }
 
-      it "gets the count of paths to answer part1" do
-        asdf = subject.build_paths
-        require "pry"; binding.pry
+      it "gets expected paths" do
+        expect(subject.build_paths).to match_array([
+          ["start", "HN", "dc", "HN", "end"],      # got it
+          ["start", "HN", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "HN", "dc", "end"],      # got it
+          ["start", "HN", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "HN", "end"],      # got it
+          ["start", "HN", "kj", "HN", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "HN", "kj", "HN", "dc", "end"],      # got it
+          ["start", "HN", "kj", "HN", "end"],      # got it
+          ["start", "HN", "kj", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "HN", "kj", "dc", "end"],      # got it
+          ["start", "dc", "HN", "end"],      # got it
+          ["start", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "dc", "end"],      # got it
+          ["start", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+          ["start", "kj", "HN", "dc", "HN", "end"],      # got it
+          ["start", "kj", "HN", "dc", "end"],      # got it
+          ["start", "kj", "HN", "end"],      # got it
+          ["start", "kj", "dc", "HN", "end"],
+          ["start", "kj", "dc", "end"],
+        ])
+      end
+
+      xit "gets the count of paths to answer part1" do
         expect(subject.part1).to eq(19)
       end
     end
