@@ -72,7 +72,7 @@ describe CaveMap do
       end
     end
 
-    context "when running with a larger example" do
+    context "when running with a slightly larger example" do
       let(:paths_hash) {
         {
         "start" => ["A", "b"],
@@ -99,6 +99,47 @@ describe CaveMap do
         ])
       end
     end
+
+    context "when running with an even larger example" do
+      let(:paths_hash) {
+				{
+          # "dc" => ["HN", "LN", "kj", "end"],
+					"dc" => ["end", "HN", "LN", "kj"],
+					"start" => ["HN", "kj", "dc"],
+					# "HN" => ["dc", "kj", "end"],
+					"HN" => ["dc", "end", "kj"],
+					"LN" => ["dc"],
+					"kj" => ["sa", "HN", "dc"],
+					"sa" => ["kj"]
+				}
+      }
+      it "constructs each possible path" do
+        # asdf = subject.build_paths
+				# require "pry"; binding.pry
+        # expect(asdf.size).to eq(19)
+        expect(subject.build_paths).to match_array([
+					["start", "HN", "dc", "HN", "end"],      # got it
+					["start", "HN", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+					["start", "HN", "dc", "end"],      # got it
+					["start", "HN", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+					["start", "HN", "end"],      # got it
+					["start", "HN", "kj", "HN", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+					["start", "HN", "kj", "HN", "dc", "end"],      # got it
+					["start", "HN", "kj", "HN", "end"],      # got it
+					["start", "HN", "kj", "dc", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+					["start", "HN", "kj", "dc", "end"],      # got it
+					["start", "dc", "HN", "end"],      # got it
+					["start", "dc", "HN", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+					["start", "dc", "end"],      # got it
+					["start", "dc", "kj", "HN", "end"],           ### NEED TO GET BACK TO HN AT THE END
+					["start", "kj", "HN", "dc", "HN", "end"],      # got it
+					["start", "kj", "HN", "dc", "end"],      # got it
+					["start", "kj", "HN", "end"],      # got it
+					["start", "kj", "dc", "HN", "end"],
+					["start", "kj", "dc", "end"],
+				])
+      end
+    end
   end
 
   context "#part1" do
@@ -112,6 +153,8 @@ describe CaveMap do
       subject { described_class.from_file("spec/test_input_larger.txt") }
 
       it "gets the count of paths to answer part1" do
+        asdf = subject.build_paths
+        require "pry"; binding.pry
         expect(subject.part1).to eq(19)
       end
     end
