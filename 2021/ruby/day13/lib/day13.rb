@@ -14,6 +14,22 @@ class WrappingPaper
     new(dot_details, fold_instructions)
   end
 
+  def height
+    @dot_details.map { |(_, row)| row }.max + 1
+  end
+
+  def width
+    @dot_details.map { |(column, _)| column }.max + 1
+  end
+
+  def dot_count
+    @dot_details.size
+  end
+
+  def vertical_fold(fold_row)
+    6
+  end
+
   def part1
   end
 
