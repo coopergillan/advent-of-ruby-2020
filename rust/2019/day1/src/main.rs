@@ -67,7 +67,10 @@ fn part1(file_path: &str) -> u64 {
 }
 
 fn main() {
-    println!("Hello, world!");
+    println!("Hello, world! Let's solve part 1");
+    let input_file = "input.txt";
+    let part1_answer = part1(input_file);
+    println!("Part 1 answer: {}", part1_answer);
 }
 
 #[cfg(test)]
