@@ -2,8 +2,9 @@
 
 A place for any and all Advent of Code problems and solutions.
 
-At the top level, a directory is present for each year. Within each year, if necessary, a
-directory will be present for each programming language used.
+At the top level, a directory is present for each language. Within each language,
+a directory will be present for each year attempted, along with a README for
+getting started on solving problems.
 
 Problems taken from https://adventofcode.com/
 
