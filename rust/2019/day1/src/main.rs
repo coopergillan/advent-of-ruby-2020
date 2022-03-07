@@ -4,7 +4,12 @@ use std::fs;
 struct Module { mass: u64 }
 
 impl Module {
-    fn calculate_fuel(&self) -> u64 {
+    fn calculate_fuel_part1(&self) -> u64 {
+        let x: f64 = self.mass as f64 / 3.0;
+        x.floor() as u64 - 2
+    }
+
+    fn calculate_fuel_part2(&self) -> u64 {
         let x: f64 = self.mass as f64 / 3.0;
         x.floor() as u64 - 2
     }
@@ -33,7 +38,7 @@ fn part1(file_path: &str) -> u64 {
     let input_masses = read_input(file_path);
     let modules = collect_modules(input_masses);
 
-    modules.iter().map(|module| module.calculate_fuel()).sum()
+    modules.iter().map(|module| module.calculate_fuel_part1()).sum()
 }
 
 fn main() {
@@ -48,11 +53,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_calculate_fuel() {
-        assert_eq!(Module { mass: 12 }.calculate_fuel(), 2);
-        assert_eq!(Module { mass: 14 }.calculate_fuel(), 2);
-        assert_eq!(Module { mass: 1969 }.calculate_fuel(), 654);
-        assert_eq!(Module { mass: 100756 }.calculate_fuel(), 33583);
+    fn test_calculate_fuel_part1() {
+        assert_eq!(Module { mass: 12 }.calculate_fuel_part1(), 2);
+        assert_eq!(Module { mass: 14 }.calculate_fuel_part1(), 2);
+        assert_eq!(Module { mass: 1969 }.calculate_fuel_part1(), 654);
+        assert_eq!(Module { mass: 100756 }.calculate_fuel_part1(), 33583);
+    }
+
+    #[test]
+    fn test_calculate_fuel_part2() {
+        assert_eq!(Module { mass: 12 }.calculate_fuel_part2(), 2);
+        assert_eq!(Module { mass: 14 }.calculate_fuel_part2(), 2);
+        assert_eq!(Module { mass: 1969 }.calculate_fuel_part2(), 966);
+        // assert_eq!(Module { mass: 100756 }.calculate_fuel_part2(), 50346);
     }
 
     #[test]
