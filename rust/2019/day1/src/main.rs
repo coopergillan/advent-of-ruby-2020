@@ -1,5 +1,6 @@
 use std::fs;
 
+#[derive(Debug, PartialEq)]
 struct Module {
     mass: u64,
 }
@@ -41,6 +42,30 @@ fn read_input(file_path: &str) -> Vec<u64> {
     new_vec
 }
 
+// TODO: ditch these function once all is working as desired
+fn sum_input(file_path: &str) -> u64 {
+    read_input(file_path).iter().sum()
+}
+
+fn collect_modules(input_masses: Vec<u64>) -> Vec<Module> {
+    let mut modules = vec![];
+    for mass in input_masses.iter() {
+        modules.push(Module { mass: *mass })
+    }
+    modules
+}
+
+fn part1(file_path: &str) -> u64 {
+    let input_masses = read_input(file_path);
+    let modules = collect_modules(input_masses);
+
+    let mut fuel_calculations = vec![];
+    for module in modules {
+        fuel_calculations.push(module.calculate_fuel());
+    }
+    fuel_calculations.iter().sum()
+}
+
 fn main() {
     println!("Hello, world!");
 }
@@ -60,5 +85,28 @@ mod tests {
     #[test]
     fn test_read_input() {
         assert_eq!(read_input("test_input.txt"), vec![12, 14, 1969, 100756])
+    }
+
+    #[test]
+    fn test_collect_modules() {
+        let input_masses = read_input("test_input.txt");
+        assert_eq!(collect_modules(input_masses), vec![
+            Module { mass: 12 },
+            Module { mass: 14 },
+            Module { mass: 1969 },
+            Module { mass: 100756 },
+        ])
+    }
+
+    #[test]
+    fn test_part1() {
+        let input_file = "test_input.txt";
+        assert_eq!(part1(input_file), 34241);
+    }
+
+    #[test]
+    // TODO: delete this test once it is all working =)
+    fn test_sum_input() {
+        assert_eq!(sum_input("test_input.txt"), 102751)
     }
 }
