@@ -1,6 +1,6 @@
 # Advent of Code 2020 Day 2 part one
 require "spec"
-require "../../day_2"
+require "../lib/day_2"
 
 describe Day2 do
   context "InputReader" do
@@ -48,7 +48,8 @@ describe Day2 do
 
       describe "#check_input" do
         it "checks input file and counts valid passwords" do
-          input_file = Path.new(Dir.current, "spec", "day_2", "spec_input.txt")
+          input_file = Path.new(Dir.current, "spec", "spec_input.txt")
+          puts "Processing input_file: #{input_file}"
           checker = Day2::Part1::Checker.new(input_file)
 
           checker.check_input
@@ -82,7 +83,7 @@ describe Day2 do
     describe "Checker" do
       describe "#check_input" do
         it "checks input file and counts valid passwords per part 2 rules" do
-          input_file = Path.new(Dir.current, "spec", "day_2", "spec_input.txt")
+          input_file = Path.new(Dir.current, "spec", "spec_input.txt")
           checker = Day2::Part2::Checker.new(input_file)
 
           checker.check_input

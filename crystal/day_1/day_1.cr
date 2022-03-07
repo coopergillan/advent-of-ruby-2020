@@ -3,7 +3,7 @@ require "dir"
 require "file"
 require "path"
 
-FILE_PATH = Path.new(Dir.current, "day_1", "source_data.txt")
+FILE_PATH = Path.new(Dir.current, "source_data.txt")
 
 def store_source(filename)
   source_numbers = [] of Int32

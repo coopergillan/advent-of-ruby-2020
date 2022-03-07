@@ -3,7 +3,7 @@ require "dir"
 require "file"
 require "path"
 
-FILE_PATH = Path.new(Dir.current, "day_2", "source_data.txt")
+FILE_PATH = Path.new(Dir.current, "source_data.txt")
 
 module Day2
   class InputReader
