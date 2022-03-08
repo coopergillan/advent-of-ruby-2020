@@ -2,16 +2,16 @@ use std::fs;
 
 #[derive(Debug, PartialEq)]
 struct Module {
-    mass: u64,
+    mass: i64,
 }
 
 impl Module {
-    fn calculate_fuel_part1(&self) -> u64 {
+    fn calculate_fuel_part1(&self) -> i64 {
         calculate_fuel(self.mass)
     }
 
-    fn calculate_fuel_part2(&self) -> u64 {
-        let mut total_fuel: u64 = 0;
+    fn calculate_fuel_part2(&self) -> i64 {
+        let mut total_fuel: i64 = 0;
         let mut mass = self.mass;
 
         loop {
@@ -26,39 +26,35 @@ impl Module {
     }
 }
 
-fn calculate_fuel(mass: u64) -> u64 {
-    let x: f64 = mass as f64 / 3.0;
-
-    let floored = x.floor() as i64;
-
-    // TODO: add a match statement here for cleaner logic? Not able to get something right now.
-    let fuel = floored - 2;
+fn calculate_fuel(mass: i64) -> i64 {
+    // TODO: add a match statement or `if let` here for cleaner logic? Not able to get something right now.
+    let mut fuel = (mass / 3) - 2;
     if fuel <= 0 {
         fuel = 0;
     }
-    fuel as u64
+    fuel
 }
 
-fn read_input(file_path: &str) -> Vec<u64> {
+fn read_input(file_path: &str) -> Vec<i64> {
     let raw_contents = fs::read_to_string(file_path).expect("Unable to read file");
     let contents = raw_contents.lines();
     contents
         .map(|line| {
             line.to_string()
-                .parse::<u64>()
+                .parse::<i64>()
                 .expect("Unable to parse string to integer")
         })
         .collect()
 }
 
-fn collect_modules(input_masses: Vec<u64>) -> Vec<Module> {
+fn collect_modules(input_masses: Vec<i64>) -> Vec<Module> {
     input_masses
         .iter()
         .map(|mass| Module { mass: *mass })
         .collect()
 }
 
-fn part1(file_path: &str) -> u64 {
+fn part1(file_path: &str) -> i64 {
     let input_masses = read_input(file_path);
     let modules = collect_modules(input_masses);
 
@@ -68,7 +64,7 @@ fn part1(file_path: &str) -> u64 {
         .sum()
 }
 
-fn part2(file_path: &str) -> u64 {
+fn part2(file_path: &str) -> i64 {
     let input_masses = read_input(file_path);
     let modules = collect_modules(input_masses);
 
