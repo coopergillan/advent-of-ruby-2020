@@ -1,7 +1,9 @@
 use std::fs;
 
 #[derive(Debug, PartialEq)]
-struct Module { mass: u64 }
+struct Module {
+    mass: u64,
+}
 
 impl Module {
     fn calculate_fuel_part1(&self) -> u64 {
@@ -15,11 +17,8 @@ impl Module {
         loop {
             let next_fuel = calculate_fuel(mass);
             total_fuel += next_fuel;
-            println!("Currently at mass: {:?} - next_fuel: {:?} - total_fuel: {:?}",
-                mass, next_fuel, total_fuel);
-
             if next_fuel == 0 {
-                return total_fuel
+                return total_fuel;
             } else {
                 mass = next_fuel
             }
@@ -29,14 +28,13 @@ impl Module {
 
 fn calculate_fuel(mass: u64) -> u64 {
     let x: f64 = mass as f64 / 3.0;
-    println!("x: {:?}", x);
 
     let floored = x.floor() as i64;
-    println!("floored: {:?}", floored);
+
+    // TODO: add a match statement here for cleaner logic? Not able to get something right now.
     let fuel = floored - 2;
-    println!("fuel: {:?}", fuel);
     if fuel <= 0 {
-        return 0 as u64
+        fuel = 0;
     }
     fuel as u64
 }
@@ -64,18 +62,23 @@ fn part1(file_path: &str) -> u64 {
     let input_masses = read_input(file_path);
     let modules = collect_modules(input_masses);
 
-    modules.iter().map(|module| module.calculate_fuel_part1()).sum()
+    modules
+        .iter()
+        .map(|module| module.calculate_fuel_part1())
+        .sum()
 }
 
 fn part2(file_path: &str) -> u64 {
     let input_masses = read_input(file_path);
     let modules = collect_modules(input_masses);
 
-    modules.iter().map(|module| module.calculate_fuel_part2()).sum()
+    modules
+        .iter()
+        .map(|module| module.calculate_fuel_part2())
+        .sum()
 }
 
 fn main() {
-    println!("Hello, world! Let's solve part 1");
     let input_file = "input.txt";
 
     println!("Part 1 answer: {}", part1(input_file));
@@ -95,11 +98,17 @@ mod tests {
     }
 
     #[test]
-    fn test_calculate_fuel_part1() {
-        assert_eq!(Module { mass: 12 }.calculate_fuel_part1(), 2);
-        assert_eq!(Module { mass: 14 }.calculate_fuel_part1(), 2);
-        assert_eq!(Module { mass: 1969 }.calculate_fuel_part1(), 654);
-        assert_eq!(Module { mass: 100756 }.calculate_fuel_part1(), 33583);
+    fn test_calculate_fuel_part1_is_same_as_calculate_fuel() {
+        let test_masses = vec![12, 14, 1969, 100756];
+        test_masses
+            .iter()
+            .map(|mass| {
+                assert_eq!(
+                    Module { mass: *mass }.calculate_fuel_part1(),
+                    calculate_fuel(*mass)
+                )
+            })
+            .collect()
     }
 
     #[test]
