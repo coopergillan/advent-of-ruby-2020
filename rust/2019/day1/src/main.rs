@@ -5,14 +5,40 @@ struct Module { mass: u64 }
 
 impl Module {
     fn calculate_fuel_part1(&self) -> u64 {
-        let x: f64 = self.mass as f64 / 3.0;
-        x.floor() as u64 - 2
+        calculate_fuel(self.mass)
     }
 
     fn calculate_fuel_part2(&self) -> u64 {
-        let x: f64 = self.mass as f64 / 3.0;
-        x.floor() as u64 - 2
+        let mut total_fuel: u64 = 0;
+        let mut mass = self.mass;
+
+        loop {
+            let next_fuel = calculate_fuel(mass);
+            total_fuel += next_fuel;
+            println!("Currently at mass: {:?} - next_fuel: {:?} - total_fuel: {:?}",
+                mass, next_fuel, total_fuel);
+
+            if next_fuel == 0 {
+                return total_fuel
+            } else {
+                mass = next_fuel
+            }
+        }
     }
+}
+
+fn calculate_fuel(mass: u64) -> u64 {
+    let x: f64 = mass as f64 / 3.0;
+    println!("x: {:?}", x);
+
+    let floored = x.floor() as i64;
+    println!("floored: {:?}", floored);
+    let fuel = floored - 2;
+    println!("fuel: {:?}", fuel);
+    if fuel <= 0 {
+        return 0 as u64
+    }
+    fuel as u64
 }
 
 fn read_input(file_path: &str) -> Vec<u64> {
@@ -41,16 +67,32 @@ fn part1(file_path: &str) -> u64 {
     modules.iter().map(|module| module.calculate_fuel_part1()).sum()
 }
 
+fn part2(file_path: &str) -> u64 {
+    let input_masses = read_input(file_path);
+    let modules = collect_modules(input_masses);
+
+    modules.iter().map(|module| module.calculate_fuel_part2()).sum()
+}
+
 fn main() {
     println!("Hello, world! Let's solve part 1");
     let input_file = "input.txt";
 
     println!("Part 1 answer: {}", part1(input_file));
+    println!("Part 2 answer: {}", part2(input_file));
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_calculate_fuel() {
+        assert_eq!(calculate_fuel(12), 2);
+        assert_eq!(calculate_fuel(14), 2);
+        assert_eq!(calculate_fuel(1969), 654);
+        assert_eq!(calculate_fuel(100756), 33583);
+    }
 
     #[test]
     fn test_calculate_fuel_part1() {
@@ -65,7 +107,7 @@ mod tests {
         assert_eq!(Module { mass: 12 }.calculate_fuel_part2(), 2);
         assert_eq!(Module { mass: 14 }.calculate_fuel_part2(), 2);
         assert_eq!(Module { mass: 1969 }.calculate_fuel_part2(), 966);
-        // assert_eq!(Module { mass: 100756 }.calculate_fuel_part2(), 50346);
+        assert_eq!(Module { mass: 100756 }.calculate_fuel_part2(), 50346);
     }
 
     #[test]
@@ -91,5 +133,11 @@ mod tests {
     fn test_part1() {
         let input_file = "test_input.txt";
         assert_eq!(part1(input_file), 34241);
+    }
+
+    #[test]
+    fn test_part2() {
+        let input_file = "test_input.txt";
+        assert_eq!(part2(input_file), 51316);
     }
 }
