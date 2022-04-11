@@ -67,7 +67,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_process_intcode_multiply_input() {
         let intcode1 = Intcode {
             op_code: 2,
