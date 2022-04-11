@@ -25,7 +25,7 @@ impl Intcode {
                 value_and_location.push(self.pos_to_write)
             }
         }
-        return value_and_location
+        value_and_location
     }
 }
 
@@ -57,22 +57,24 @@ mod tests {
 
     #[test]
     fn test_process_intcode_sum_input() {
-        let intcode1 = Intcode{ op_code: 1, operand_positions: vec![10, 20], pos_to_write: 30 };
+        let intcode1 = Intcode {
+            op_code: 1,
+            operand_positions: vec![10, 20],
+            pos_to_write: 30,
+        };
 
-        assert_eq!(
-            intcode1.process_input(),
-            vec![30, 30],
-        );
+        assert_eq!(intcode1.process_input(), vec![30, 30],);
     }
 
     #[test]
     #[ignore]
     fn test_process_intcode_multiply_input() {
-        let intcode1 = Intcode{ op_code: 2, operand_positions: vec![3, 11], pos_to_write: 0 };
+        let intcode1 = Intcode {
+            op_code: 2,
+            operand_positions: vec![3, 11],
+            pos_to_write: 0,
+        };
 
-        assert_eq!(
-            intcode1.process_input(),
-            vec![30, 30],
-        );
+        assert_eq!(intcode1.process_input(), vec![30, 30],);
     }
 }
