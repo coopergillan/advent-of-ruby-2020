@@ -42,7 +42,11 @@ impl Input {
     fn new(input_file_name: &str, noun: usize, verb: usize) -> Self {
         let input_file = input_file_name.to_string();
 
-        Input { input_file, noun, verb }
+        Input {
+            input_file,
+            noun,
+            verb,
+        }
     }
 
     fn prepare(&self) -> Vec<usize> {
@@ -81,14 +85,20 @@ fn main() {
                 1 => value1 + value2,
                 2 => value1 * value2,
                 99 => break,
-                _ => { println!("Couldn't find opcode: {:?}\n", opcode); 0 },
+                _ => {
+                    println!("Couldn't find opcode: {:?}\n", opcode);
+                    0
+                }
             };
             if value > 0 {
                 full_input[param3] = value;
             };
         }
     }
-    println!("Finished iterating - zeroth element of full_input: {:?}", full_input[0]);
+    println!(
+        "Finished iterating - zeroth element of full_input: {:?}",
+        full_input[0]
+    );
 }
 
 #[cfg(test)]
