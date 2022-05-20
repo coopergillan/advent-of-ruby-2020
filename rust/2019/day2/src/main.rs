@@ -5,6 +5,7 @@ use std::fs;
 const INSTRUCTION_SIZE: usize = 4;
 const PART1_NOUN: usize = 12;
 const PART1_VERB: usize = 2;
+const PART2_DESIRED_OUTPUT: usize = 19690720;
 
 fn read_input_file(file_path: &str) -> Vec<usize> {
     fs::read_to_string(file_path)
@@ -20,8 +21,14 @@ struct Input {
 }
 
 impl Input {
+    /// Read file contents in and return populated struct
+    fn new(input_file_name: &str) -> Self {
+        let details = read_input_file(input_file_name);
+        Input { details }
+    }
+
     /// Read file contents in, then update noun and verb
-    fn new(input_file_name: &str, noun: usize, verb: usize) -> Self {
+    fn new_with_adjustments(input_file_name: &str, noun: usize, verb: usize) -> Self {
         let mut details = read_input_file(input_file_name);
         details[1] = noun;
         details[2] = verb;
@@ -70,7 +77,7 @@ impl Instruction {
 }
 
 fn part1(input_file_name: &str, noun: usize, verb: usize) -> usize {
-    let mut input = Input::new(input_file_name, noun, verb);
+    let mut input = Input::new_with_adjustments(input_file_name, noun, verb);
 
     // Iterate through the values four at a time using indexes
     for intcode_raw in (0..input.size()).step_by(INSTRUCTION_SIZE) {
@@ -87,9 +94,34 @@ fn part1(input_file_name: &str, noun: usize, verb: usize) -> usize {
     input.details[0]
 }
 
+fn part2(input_file_name: &str, desired_output: usize) -> usize {
+    let input = Input::new(input_file_name);
+
+    for noun in 0..=99 {
+        if noun >= input.size() {
+            continue
+        }
+        for verb in 0..=99 {
+            if verb >= input.size() {
+                continue
+            }
+            println!("Running part1 for noun: {} - verb: {}", noun, verb);
+            let part1 = part1(input_file_name, noun, verb);
+            if part1 == desired_output {
+                println!("HOLY COW made it to the desired output. part1: {} - desired_output: {}", part1, desired_output);
+                return 100 * noun + verb;
+            }
+        }
+    }
+    0
+}
+
 fn main() {
     let part1 = part1("input.txt", PART1_NOUN, PART1_VERB);
     println!("Part one answer: {}", part1);
+
+    let part2 = part2("input.txt", PART2_DESIRED_OUTPUT);
+    println!("Part two answer: {}", part2);
 }
 
 #[cfg(test)]
@@ -101,7 +133,7 @@ mod tests {
     const VERB: usize = 3;
 
     fn input_for_testing() -> Input {
-        Input::new(INPUT_FILE_NAME, NOUN, VERB)
+        Input::new_with_adjustments(INPUT_FILE_NAME, NOUN, VERB)
     }
 
     #[test]
@@ -141,5 +173,16 @@ mod tests {
         // The actual puzzle
         let test_part1 = part1("input.txt", 12, 2);
         assert_eq!(test_part1, 2890696);
+    }
+
+    #[test]
+    fn test_part2() {
+        // Take the values from part 1
+        let test_part2 = part2(INPUT_FILE_NAME, 2650);
+        assert_eq!(test_part2, 311); // Noun 3 with verb 11 found first
+
+        // Now use the full file with desired output
+        // let full_part2 = part2("input.txt", PART2_DESIRED_OUTPUT);
+        // assert_eq!(full_part2, 8226);
     }
 }
