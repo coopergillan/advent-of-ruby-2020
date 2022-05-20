@@ -50,13 +50,15 @@ fn read_input(file_path: &str) -> Vec<usize> {
 }
 
 fn main() {
-    let code_sequence = read_input("test_input.txt");
+    // let code_sequence = read_input("test_input.txt");
+    let code_sequence = read_input("input.txt");
     println!("code_sequence: {:?}", code_sequence);
     let mut full_input = code_sequence.clone();
-    // let mut full_input = IntcodeInput { code_sequence };
+    full_input[1] = 12;
+    full_input[2] = 2;
 
     let input_size = full_input.len();
-    assert_eq!(input_size, 12);
+    // assert_eq!(input_size, 12);
 
     // Iterate through the values four at a time using indexes
     for intcode_raw in (0..input_size).step_by(4) {
@@ -108,8 +110,8 @@ fn main() {
     }
     println!("Finished iterating - full_input: {:?}", full_input);
 
-    assert_eq!(full_input[3], 70);
-    assert_eq!(full_input[0], 3500);
+    // assert_eq!(full_input[3], 70);
+    // assert_eq!(full_input[0], 3500);
         // if intcode_raw[0] == 1 {
         //     let pos1 = int_code[1];
         //     let pos2 = int_code[2];
