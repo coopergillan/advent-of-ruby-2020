@@ -2,15 +2,7 @@
 
 use std::fs;
 
-// #[derive(Debug, PartialEq)]
-// struct IntcodeReader {
-//     raw_input: vec<usize>,
-// }
-
-#[derive(Debug)]
-struct IntcodeInput {
-    code_sequence: Vec<usize>,
-}
+const INSTRUCTION_SIZE: usize = 4;
 
 #[derive(Debug, PartialEq)]
 struct Intcode {
@@ -61,7 +53,7 @@ fn main() {
     // assert_eq!(input_size, 12);
 
     // Iterate through the values four at a time using indexes
-    for intcode_raw in (0..input_size).step_by(4) {
+    for intcode_raw in (0..input_size).step_by(INSTRUCTION_SIZE) {
         println!("Working with full_input: {:?}", full_input);
 
         let opcode = code_sequence[intcode_raw];
@@ -109,37 +101,6 @@ fn main() {
         };
     }
     println!("Finished iterating - full_input: {:?}", full_input);
-
-    // assert_eq!(full_input[3], 70);
-    // assert_eq!(full_input[0], 3500);
-        // if intcode_raw[0] == 1 {
-        //     let pos1 = int_code[1];
-        //     let pos2 = int_code[2];
-        //
-        //     // Add the values together from those two positions
-        //     let value = full_input[*pos1] + full_input[*pos2];
-        //
-        //     // Now write to the position specified
-        //     full_input
-        // match intcode_raw[0] {
-        // }
-        // }
-        // let intcode_raw = four_step.expect("Unable to get values in slice");
-        // println!("intcode_raw: {:?}" intcode_raw);
-
-        // let intcode = Intcode {
-        //     op_code: intcode_raw[0],
-        //     operand_positions: vec![intcode_raw[1],intcode_raw[2]],
-        //     pos_to_write: intcode_raw[3],
-        // };
-        // intcode.process_input(&mut full_input.code_sequence);
-    // for intcode_raw in full_input.code_sequence.chunks(4) {
-        // let intcode = Intcode {
-        //     op_code: intcode_raw[0],
-        //     operand_positions: vec![intcode_raw[1],intcode_raw[2]],
-        //     pos_to_write: intcode_raw[3],
-        // };
-        // intcode.process_input(&mut full_input.code_sequence);
 }
 
 #[cfg(test)]
