@@ -67,7 +67,7 @@ impl Instruction {
     }
 }
 
-fn main() {
+fn part1() -> usize {
     let noun = 12;
     let verb = 2;
     let mut input = Input::new("input.txt", noun, verb);
@@ -84,10 +84,12 @@ fn main() {
             }
         }
     }
-    println!(
-        "Finished iterating - zeroth element of full_input: {:?}",
-        input.details[0]
-    );
+    input.details[0]
+}
+
+fn main() {
+    let part1 = part1();
+    println!("Part one answer: {}", part1);
 }
 
 #[cfg(test)]
