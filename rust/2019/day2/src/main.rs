@@ -3,6 +3,8 @@
 use std::fs;
 
 const INSTRUCTION_SIZE: usize = 4;
+const PART1_NOUN: usize = 12;
+const PART1_VERB: usize = 2;
 
 fn read_input_file(file_path: &str) -> Vec<usize> {
     fs::read_to_string(file_path)
@@ -67,10 +69,8 @@ impl Instruction {
     }
 }
 
-fn part1() -> usize {
-    let noun = 12;
-    let verb = 2;
-    let mut input = Input::new("input.txt", noun, verb);
+fn part1(input_file_name: &str, noun: usize, verb: usize) -> usize {
+    let mut input = Input::new(input_file_name, noun, verb);
 
     // Iterate through the values four at a time using indexes
     for intcode_raw in (0..input.size()).step_by(INSTRUCTION_SIZE) {
@@ -88,7 +88,7 @@ fn part1() -> usize {
 }
 
 fn main() {
-    let part1 = part1();
+    let part1 = part1("input.txt", PART1_NOUN, PART1_VERB);
     println!("Part one answer: {}", part1);
 }
 
@@ -131,5 +131,15 @@ mod tests {
             input.details,
             vec![1, 11, 3, 53, 2, 3, 11, 0, 99, 30, 40, 50],
         );
+    }
+
+    #[test]
+    fn test_part1() {
+        let test_part1 = part1(INPUT_FILE_NAME, NOUN, VERB);
+        assert_eq!(test_part1, 2650);
+
+        // The actual puzzle
+        let test_part1 = part1("input.txt", 12, 2);
+        assert_eq!(test_part1, 2890696);
     }
 }
