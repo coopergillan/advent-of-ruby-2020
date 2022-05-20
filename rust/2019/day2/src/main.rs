@@ -63,70 +63,32 @@ fn read_input_file(file_path: &str) -> Vec<usize> {
 }
 
 fn main() {
-    // let code_sequence = read_input("test_input.txt");
-    // let code_sequence = read_input_file("input.txt");
-    // println!("code_sequence: {:?}", code_sequence);
-    // let mut full_input = code_sequence.clone();
-    // full_input[1] = 12;
-    // full_input[2] = 2;
-
     let noun = 12;
     let verb = 2;
     let raw_input = Input::new("input.txt", noun, verb);
-    let mut full_input = raw_input.prepare();
-
-    let input_size = full_input.len();
-    // assert_eq!(input_size, 12);
+    let mut full_input = raw_input.prepare(); // code_sequence.clone();
 
     // Iterate through the values four at a time using indexes
+    let input_size = full_input.len();
     for intcode_raw in (0..input_size).step_by(INSTRUCTION_SIZE) {
-        println!("Working with full_input: {:?}", full_input);
+        let instruction_end = intcode_raw + INSTRUCTION_SIZE;
 
-        let opcode = full_input[intcode_raw];
-        println!("opcode: {:?}", opcode);
+        if let [opcode, param1, param2, param3] = full_input[intcode_raw..instruction_end] {
+            let value1 = full_input[param1];
+            let value2 = full_input[param2];
 
-        let first_input = full_input[intcode_raw + 1];
-        println!("first_input: {:?}", first_input);
-
-        let second_input = full_input[intcode_raw + 2];
-        println!("second_input: {:?}", second_input);
-
-        let write_position = full_input[intcode_raw + 3];
-        println!("write_position: {:?}", write_position);
-
-        match opcode {
-            1 => {
-                println!("Got opcode 1 so adding");
-                let value = full_input[first_input] + full_input[second_input];
-                println!("value from adding: {:?}", value);
-
-                // .....okay Rust, can we do this???? Write value to the position
-                full_input[write_position] = value;
-                println!("Wrote value {:?} to write_postion {:?}\n", value, write_position);
-            },
-            2 => {
-                println!("Got opcode 1 so adding");
-                let value1 = full_input[first_input];
-                println!("value1: {:?}", value1);
-
-                let value2 = full_input[second_input];
-                println!("value2: {:?}", value2);
-
-                let final_value = value1 * value2;
-                println!("final_value from multipying: {:?}", final_value);
-
-                // .....okay Rust, can we do this???? Write value to the position
-                full_input[write_position] = final_value;
-                println!("Wrote final_value {:?} to write_postion {:?}\n", final_value, write_position);
-            },
-            99 => {
-                println!("Got 99 - break");
-                break
-            },
-            _ => println!("Couldn't find opcode\n"),
-        };
+            let value = match opcode {
+                1 => value1 + value2,
+                2 => value1 * value2,
+                99 => break,
+                _ => { println!("Couldn't find opcode: {:?}\n", opcode); 0 },
+            };
+            if value > 0 {
+                full_input[param3] = value;
+            };
+        }
     }
-    println!("Finished iterating - full_input: {:?}", full_input);
+    println!("Finished iterating - zeroth element of full_input: {:?}", full_input[0]);
 }
 
 #[cfg(test)]
