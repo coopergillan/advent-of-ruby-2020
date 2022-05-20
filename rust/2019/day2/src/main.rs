@@ -1,8 +1,13 @@
 // Day 2 - 1202 program alert
 
+use std::cmp::min;
 use std::fs;
 
+const INPUT_FILE: &str = "input.txt";
 const INSTRUCTION_SIZE: usize = 4;
+const PART1_NOUN: usize = 12;
+const PART1_VERB: usize = 2;
+const PART2_DESIRED_OUTPUT: usize = 19690720;
 
 fn read_input_file(file_path: &str) -> Vec<usize> {
     fs::read_to_string(file_path)
@@ -18,8 +23,14 @@ struct Input {
 }
 
 impl Input {
+    /// Read file contents in and return populated struct
+    fn new(input_file_name: &str) -> Self {
+        let details = read_input_file(input_file_name);
+        Input { details }
+    }
+
     /// Read file contents in, then update noun and verb
-    fn new(input_file_name: &str, noun: usize, verb: usize) -> Self {
+    fn new_with_adjustments(input_file_name: &str, noun: usize, verb: usize) -> Self {
         let mut details = read_input_file(input_file_name);
         details[1] = noun;
         details[2] = verb;
@@ -67,10 +78,8 @@ impl Instruction {
     }
 }
 
-fn part1() -> usize {
-    let noun = 12;
-    let verb = 2;
-    let mut input = Input::new("input.txt", noun, verb);
+fn part1(input_file_name: &str, noun: usize, verb: usize) -> usize {
+    let mut input = Input::new_with_adjustments(input_file_name, noun, verb);
 
     // Iterate through the values four at a time using indexes
     for intcode_raw in (0..input.size()).step_by(INSTRUCTION_SIZE) {
@@ -87,9 +96,27 @@ fn part1() -> usize {
     input.details[0]
 }
 
+fn part2(input_file_name: &str, desired_output: usize) -> Option<usize> {
+    let input = Input::new(input_file_name);
+    let top_of_range = min(input.size(), 99);
+
+    for noun in 0..top_of_range {
+        for verb in 0..top_of_range {
+            let part1 = part1(input_file_name, noun, verb);
+            if part1 == desired_output {
+                return Some(100 * noun + verb);
+            }
+        }
+    }
+    None
+}
+
 fn main() {
-    let part1 = part1();
+    let part1 = part1(INPUT_FILE, PART1_NOUN, PART1_VERB);
     println!("Part one answer: {}", part1);
+
+    let part2 = part2(INPUT_FILE, PART2_DESIRED_OUTPUT);
+    println!("Part two answer: {}", part2.unwrap());
 }
 
 #[cfg(test)]
@@ -101,7 +128,7 @@ mod tests {
     const VERB: usize = 3;
 
     fn input_for_testing() -> Input {
-        Input::new(INPUT_FILE_NAME, NOUN, VERB)
+        Input::new_with_adjustments(INPUT_FILE_NAME, NOUN, VERB)
     }
 
     #[test]
@@ -131,5 +158,20 @@ mod tests {
             input.details,
             vec![1, 11, 3, 53, 2, 3, 11, 0, 99, 30, 40, 50],
         );
+    }
+
+    #[test]
+    fn test_part1() {
+        let test_part1 = part1(INPUT_FILE_NAME, NOUN, VERB);
+        assert_eq!(test_part1, 2650);
+    }
+
+    #[test]
+    fn test_part2() {
+        // Take the values from part 1
+        let test_part2 = part2(INPUT_FILE_NAME, 2650);
+
+        // Noun 3 with verb 11 found first
+        assert_eq!(test_part2, Some(311));
     }
 }
