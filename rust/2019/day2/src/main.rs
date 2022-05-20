@@ -1,7 +1,9 @@
 // Day 2 - 1202 program alert
 
+use std::cmp::min;
 use std::fs;
 
+const INPUT_FILE: &str = "input.txt";
 const INSTRUCTION_SIZE: usize = 4;
 const PART1_NOUN: usize = 12;
 const PART1_VERB: usize = 2;
@@ -94,34 +96,27 @@ fn part1(input_file_name: &str, noun: usize, verb: usize) -> usize {
     input.details[0]
 }
 
-fn part2(input_file_name: &str, desired_output: usize) -> usize {
+fn part2(input_file_name: &str, desired_output: usize) -> Option<usize> {
     let input = Input::new(input_file_name);
+    let top_of_range = min(input.size(), 99);
 
-    for noun in 0..=99 {
-        if noun >= input.size() {
-            continue
-        }
-        for verb in 0..=99 {
-            if verb >= input.size() {
-                continue
-            }
-            println!("Running part1 for noun: {} - verb: {}", noun, verb);
+    for noun in 0..top_of_range {
+        for verb in 0..top_of_range {
             let part1 = part1(input_file_name, noun, verb);
             if part1 == desired_output {
-                println!("HOLY COW made it to the desired output. part1: {} - desired_output: {}", part1, desired_output);
-                return 100 * noun + verb;
+                return Some(100 * noun + verb);
             }
         }
     }
-    0
+    None
 }
 
 fn main() {
-    let part1 = part1("input.txt", PART1_NOUN, PART1_VERB);
+    let part1 = part1(INPUT_FILE, PART1_NOUN, PART1_VERB);
     println!("Part one answer: {}", part1);
 
-    let part2 = part2("input.txt", PART2_DESIRED_OUTPUT);
-    println!("Part two answer: {}", part2);
+    let part2 = part2(INPUT_FILE, PART2_DESIRED_OUTPUT);
+    println!("Part two answer: {}", part2.unwrap());
 }
 
 #[cfg(test)]
@@ -169,20 +164,14 @@ mod tests {
     fn test_part1() {
         let test_part1 = part1(INPUT_FILE_NAME, NOUN, VERB);
         assert_eq!(test_part1, 2650);
-
-        // The actual puzzle
-        let test_part1 = part1("input.txt", 12, 2);
-        assert_eq!(test_part1, 2890696);
     }
 
     #[test]
     fn test_part2() {
         // Take the values from part 1
         let test_part2 = part2(INPUT_FILE_NAME, 2650);
-        assert_eq!(test_part2, 311); // Noun 3 with verb 11 found first
 
-        // Now use the full file with desired output
-        // let full_part2 = part2("input.txt", PART2_DESIRED_OUTPUT);
-        // assert_eq!(full_part2, 8226);
+        // Noun 3 with verb 11 found first
+        assert_eq!(test_part2, Some(311));
     }
 }
