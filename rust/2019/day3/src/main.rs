@@ -130,13 +130,40 @@ mod tests {
         assert_eq!(point2.manhattan_distance(), 684);
     }
 
-    // #[test]
-    // fn test_read_input_file() {
-    //     assert_eq!(
-    //         read_input_file(INPUT_FILE_NAME),
-    //         vec![1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50],
-    //     );
-    // }
+    #[test]
+    fn test_find_overlapping_points() {
+        let wire1 = Wire::new(vec![
+            "R75".to_string(),
+            "D30".to_string(),
+            "R83".to_string(),
+            "U83".to_string(),
+            "L12".to_string(),
+            "D49".to_string(),
+            "R71".to_string(),
+            "U7".to_string(),
+            "L72".to_string(),
+        ]);
+
+        let wire2 = Wire::new(vec![
+            "U62".to_string(),
+            "R66".to_string(),
+            "U55".to_string(),
+            "R34".to_string(),
+            "D71".to_string(),
+            "R55".to_string(),
+            "D58".to_string(),
+            "R83".to_string(),
+        ]);
+
+        wire1.map_path();
+        wire2.map_path();
+
+        let matched = wire1.contains(wire2);
+        assert_eq!(
+            matched,
+            5,
+        );
+    }
 
     #[test]
     #[ignore]
