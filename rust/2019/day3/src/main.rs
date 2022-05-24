@@ -102,6 +102,14 @@ mod tests {
         assert_eq!(wire.visited.len(), 21);
     }
 
+    #[test]
+    fn test_manhattan_distance() {
+        let mut wire = testing_wire();
+        wire.map_path();
+
+        assert_eq!(wire.manhattan_distance(), 14);
+    }
+
     // #[test]
     // fn test_read_input_file() {
     //     assert_eq!(
