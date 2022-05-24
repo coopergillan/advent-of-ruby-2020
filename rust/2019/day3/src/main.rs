@@ -22,15 +22,31 @@ fn main() {
     println!("Part one answer: {}", part1);
 }
 
+#[derive(Clone, Copy)]
+struct Point {
+    x: isize,
+    y: isize,
+}
+
+impl Point {
+    fn new(x: isize, y: isize) -> Self {
+        Point { x, y }
+    }
+
+    fn manhattan_distance(&self) -> isize {
+        self.x.abs() + self.y.abs()
+    }
+}
+
 struct Wire {
     instructions: Vec<String>,
-    current_position: [isize; 2],
-    visited: Vec<[isize; 2]>,
+    current_position: Point,
+    visited: Vec<Point>,
 }
 
 impl Wire {
     fn new(instructions: Vec<String>) -> Self {
-        let current_position = [0, 0];
+        let current_position = Point::new(0, 0);
         let visited = vec![];
         Wire {
             instructions,
@@ -43,28 +59,31 @@ impl Wire {
         for instruction in &self.instructions {
             let mut instruction_chars = instruction.chars();
             let direction = instruction_chars.next();
-            let quantity = instruction_chars.as_str().parse::<isize>().expect("Could not parse integer");
+            let quantity = instruction_chars
+                .as_str()
+                .parse::<isize>()
+                .expect("Could not parse integer");
             println!("Going {:?} numbers {:?}", quantity, direction);
 
             for _ in 0..quantity {
                 match direction {
                     Some('R') => {
-                        self.current_position[0] += 1;
+                        self.current_position.x += 1;
                         self.visited.push(self.current_position);
-                    },
+                    }
                     Some('U') => {
-                        self.current_position[1] += 1;
+                        self.current_position.y += 1;
                         self.visited.push(self.current_position);
                     }
                     Some('L') => {
-                        self.current_position[0] -= 1;
+                        self.current_position.x -= 1;
                         self.visited.push(self.current_position);
                     }
                     Some('D') => {
-                        self.current_position[1] -= 1;
+                        self.current_position.y -= 1;
                         self.visited.push(self.current_position);
                     }
-                    _ => println!("hi"),
+                    _ => println!("Found other direction: {}", direction.unwrap()),
                 }
                 // TODO: figure out how to not duplicate this push
                 // self.visited.push(self.current_position);
@@ -104,10 +123,11 @@ mod tests {
 
     #[test]
     fn test_manhattan_distance() {
-        let mut wire = testing_wire();
-        wire.map_path();
+        let point1 = Point::new(5, 3);
+        assert_eq!(point1.manhattan_distance(), 8);
 
-        assert_eq!(wire.manhattan_distance(), 14);
+        let mut point2 = Point::new(672, -12);
+        assert_eq!(point2.manhattan_distance(), 684);
     }
 
     // #[test]
