@@ -1,6 +1,7 @@
 // Day 3 - crossing wires
 
 use std::fs;
+use std::collections::HashSet;
 
 const INPUT_FILE: &str = "input.txt";
 
@@ -22,7 +23,17 @@ fn main() {
     println!("Part one answer: {}", part1);
 }
 
-#[derive(Clone, Copy)]
+// Find matches for wires that have mapped paths already
+fn find_matches(left_wire: &Wire, right_wire: &Wire) -> Vec<Point> {
+    let left = HashSet::<Point>::from(left_wire.visited);
+    let right = HashSet::<Point>::from(right_wire.visited);
+
+    let intersection = left.intersection(&right);
+    println!("Got intersection: {:?}", intersection);
+    intersection
+}
+
+#[derive(Clone, Copy, Debug)]
 struct Point {
     x: isize,
     y: isize,
@@ -158,7 +169,8 @@ mod tests {
         wire1.map_path();
         wire2.map_path();
 
-        let matched = wire1.contains(wire2);
+        let matched = find_matches(&wire1, &wire2);
+
         assert_eq!(
             matched,
             5,
