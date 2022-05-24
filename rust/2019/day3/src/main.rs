@@ -24,15 +24,51 @@ fn main() {
 
 struct Wire {
     instructions: Vec<String>,
+    current_position: [isize; 2],
     visited: Vec<[isize; 2]>,
 }
 
 impl Wire {
     fn new(instructions: Vec<String>) -> Self {
-        let visited = vec![[0; 2]];
+        let current_position = [0, 0];
+        let visited = vec![];
         Wire {
             instructions,
             visited,
+            current_position,
+        }
+    }
+
+    fn map_path(&mut self) {
+        for instruction in &self.instructions {
+            let mut instruction_chars = instruction.chars();
+            let direction = instruction_chars.next();
+            let quantity = instruction_chars.as_str().parse::<isize>().expect("Could not parse integer");
+            println!("Going {:?} numbers {:?}", quantity, direction);
+
+            for _ in 0..quantity {
+                match direction {
+                    Some('R') => {
+                        self.current_position[0] += 1;
+                        self.visited.push(self.current_position);
+                    },
+                    Some('U') => {
+                        self.current_position[1] += 1;
+                        self.visited.push(self.current_position);
+                    }
+                    Some('L') => {
+                        self.current_position[0] -= 1;
+                        self.visited.push(self.current_position);
+                    }
+                    Some('D') => {
+                        self.current_position[1] -= 1;
+                        self.visited.push(self.current_position);
+                    }
+                    _ => println!("hi"),
+                }
+                // TODO: figure out how to not duplicate this push
+                // self.visited.push(self.current_position);
+            }
         }
     }
 }
@@ -43,18 +79,27 @@ mod tests {
 
     const INPUT_FILE_NAME: &str = "test_input.txt";
 
-    #[test]
-    fn test_wire_path() {
-        let instructions = vec![
+    fn testing_wire() -> Wire {
+        Wire::new(vec![
             "R8".to_string(),
             "U5".to_string(),
             "L5".to_string(),
             "D3".to_string(),
-        ];
+        ])
+    }
 
-        let wire = Wire::new(instructions);
+    #[test]
+    fn test_wire_path() {
+        let wire = testing_wire();
         assert_eq!(wire.instructions[1], "U5");
-        assert_eq!(wire.visited[0], [0, 0]);
+        assert_eq!(wire.visited.len(), 0);
+    }
+
+    #[test]
+    fn test_mapping_path() {
+        let mut wire = testing_wire();
+        wire.map_path();
+        assert_eq!(wire.visited.len(), 21);
     }
 
     // #[test]
