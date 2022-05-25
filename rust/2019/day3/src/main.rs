@@ -1,7 +1,6 @@
 // Day 3 - crossing wires
 
 use std::fs;
-use std::collections::HashSet;
 
 const INPUT_FILE: &str = "input.txt";
 
@@ -24,16 +23,18 @@ fn main() {
 }
 
 // Find matches for wires that have mapped paths already
-fn find_matches(left_wire: &Wire, right_wire: &Wire) -> Vec<Point> {
-    let left = HashSet::<Point>::from(left_wire.visited);
-    let right = HashSet::<Point>::from(right_wire.visited);
-
-    let intersection = left.intersection(&right);
-    println!("Got intersection: {:?}", intersection);
-    intersection
+fn find_matches(left_wire: Wire, right_wire: Wire) -> Vec<Point> {
+    let mut matches = vec![];
+    for point in &left_wire.visited {
+        if right_wire.visited.contains(&point) {
+            matches.push(*point)
+        }
+    }
+    println!("Got matches: {:?}", matches);
+    matches
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 struct Point {
     x: isize,
     y: isize,
@@ -74,7 +75,7 @@ impl Wire {
                 .as_str()
                 .parse::<isize>()
                 .expect("Could not parse integer");
-            println!("Going {:?} numbers {:?}", quantity, direction);
+            // println!("Going {:?} numbers {:?}", quantity, direction);
 
             for _ in 0..quantity {
                 match direction {
@@ -109,7 +110,7 @@ mod tests {
 
     const INPUT_FILE_NAME: &str = "test_input.txt";
 
-    fn testing_wire() -> Wire {
+    fn testing_short_wire() -> Wire {
         Wire::new(vec![
             "R8".to_string(),
             "U5".to_string(),
@@ -118,32 +119,8 @@ mod tests {
         ])
     }
 
-    #[test]
-    fn test_wire_path() {
-        let wire = testing_wire();
-        assert_eq!(wire.instructions[1], "U5");
-        assert_eq!(wire.visited.len(), 0);
-    }
-
-    #[test]
-    fn test_mapping_path() {
-        let mut wire = testing_wire();
-        wire.map_path();
-        assert_eq!(wire.visited.len(), 21);
-    }
-
-    #[test]
-    fn test_manhattan_distance() {
-        let point1 = Point::new(5, 3);
-        assert_eq!(point1.manhattan_distance(), 8);
-
-        let mut point2 = Point::new(672, -12);
-        assert_eq!(point2.manhattan_distance(), 684);
-    }
-
-    #[test]
-    fn test_find_overlapping_points() {
-        let wire1 = Wire::new(vec![
+    fn test_wire1() -> Wire {
+        Wire::new(vec![
             "R75".to_string(),
             "D30".to_string(),
             "R83".to_string(),
@@ -153,9 +130,11 @@ mod tests {
             "R71".to_string(),
             "U7".to_string(),
             "L72".to_string(),
-        ]);
+        ])
+    }
 
-        let wire2 = Wire::new(vec![
+    fn test_wire2() -> Wire {
+        Wire::new(vec![
             "U62".to_string(),
             "R66".to_string(),
             "U55".to_string(),
@@ -164,17 +143,43 @@ mod tests {
             "R55".to_string(),
             "D58".to_string(),
             "R83".to_string(),
-        ]);
+        ])
+    }
+
+    #[test]
+    fn test_wire_path() {
+        let wire = testing_short_wire();
+        assert_eq!(wire.instructions[1], "U5");
+        assert_eq!(wire.visited.len(), 0);
+    }
+
+    #[test]
+    fn test_mapping_path() {
+        let mut wire = testing_short_wire();
+        wire.map_path();
+        assert_eq!(wire.visited.len(), 21);
+    }
+
+    #[test]
+    fn test_manhattan_distance() {
+        let point1 = Point::new(5, 3);
+        assert_eq!(point1.manhattan_distance(), 8);
+
+        let point2 = Point::new(672, -12);
+        assert_eq!(point2.manhattan_distance(), 684);
+    }
+
+    #[test]
+    fn test_find_overlapping_points() {
+        let mut wire1 = test_wire1();
+        let mut wire2 = test_wire2();
 
         wire1.map_path();
         wire2.map_path();
 
-        let matched = find_matches(&wire1, &wire2);
+        let matched = find_matches(wire1, wire2);
 
-        assert_eq!(
-            matched,
-            5,
-        );
+        assert_eq!(matched.len(), 4);
     }
 
     #[test]
