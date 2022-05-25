@@ -4,13 +4,22 @@ use std::fs;
 
 const INPUT_FILE: &str = "input.txt";
 
-fn read_input_file(file_path: &str) -> Vec<usize> {
-    fs::read_to_string(file_path)
+// fn read_input_file(file_path: &str) -> Vec<Vec<&str>> {
+fn read_input_file(file_path: &str) -> Vec<Option<String>> {
+    let input = fs::read_to_string(file_path)
         .expect("Unable to read file")
-        .replace("\n", "")
-        .split(",")
-        .map(|v| v.parse::<usize>().expect("Unable to parse"))
-        .collect()
+        // .replace("\n", "")
+        .split("\n")
+        .map(|v| {
+            match v {
+                v if v.len() > 0 => Some(v.to_owned()),
+                _ => None,
+            }
+        }).collect();
+        // .map(|v| v.parse::<usize>().expect("Unable to parse"))
+    input
+
+        // .map(|v| v.parse::<usize>().expect("Unable to parse"))
 }
 
 fn part1(input_file_name: &str) -> usize {
@@ -32,6 +41,20 @@ fn find_matches(left_wire: Wire, right_wire: Wire) -> Vec<Point> {
     }
     println!("Got matches: {:?}", matches);
     matches
+}
+
+// Find matches for wires that have mapped paths already
+fn find_shortest(matches: Vec<Point>) -> isize {
+    let mut distances = vec![];
+    for point in &matches {
+        let distance = point.manhattan_distance();
+        println!("Calculated distance {:?} for point {:?}", distance, point);
+        distances.push(distance);
+    }
+    println!("Got distances: {:?}", distances);
+    let shortest = distances.iter().min().expect("Unable to get minimum distance");
+    println!("Got shortest: {:?}", shortest);
+    *shortest
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -183,9 +206,28 @@ mod tests {
     }
 
     #[test]
+    fn test_find_shortest() {
+        let points = vec![
+            Point::new(5, 8),
+            Point::new(17, -5),
+            Point::new(-5, 2),
+            Point::new(-8, -1),
+        ];
+        let shortest = find_shortest(points);
+        assert_eq!(shortest, 7);
+    }
+
+    #[test]
+    fn test_read_input() {
+        let test_input = read_input_file("test_input1.txt");
+        println!("test_input: {:?}", test_input);
+        assert_eq!(test_input.len(), 2);
+    }
+
+    #[test]
     #[ignore]
     fn test_part1() {
-        let test_part1 = part1(INPUT_FILE_NAME);
-        assert_eq!(test_part1, 12);
+        let test_part1 = part1("test_input1.txt");
+        assert_eq!(test_part1, 159);
     }
 }
