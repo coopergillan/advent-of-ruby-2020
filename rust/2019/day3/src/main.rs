@@ -2,15 +2,15 @@
 
 use std::fs;
 
-const INPUT_FILE: &str = "input.txt";
+// const INPUT_FILE: &str = "input.txt";
 
 // fn read_input_file(file_path: &str) -> Vec<Vec<&str>> {
 fn read_input_file(file_path: &str) -> Vec<Vec<String>> {
     let raw_contents = fs::read_to_string(file_path).expect("Unable to read file");
-    println!("raw_contents: {:?}", raw_contents);
+    // println!("raw_contents: {:?}", raw_contents);
     let contents = raw_contents.split_whitespace();
     // let contents = raw_contents.lines();
-    println!("contents: {:?}", contents);
+    // println!("contents: {:?}", contents);
 
     // vec![vec![]]
 
@@ -20,36 +20,51 @@ fn read_input_file(file_path: &str) -> Vec<Vec<String>> {
         parsed.push(parsed_line);
     }
 
-    println!("Got parsed: {:?}", parsed);
+    // println!("Got parsed: {:?}", parsed);
     parsed
 }
 
 fn part1(input_file_name: &str) -> usize {
     let input = read_input_file(input_file_name);
-    let wire1 = input[0];
-    let wire2 = input[1];
+    // println!("input: {:?}", input);
+
+    let wire1_input = &input[0];
+    // println!("wire1_input: {:?}", wire1_input);
+    let wire2_input = &input[1];
+    // println!("wire2_input: {:?}", wire2_input);
+
+    // TODO: pretty sure these shouldn't need to accept an owned Vec<String> directly
+    let mut wire1 = Wire::new(wire1_input.to_vec());
+    let mut wire2 = Wire::new(wire2_input.to_vec());
+    // println!("Created wire1 and wire2:\n{:?}\n{:?}\n", wire1, wire2);
 
     wire1.map_path();
+    println!("Finished mapping wire1 path");
     wire2.map_path();
+    println!("Finished mapping wire2 path");
 
     let matched = find_matches(wire1, wire2);
-    println!("matched: {:?}", matched);
+    // println!("matched: {:?}", matched);
 
     let shortest = find_shortest(matched);
-    println!("shortest: {:?}", shortest);
+    // println!("shortest: {:?}", shortest);
 
     shortest
 }
 
 fn main() {
-    let part1 = part1(INPUT_FILE);
+    println!("Starting to run part1");
+    let part1 = part1("input.txt");
+    // let part1 = part1(INPUT_FILE);
     println!("Part one answer: {}", part1);
 }
 
 // Find matches for wires that have mapped paths already
 fn find_matches(left_wire: Wire, right_wire: Wire) -> Vec<Point> {
+    // println!("Now checking for matches between left and right wire");
     let mut matches = vec![];
     for point in &left_wire.visited {
+        println!("Checking point {:?} in leftPwire", point);
         if right_wire.visited.contains(&point) {
             matches.push(*point)
         }
@@ -59,19 +74,19 @@ fn find_matches(left_wire: Wire, right_wire: Wire) -> Vec<Point> {
 }
 
 // Find matches for wires that have mapped paths already
-fn find_shortest(matches: Vec<Point>) -> isize {
+fn find_shortest(matches: Vec<Point>) -> usize {
     let mut distances = vec![];
     for point in &matches {
         let distance = point.manhattan_distance();
-        println!("Calculated distance {:?} for point {:?}", distance, point);
+        // println!("Calculated distance {:?} for point {:?}", distance, point);
         distances.push(distance);
     }
-    println!("Got distances: {:?}", distances);
+    // println!("Got distances: {:?}", distances);
     let shortest = distances
         .iter()
         .min()
         .expect("Unable to get minimum distance");
-    println!("Got shortest: {:?}", shortest);
+    // println!("Got shortest: {:?}", shortest);
     *shortest
 }
 
@@ -86,11 +101,12 @@ impl Point {
         Point { x, y }
     }
 
-    fn manhattan_distance(&self) -> isize {
-        self.x.abs() + self.y.abs()
+    fn manhattan_distance(&self) -> usize {
+        self.x.abs() as usize + self.y.abs() as usize
     }
 }
 
+#[derive(Debug)]
 struct Wire {
     instructions: Vec<String>,
     current_position: Point,
@@ -109,6 +125,7 @@ impl Wire {
     }
 
     fn map_path(&mut self) {
+        println!("About to map path for wire");
         for instruction in &self.instructions {
             let mut instruction_chars = instruction.chars();
             let direction = instruction_chars.next();
@@ -116,6 +133,7 @@ impl Wire {
                 .as_str()
                 .parse::<isize>()
                 .expect("Could not parse integer");
+            // println!(" About to do the match");
             // println!("Going {:?} numbers {:?}", quantity, direction);
 
             for _ in 0..quantity {
@@ -149,7 +167,7 @@ impl Wire {
 mod tests {
     use super::*;
 
-    const INPUT_FILE_NAME: &str = "test_input.txt";
+    // const INPUT_FILE_NAME: &str = "test_input.txt";
 
     fn testing_short_wire() -> Wire {
         Wire::new(vec![
@@ -244,9 +262,10 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_part1() {
-        let test_part1 = part1("test_input1.txt");
-        assert_eq!(test_part1, 159);
+        let test_part1_part1 = part1("test_input1.txt");
+        assert_eq!(test_part1_part1, 159);
+        let test_part1_part2 = part1("test_input2.txt");
+        assert_eq!(test_part1_part2, 135);
     }
 }
