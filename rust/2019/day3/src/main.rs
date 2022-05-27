@@ -25,7 +25,20 @@ fn read_input_file(file_path: &str) -> Vec<Vec<String>> {
 }
 
 fn part1(input_file_name: &str) -> usize {
-    5
+    let input = read_input_file(input_file_name);
+    let wire1 = input[0];
+    let wire2 = input[1];
+
+    wire1.map_path();
+    wire2.map_path();
+
+    let matched = find_matches(wire1, wire2);
+    println!("matched: {:?}", matched);
+
+    let shortest = find_shortest(matched);
+    println!("shortest: {:?}", shortest);
+
+    shortest
 }
 
 fn main() {
