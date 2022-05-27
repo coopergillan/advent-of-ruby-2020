@@ -5,21 +5,24 @@ use std::fs;
 const INPUT_FILE: &str = "input.txt";
 
 // fn read_input_file(file_path: &str) -> Vec<Vec<&str>> {
-fn read_input_file(file_path: &str) -> Vec<Option<String>> {
-    let input = fs::read_to_string(file_path)
-        .expect("Unable to read file")
-        // .replace("\n", "")
-        .split("\n")
-        .map(|v| {
-            match v {
-                v if v.len() > 0 => Some(v.to_owned()),
-                _ => None,
-            }
-        }).collect();
-        // .map(|v| v.parse::<usize>().expect("Unable to parse"))
-    input
+fn read_input_file(file_path: &str) -> Vec<Vec<String>> {
+    let raw_contents = fs::read_to_string(file_path)
+        .expect("Unable to read file");
+    println!("raw_contents: {:?}", raw_contents);
+    let contents = raw_contents.split_whitespace();
+    // let contents = raw_contents.lines();
+    println!("contents: {:?}", contents);
 
-        // .map(|v| v.parse::<usize>().expect("Unable to parse"))
+    // vec![vec![]]
+
+    let mut parsed = vec![];
+    for line in contents {
+        let parsed_line: Vec<String> = line.split(",").map(|v| v.to_owned()).collect();
+        parsed.push(parsed_line);
+    }
+
+    println!("Got parsed: {:?}", parsed);
+    parsed
 }
 
 fn part1(input_file_name: &str) -> usize {
