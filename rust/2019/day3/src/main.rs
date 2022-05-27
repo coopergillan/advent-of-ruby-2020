@@ -6,8 +6,7 @@ const INPUT_FILE: &str = "input.txt";
 
 // fn read_input_file(file_path: &str) -> Vec<Vec<&str>> {
 fn read_input_file(file_path: &str) -> Vec<Vec<String>> {
-    let raw_contents = fs::read_to_string(file_path)
-        .expect("Unable to read file");
+    let raw_contents = fs::read_to_string(file_path).expect("Unable to read file");
     println!("raw_contents: {:?}", raw_contents);
     let contents = raw_contents.split_whitespace();
     // let contents = raw_contents.lines();
@@ -55,7 +54,10 @@ fn find_shortest(matches: Vec<Point>) -> isize {
         distances.push(distance);
     }
     println!("Got distances: {:?}", distances);
-    let shortest = distances.iter().min().expect("Unable to get minimum distance");
+    let shortest = distances
+        .iter()
+        .min()
+        .expect("Unable to get minimum distance");
     println!("Got shortest: {:?}", shortest);
     *shortest
 }
@@ -223,8 +225,9 @@ mod tests {
     #[test]
     fn test_read_input() {
         let test_input = read_input_file("test_input1.txt");
-        println!("test_input: {:?}", test_input);
         assert_eq!(test_input.len(), 2);
+        assert_eq!(test_input[0][3], "U83");
+        assert_eq!(test_input[1][5], "R55");
     }
 
     #[test]
