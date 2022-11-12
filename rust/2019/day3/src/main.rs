@@ -1,6 +1,7 @@
 // Day 3 - crossing wires
 
 use std::fs;
+use sets;
 
 // const INPUT_FILE: &str = "input.txt";
 
@@ -38,56 +39,23 @@ fn part1(input_file_name: &str) -> usize {
     let mut wire2 = Wire::new(wire2_input.to_vec());
     // println!("Created wire1 and wire2:\n{:?}\n{:?}\n", wire1, wire2);
 
-    wire1.map_path();
-    println!("Finished mapping wire1 path");
+    let wire1_path = wire1.map_path1();
+    println!("Finished mapping wire1 path - wire1.visted: {:?}", wire1.visted);
+
+    let wire1_set = sets::Set::new(sets::Stype::Ordered, &wire1_path.visited, true);
+    println!("wire1_set: {:?}", wire1_set);
+
     wire2.map_path();
-    println!("Finished mapping wire2 path");
+    // println!("Finished mapping wire2 path");
 
-    let matched = find_matches(wire1, wire2);
-    // println!("matched: {:?}", matched);
-
-    let shortest = find_shortest(matched);
-    // println!("shortest: {:?}", shortest);
-
-    shortest
-}
-
-fn main() {
-    println!("Starting to run part1");
-    let part1 = part1("input.txt");
-    // let part1 = part1(INPUT_FILE);
-    println!("Part one answer: {}", part1);
-}
-
-// Find matches for wires that have mapped paths already
-fn find_matches(left_wire: Wire, right_wire: Wire) -> Vec<Point> {
-    // println!("Now checking for matches between left and right wire");
-    let mut matches = vec![];
-    for point in &left_wire.visited {
-        println!("Checking point {:?} in leftPwire", point);
-        if right_wire.visited.contains(&point) {
-            matches.push(*point)
-        }
-    }
-    println!("Got matches: {:?}", matches);
-    matches
-}
-
-// Find matches for wires that have mapped paths already
-fn find_shortest(matches: Vec<Point>) -> usize {
-    let mut distances = vec![];
-    for point in &matches {
-        let distance = point.manhattan_distance();
-        // println!("Calculated distance {:?} for point {:?}", distance, point);
-        distances.push(distance);
-    }
-    // println!("Got distances: {:?}", distances);
-    let shortest = distances
-        .iter()
-        .min()
-        .expect("Unable to get minimum distance");
-    // println!("Got shortest: {:?}", shortest);
-    *shortest
+    5
+    // let matched = find_matches(wire1, wire2);
+    // // println!("matched: {:?}", matched);
+    //
+    // let shortest = find_shortest(matched);
+    // // println!("shortest: {:?}", shortest);
+    //
+    // shortest
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -161,6 +129,44 @@ impl Wire {
             }
         }
     }
+}
+
+fn main() {
+    println!("Starting to run part1");
+    let part1 = part1("input.txt");
+    // let part1 = part1(INPUT_FILE);
+    println!("Part one answer: {}", part1);
+}
+
+// Find matches for wires that have mapped paths already
+fn find_matches(left_wire: Wire, right_wire: Wire) -> Vec<Point> {
+    // println!("Now checking for matches between left and right wire");
+    let mut matches = vec![];
+    for point in &left_wire.visited {
+        println!("Checking point {:?} in left wire", point);
+        if right_wire.visited.contains(&point) {
+            matches.push(*point)
+        }
+    }
+    println!("Got matches: {:?}", matches);
+    matches
+}
+
+// Find matches for wires that have mapped paths already
+fn find_shortest(matches: Vec<Point>) -> usize {
+    let mut distances = vec![];
+    for point in &matches {
+        let distance = point.manhattan_distance();
+        // println!("Calculated distance {:?} for point {:?}", distance, point);
+        distances.push(distance);
+    }
+    // println!("Got distances: {:?}", distances);
+    let shortest = distances
+        .iter()
+        .min()
+        .expect("Unable to get minimum distance");
+    // println!("Got shortest: {:?}", shortest);
+    *shortest
 }
 
 #[cfg(test)]
