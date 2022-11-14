@@ -5,21 +5,3 @@ version = 3
 [[package]]
 name = "day3"
 version = "0.1.0"
-dependencies = [
- "sets",
-]
-
-[[package]]
-name = "indxvec"
-version = "1.4.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc3b2eb49069d3e31ab51c7ae40f729d2627ef9239481f7bd4896b1304a2da1c"
-
-[[package]]
-name = "sets"
-version = "1.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25aa4434c19041e257e64dd1494a48c04dd2537b30a7c3da9049d01b2d137f02"
-dependencies = [
- "indxvec",
-]

@@ -1,7 +1,7 @@
 // Day 3 - crossing wires
 
 use std::fs;
-use sets;
+// use sets;
 
 // const INPUT_FILE: &str = "input.txt";
 
@@ -39,14 +39,14 @@ fn part1(input_file_name: &str) -> usize {
     let mut wire2 = Wire::new(wire2_input.to_vec());
     // println!("Created wire1 and wire2:\n{:?}\n{:?}\n", wire1, wire2);
 
-    let wire1_path = wire1.map_path1();
-    println!("Finished mapping wire1 path - wire1.visted: {:?}", wire1.visted);
+    let wire1_path = wire1.map_path();
+    println!("Finished mapping wire1 path - wire1.visted: {:?}", wire1.visited);
 
-    let wire1_set = sets::Set::new(sets::Stype::Ordered, &wire1_path.visited, true);
-    println!("wire1_set: {:?}", wire1_set);
+    // let wire1_set = sets::Set::new(sets::Stype::Ordered, &wire1_path.visited, true);
+    // println!("wire1_set: {:?}", wire1_set);
 
-    wire2.map_path();
-    // println!("Finished mapping wire2 path");
+    let wire2_path = wire2.map_path();
+    println!("Finished mapping wire2 path - wire2.visted: {:?}", wire2.visited);
 
     5
     // let matched = find_matches(wire1, wire2);
