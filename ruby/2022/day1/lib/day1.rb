@@ -1,5 +1,8 @@
 class ElfInfo
-	attr_accessor :elf_info
+
+  PART2_ELF_COUNT = 3
+
+  attr_accessor :elf_info
 
   def initialize(elf_info)
     @elf_info = elf_info
@@ -7,16 +10,10 @@ class ElfInfo
 
   def self.from_file(filepath)
     raw_content = File.read(filepath, chomp: true).split(/\n\n/)
-    # puts "raw_content: #{raw_content}"
-    elf_info = raw_content.map do |elf|
-      elf.split(/\n/).map(&:to_i)
-    end
-
-    new(elf_info)
+    new(raw_content.map { |elf| elf.split(/\n/).map(&:to_i) })
   end
 
   def part1
-    puts "elf_info: #{elf_info}"
     biggest = 0
     elf_info.each do |elf|
       if elf.sum > biggest
@@ -25,6 +22,10 @@ class ElfInfo
     end
     biggest
   end
+
+  def part2
+    elf_info.map { |elf| elf.sum }.sort![-PART2_ELF_COUNT..].reduce(:+)
+  end
 end
 
 if $PROGRAM_NAME  == __FILE__
@@ -32,4 +33,7 @@ if $PROGRAM_NAME  == __FILE__
 
   part1 = elf_info.part1
   puts "Found #{part1} calories in part 1"
+
+  part2 = elf_info.part2
+  puts "Found #{part2} calories in part 2"
 end

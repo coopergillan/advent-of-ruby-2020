@@ -15,15 +15,15 @@ describe ElfInfo do
     end
   end
 
-  context "#answer_part1" do
-    it "gets the number of increased elevations compared to the previous level" do
+  context "#part1" do
+    it "gets the sum of calories for the elf with the most" do
       expect(subject.part1).to eq(24000)  # Taken directly from instructions
     end
   end
 
-  xcontext "#answer_part2" do
-    it "gets the number of increased elevations using new 3-part window logic" do
-      expect(subject.count_increases(3)).to eq(5)  # Taken directly from instructions
+  context "#part2" do
+    it "gets the sum of the calories for the top three calorie-carrying elves" do
+      expect(subject.part2).to eq(45000)  # Taken directly from instructions
     end
   end
 end
