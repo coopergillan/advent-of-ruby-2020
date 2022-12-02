@@ -1,39 +1,71 @@
-class ElfInfo
+class RockPaperScissorsGame
 
-  PART2_ELF_COUNT = 3
+  attr_accessor :input_data
 
-  attr_accessor :elf_info
-
-  def initialize(elf_info)
-    @elf_info = elf_info
+  def initialize(input_data)
+    @input_data = input_data
   end
 
   def self.from_file(filepath)
-    raw_content = File.read(filepath, chomp: true).split(/\n\n/)
-    new(raw_content.map { |elf| elf.split(/\n/).map(&:to_i) })
+    new(File.foreach(filepath, chomp: true).map { |line| line.split(/ /) })
   end
 
-  def part1
-    biggest = 0
-    elf_info.each do |elf|
-      if elf.sum > biggest
-        biggest = elf.sum
-      end
+  def solve_part1
+    input_data.reduce(0) do |total_self_score, round|
+      total_self_score + Round.from_raw(round).self_score
     end
-    biggest
+  end
+end
+
+class Round
+  SHAPE_POINTS = {
+    rock: 1,
+    paper: 2,
+    scissors: 3,
+  }
+  OUTCOME_POINTS = {
+    win: 6,
+    draw: 3,
+  }
+  OPPONENT_SHAPE_KEY = {
+    "A" => :rock,
+    "B" => :paper,
+    "C" => :scissors,
+  }
+  SELF_SHAPE_KEY = {
+    "X" => :rock,
+    "Y" => :paper,
+    "Z" => :scissors,
+  }
+
+  attr_accessor :opponent_shape, :self_shape
+
+  def initialize(opponent_shape, self_shape)
+    @opponent_shape = opponent_shape
+    @self_shape = self_shape
   end
 
-  def part2
-    elf_info.map { |elf| elf.sum }.sort![-PART2_ELF_COUNT..].reduce(:+)
+  def self.from_raw(input_array)
+    opponent_shape, self_shape = input_array
+    new(OPPONENT_SHAPE_KEY[opponent_shape], SELF_SHAPE_KEY[self_shape])
+  end
+
+  def self_score
+    outcome = case opponent_shape
+    when :rock
+      case self_shape when :paper then :win when :rock then :draw end
+    when :paper
+      case self_shape when :paper then :draw when :scissors then :win end
+    when :scissors
+      case self_shape when :scissors then :draw when :rock then :win end
+    end
+    SHAPE_POINTS.fetch(self_shape) + OUTCOME_POINTS.fetch(outcome, 0)
   end
 end
 
 if $PROGRAM_NAME  == __FILE__
-  elf_info = ElfInfo.from_file("lib/input.txt")
+  round_info = RockPaperScissorsGame.from_file("lib/input.txt")
 
-  part1 = elf_info.part1
-  puts "Found #{part1} calories in part 1"
-
-  part2 = elf_info.part2
-  puts "Found #{part2} calories in part 2"
+  part1 = round_info.solve_part1
+  puts "Part one answer: #{part1}"
 end
