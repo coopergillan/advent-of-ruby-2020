@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+if [ $# -eq 0 ]
+then
+  echo "Must specify year and day number."
+  echo "Usage: ./start-puzzle <year> <day_number>"
+  exit
+fi
+
+YEAR=$1
+DAY_NUMBER=$2
+
+# Check if year directory exists
+if [ ! -d "./${YEAR}" ]; then
+  echo "./${YEAR} does not exist. Creating it."
+  mkdir -p ./"${YEAR}"/
+fi
+
+new_directory="./${YEAR}/day${DAY_NUMBER}/"
+
+# Check if the directory already exists before writing to it, exit with info if it does
+if [ -d "${new_directory}" ]; then
+  printf "Directory %s already exists. If template still desired, delete the directory and run again:\n\n%s\n\n" \
+    "${new_directory}" "  rm -rf ${new_directory}"
+  exit 0
+else
+  cp -R template/ "${new_directory}"
+  printf "Created %s for the next puzzle\n" "${new_directory}"
+fi
