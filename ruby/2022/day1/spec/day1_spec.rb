@@ -20,4 +20,10 @@ describe ElfInfo do
       expect(subject.part1).to eq(24000)  # Taken directly from instructions
     end
   end
+
+  context "#part2" do
+    it "gets the sum of the calories for the top three calorie-carrying elves" do
+      expect(subject.part2).to eq(45000)  # Taken directly from instructions
+    end
+  end
 end
