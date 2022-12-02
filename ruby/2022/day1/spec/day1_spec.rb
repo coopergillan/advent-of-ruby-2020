@@ -1,23 +1,23 @@
 require "day1"
 
-describe CalorieCounter do
-  subject { CalorieCounter.from_file("spec/test_input.txt") }
+describe ElfInfo do
+  subject { ElfInfo.from_file("spec/test_input.txt") }
 
   context "#from_file" do
     it "converts a file path to an array" do
       expect(subject.elf_info).to match_array([
-[1000, 2000 ,3000],
-[4000],
-[5000, 6000],
-[7000, 8000, 9000],
-[10000],
+        [1000, 2000 ,3000],
+        [4000],
+        [5000, 6000],
+        [7000, 8000, 9000],
+        [10000],
       ])
     end
   end
 
-  xcontext "#answer_part1" do
+  context "#answer_part1" do
     it "gets the number of increased elevations compared to the previous level" do
-      expect(subject.count_increases(1)).to eq(7)  # Taken directly from instructions
+      expect(subject.part1).to eq(24000)  # Taken directly from instructions
     end
   end
 

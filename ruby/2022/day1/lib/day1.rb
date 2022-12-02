@@ -1,4 +1,4 @@
-class CalorieCounter
+class ElfInfo
 	attr_accessor :elf_info
 
   def initialize(elf_info)
@@ -6,29 +6,30 @@ class CalorieCounter
   end
 
   def self.from_file(filepath)
-    new(File.foreach(filepath, chomp: true).map(&:to_i))
-  end
-
-  private
-
-  def elevations_to_check
-    @sonar_report[1..-1]
-  end
-
-  def increase?(previous, current)
-    unless previous.nil?
-      return current > previous
+    raw_content = File.read(filepath, chomp: true).split(/\n\n/)
+    # puts "raw_content: #{raw_content}"
+    elf_info = raw_content.map do |elf|
+      elf.split(/\n/).map(&:to_i)
     end
-    false
+
+    new(elf_info)
+  end
+
+  def part1
+    puts "elf_info: #{elf_info}"
+    biggest = 0
+    elf_info.each do |elf|
+      if elf.sum > biggest
+        biggest = elf.sum
+      end
+    end
+    biggest
   end
 end
 
 if $PROGRAM_NAME  == __FILE__
-  sonar_report = SonarSweeper.from_file("lib/input.txt")
+  elf_info = ElfInfo.from_file("lib/input.txt")
 
-  part1_increases = sonar_report.count_increases(SonarSweeper::PART1_WINDOW_SIZE)
-  puts "Found #{part1_increases} increases in elevation for part 1"
-
-  part2_increases = sonar_report.count_increases(SonarSweeper::PART2_WINDOW_SIZE)
-  puts "Found #{part2_increases} increases in elevation for part 2"
+  part1 = elf_info.part1
+  puts "Found #{part1} calories in part 1"
 end
