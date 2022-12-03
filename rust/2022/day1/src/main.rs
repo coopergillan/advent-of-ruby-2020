@@ -2,6 +2,8 @@
 
 use std::fs;
 
+const PART2_ELF_COUNT: usize = 3;
+
 #[derive(Debug)]
 struct ElfDetails {
     elf_list: Vec<Elf>,
@@ -38,9 +40,21 @@ impl ElfDetails {
             .expect("Unable to get maximum value")
     }
 
-    // fn solve_part2(&self) -> usize {
-    //     7
-    // }
+    fn solve_part2(&self) -> usize {
+        let mut elf_rankings: Vec<usize> = self
+            .elf_list
+            .iter()
+            .map(|elf| elf.total_calories())
+            .collect();
+
+        // Sort to put biggest at the end
+        elf_rankings.sort();
+
+        // Pop last three elements off and accumulate the total sum
+        (0..PART2_ELF_COUNT).fold(0, |total_calories, _| {
+            total_calories + elf_rankings.pop().expect("Unable to pop value")
+        })
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -65,7 +79,7 @@ fn main() {
     let top_level = ElfDetails::from_file(input_file);
 
     println!("Part 1 answer: {}", top_level.solve_part1());
-    // println!("Part 2 answer: {}", top_level.solve_part2());
+    println!("Part 2 answer: {}", top_level.solve_part2());
 }
 
 #[cfg(test)]
@@ -87,7 +101,6 @@ mod tests {
     fn test_from_file() {
         let input_file = "test_input.txt";
         let elf_details = ElfDetails::from_file(input_file);
-        println!("elf_details.elf_list: {:?}", elf_details.elf_list);
         assert_eq!(
             elf_details.elf_list,
             vec![
@@ -102,12 +115,13 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(test_elf_list().solve_part1(), 24000);
+        let elf_list = test_elf_list();
+        assert_eq!(elf_list.solve_part1(), 24000);
     }
 
-    // #[test]
-    // #[ignore]
-    // fn test_part2() {
-    //     assert_eq!(22, 10);
-    // }
+    #[test]
+    fn test_part2() {
+        let elf_list = test_elf_list();
+        assert_eq!(elf_list.solve_part2(), 45000);
+    }
 }
