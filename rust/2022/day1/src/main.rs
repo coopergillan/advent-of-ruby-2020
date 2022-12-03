@@ -1,6 +1,7 @@
 // Advent of Code solver
 
 use std::fs;
+use std::str::FromStr;
 
 const PART2_ELF_COUNT: usize = 3;
 
@@ -10,37 +11,25 @@ struct ElfDetails {
 }
 
 impl ElfDetails {
-    fn new(elf_list: Vec<Elf>) -> Self {
-        Self { elf_list }
-    }
-
     fn from_file(file_path: &str) -> Self {
         // For reading each line into an array
         let raw_content = fs::read_to_string(file_path).expect("Unable to read file");
 
-        let processed_contents: Vec<Elf> = raw_content
+        let elf_list: Vec<Elf> = raw_content
             .split("\n\n")
             .map(|elf_raw| {
                 let calorie_details = elf_raw
                     .lines()
-                    .map(|v| v.parse::<usize>().expect("Unable to parse"))
+                    .map(|v| usize::from_str(v).expect("Unable to parse"))
                     .collect();
                 Elf::new(calorie_details)
             })
             .collect::<Vec<Elf>>();
 
-        Self::new(processed_contents)
+        Self { elf_list }
     }
 
-    fn solve_part1(&self) -> usize {
-        self.elf_list
-            .iter()
-            .map(|elf| elf.total_calories())
-            .max()
-            .expect("Unable to get maximum value")
-    }
-
-    fn solve_part2(&self) -> usize {
+    fn sorted_elves(&self) -> Vec<usize> {
         let mut elf_rankings: Vec<usize> = self
             .elf_list
             .iter()
@@ -49,6 +38,15 @@ impl ElfDetails {
 
         // Sort to put biggest at the end
         elf_rankings.sort();
+        elf_rankings
+    }
+
+    fn solve_part1(&self) -> usize {
+        self.sorted_elves().pop().expect("Unable to pop last value")
+    }
+
+    fn solve_part2(&self) -> usize {
+        let mut elf_rankings = self.sorted_elves();
 
         // Pop last three elements off and accumulate the total sum
         (0..PART2_ELF_COUNT).fold(0, |total_calories, _| {
