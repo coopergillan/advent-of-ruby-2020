@@ -10,12 +10,14 @@ class CraneDirector
   def self.from_file(filepath)
     # Okay, so this input is obviously challenging - going to manually key
     # in the starting stacks for now
-    test_stacks = {
-      1 => ["Z", "N"],
-      2 => ["M", "C", "D"],
-      3 => ["P"],
-    }
+    # Uncomment to run test cases
+    # test_stacks = {
+    #   1 => ["Z", "N"],
+    #   2 => ["M", "C", "D"],
+    #   3 => ["P"],
+    # }
 
+    # Comment out to run test cases
     stacks = {
       1 => ["B", "W", "N"],
       2 => ["L", "Z", "S", "P", "T", "D", "M", "B"],
@@ -48,24 +50,21 @@ class CraneDirector
     end
 
     # Now assemble the final string
-    final_string = ""
-    (1..9).each do |i|
-      final_string += stacks[i].pop
+    (1..stacks.size).reduce("") do |final_string, i|
+      final_string + stacks[i].pop
     end
-    final_string
   end
 
   def solve_part2
+    # Move the stacks
     instructions.each do |(quantity, source_queue, dest_queue)|
       stacks[dest_queue] += stacks[source_queue].pop(quantity)
     end
 
-    # Now assemble the final string
-    final_string = ""
-    (1..9).each do |i|
-      final_string += stacks[i].pop
+    # Assemble the final string
+    (1..stacks.size).reduce("") do |final_string, idx|
+      final_string + stacks[idx].pop
     end
-    final_string
   end
 end
 
