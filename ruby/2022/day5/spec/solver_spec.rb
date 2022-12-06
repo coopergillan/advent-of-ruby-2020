@@ -27,19 +27,7 @@ describe CraneDirector do
 
   context "#solve_part2" do
     it "solves part two" do
-      expect(subject.solve_part2).to eq(8)
-    end
-  end
-end
-
-describe ParticularClass do
-  context "#from_raw" do
-    let(:raw_input) { ["A", "Z"] }
-    subject { described_class.from_raw(raw_input) }
-
-    it "translates the raw input into separate values" do
-      expect(subject.input1).to eq("A")
-      expect(subject.input2).to eq("Z")
+      expect(subject.solve_part2).to eq("MCD")
     end
   end
 end

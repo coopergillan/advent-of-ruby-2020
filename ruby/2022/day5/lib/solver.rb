@@ -32,7 +32,6 @@ class CraneDirector
     # 0th element is the quantity, 1th the stack to pop off
     # and the 2th the stack to append to
     raw_content = File.read(filepath, chomp: true).split(/\n\n/).pop
-    puts "raw_content: #{raw_content}"
 
     # For processing each line within the separate objects, for example, getting the integer of each line
     instructions = raw_content.split(/\n/).map do |line|
@@ -57,16 +56,27 @@ class CraneDirector
   end
 
   def solve_part2
-    8
+    instructions.each do |(quantity, source_queue, dest_queue)|
+      stacks[dest_queue] += stacks[source_queue].pop(quantity)
+    end
+
+    # Now assemble the final string
+    final_string = ""
+    (1..9).each do |i|
+      final_string += stacks[i].pop
+    end
+    final_string
   end
 end
 
 if $PROGRAM_NAME  == __FILE__
-  top_level_instance = CraneDirector.from_file("lib/input.txt")
+  crane_director1 = CraneDirector.from_file("lib/input.txt")
 
-  part1 = top_level_instance.solve_part1
+  part1 = crane_director1.solve_part1
   puts "Part one answer: #{part1}"
 
-  # part2 = top_level_instance.solve_part2
-  # puts "Part two answer: #{part2}"
+  crane_director2 = CraneDirector.from_file("lib/input.txt")
+
+  part2 = crane_director2.solve_part2
+  puts "Part two answer: #{part2}"
 end
