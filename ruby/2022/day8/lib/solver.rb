@@ -9,54 +9,37 @@ class TopLevelClass
   end
 
   def self.from_file(filepath)
-    ###
-    # For reading each line into an array
     raw_content = File.foreach(filepath, chomp: true).map do |line|
       line.chars.map(&:to_i)
     end
 
-    # Instantiate the top-level class with processed data
     new(raw_content)
   end
 
   def solve_part1
     (0...height).map do |row|
       (0...width).map do |col|
-        # Count top and bottom rows, plus first and last columns
         tree_visible?(row, col) ? 1 : 0
       end.reduce(:+)
     end.reduce(:+)
   end
 
   def solve_part2
-    result = (0...height).map do |row|
+    (0...height).map do |row|
       (0...width).map do |col|
         # Count top and bottom rows, plus first and last columns
         scenic_score(row, col)
       end.max
-    end
-    puts "result: #{result}"
-    result.max
+    end.max
   end
 
   def scenic_score(row, col)
-    left = trees_to_left(row, col)
-    puts "left: #{left}"
-
-    right = trees_to_right(row, col)
-    puts "right: #{right}"
-
-    above = trees_above(row, col)
-    puts "above: #{above}"
-
-    below = trees_below(row, col)
-    puts "below: #{below}"
-
-    total = [left, right, above, below]
-    puts "total: #{total}"
-    scenic_score = total.reduce(:*)
-    puts "scenic_score: #{scenic_score}"
-    scenic_score
+    [
+      trees_to_left(row, col),
+      trees_to_right(row, col),
+      trees_above(row, col),
+      trees_below(row, col),
+    ].reduce(:*)
   end
 
   def tree_visible?(row, col)
@@ -78,12 +61,10 @@ class TopLevelClass
   def trees_to_left(row, col)
     cols_to_check = (0..(col - 1)).to_a.reverse
     current_tree = input_data[row][col]
-    puts "current_tree: #{current_tree}"
     tree_count = 0
     cols_to_check.each do |check_col|
       tree = input_data[row][check_col].to_i
-      puts "tree: #{tree}"
-      if tree.to_i < current_tree
+      if tree < current_tree
         tree_count += 1
       elsif tree.to_i >= current_tree
         tree_count += 1
@@ -95,7 +76,7 @@ class TopLevelClass
 
   def viewable_from_right?(row, col)
     cols_to_check = ((col + 1)..width)
-    checked = input_data[row][cols_to_check].map do |tree|
+    input_data[row][cols_to_check].map do |tree|
       tree.to_i < input_data[row][col]
     end.all?
   end
@@ -103,10 +84,8 @@ class TopLevelClass
   def trees_to_right(row, col)
     cols_to_check = ((col + 1)..width)
     current_tree = input_data[row][col]
-    puts "current_tree: #{current_tree}"
     tree_count = 0
-    checked = input_data[row][cols_to_check].each do |tree|
-      puts "tree: #{tree}"
+    input_data[row][cols_to_check].each do |tree|
       if tree.to_i < current_tree
         tree_count += 1
       elsif tree.to_i >= current_tree
@@ -118,17 +97,15 @@ class TopLevelClass
   end
 
   def viewable_from_top?(row, col)
-    rows_to_check = (0..(row - 1))
-    checked = rows_to_check.map do |check_row|
+    (0..(row - 1)).map do |check_row|
       input_data[check_row][col].to_i < input_data[row][col]
     end.all?
   end
 
   def trees_above(row, col)
-    rows_to_check = (0..(row - 1)).to_a.reverse
     current_tree = input_data[row][col]
     tree_count = 0
-    checked = rows_to_check.each do |check_row|
+    (0..(row - 1)).to_a.reverse.each do |check_row|
       tree = input_data[check_row][col].to_i
       if tree < current_tree
         tree_count += 1
@@ -141,17 +118,15 @@ class TopLevelClass
   end
 
   def viewable_from_bottom?(row, col)
-    rows_to_check = ((row + 1)...width)
-    checked = rows_to_check.map do |check_row|
+    ((row + 1)...width).map do |check_row|
       input_data[check_row][col].to_i < input_data[row][col]
     end.all?
   end
 
   def trees_below(row, col)
-    rows_to_check = ((row + 1)...width)
     current_tree = input_data[row][col]
     tree_count = 0
-    checked = rows_to_check.map do |check_row|
+    ((row + 1)...width).map do |check_row|
       tree = input_data[check_row][col].to_i
       if tree < current_tree
         tree_count += 1
