@@ -27,34 +27,48 @@ describe TopLevelClass do
   end
 
   context "#viewable_from_left?" do
-      it "check whether interior tree visible from left" do
-        expect(subject.viewable_from_left?(1, 1)).to be(true)
-        expect(subject.viewable_from_left?(2, 2)).to be(false)
-        expect(subject.viewable_from_left?(3, 2)).to be(true)
-        expect(subject.viewable_from_left?(3, 3)).to be(false)
+    it "check whether interior tree visible from left" do
+      expect(subject.viewable_from_left?(1, 1)).to be(true)
+      expect(subject.viewable_from_left?(2, 2)).to be(false)
+      expect(subject.viewable_from_left?(3, 2)).to be(true)
+      expect(subject.viewable_from_left?(3, 3)).to be(false)
     end
 
-      it "checks whether outside tree visible from left" do
-        expect(subject.viewable_from_left?(3, 0)).to be(true)
-        expect(subject.viewable_from_left?(0, 2)).to be(false)
-        expect(subject.viewable_from_left?(4, 0)).to be(true)
-        expect(subject.viewable_from_left?(0, 3)).to be(true)
-      end
+    it "checks whether outside tree visible from left" do
+      expect(subject.viewable_from_left?(3, 0)).to be(true)
+      expect(subject.viewable_from_left?(0, 2)).to be(false)
+      expect(subject.viewable_from_left?(4, 0)).to be(true)
+      expect(subject.viewable_from_left?(0, 3)).to be(true)
+    end
+
+    it "counts trees viewable from left" do
+      expect(subject.trees_to_left(1, 2)).to eq(1)
+      expect(subject.trees_to_left(2, 1)).to eq(1)
+      expect(subject.trees_to_left(3, 2)).to eq(2)
+    end
   end
 
-  context "#viewable_from_right?" do
-    it "checks whether interior trees are visible from right" do
-      expect(subject.viewable_from_right?(2, 3)).to be(true)
-      expect(subject.viewable_from_right?(3, 3)).to be(false)
-      expect(subject.viewable_from_right?(1, 2)).to be(true)
-      expect(subject.viewable_from_right?(3, 1)).to be(false)
+  context "trees from the right" do
+    context "#viewable_from_right?" do
+      it "checks whether interior trees are visible from right" do
+        expect(subject.viewable_from_right?(2, 3)).to be(true)
+        expect(subject.viewable_from_right?(3, 3)).to be(false)
+        expect(subject.viewable_from_right?(1, 2)).to be(true)
+        expect(subject.viewable_from_right?(3, 1)).to be(false)
+      end
+
+      it "checks whether outside trees visible from right" do
+        expect(subject.viewable_from_right?(3, 4)).to be(true)
+        expect(subject.viewable_from_right?(3, 0)).to be(false)
+        expect(subject.viewable_from_right?(4, 4)).to be(true)
+        expect(subject.viewable_from_right?(0, 0)).to be(false)
+      end
     end
 
-    it "checks whether outside trees visible from right" do
-      expect(subject.viewable_from_right?(3, 4)).to be(true)
-      expect(subject.viewable_from_right?(3, 0)).to be(false)
-      expect(subject.viewable_from_right?(4, 4)).to be(true)
-      expect(subject.viewable_from_right?(0, 0)).to be(false)
+    it "counts trees viewable from right" do
+      expect(subject.trees_to_right(1, 2)).to eq(2)
+      expect(subject.trees_to_right(2, 1)).to eq(3)
+      expect(subject.trees_to_right(3, 2)).to eq(2)
     end
   end
 
@@ -72,6 +86,12 @@ describe TopLevelClass do
       expect(subject.viewable_from_top?(2, 0)).to be(true)
       expect(subject.viewable_from_top?(4, 4)).to be(false)
     end
+
+    it "counts trees viewable from top" do
+      expect(subject.trees_above(1, 2)).to eq(1)
+      expect(subject.trees_above(2, 1)).to eq(1)
+      expect(subject.trees_above(3, 2)).to eq(2)
+    end
   end
 
   context "#viewable_from_bottom?" do
@@ -88,11 +108,22 @@ describe TopLevelClass do
       expect(subject.viewable_from_bottom?(4, 0)).to be(true)
       expect(subject.viewable_from_bottom?(2, 4)).to be(false)
     end
+
+    it "counts trees viewable from below" do
+      expect(subject.trees_below(1, 2)).to eq(2)
+      expect(subject.trees_below(3, 2)).to eq(1)
+    end
   end
 
   context "#solve_part1" do
     it "solves part one" do
       expect(subject.solve_part1).to eq(21)
+    end
+  end
+
+  context "#solve_part2" do
+    it "solves part two" do
+      expect(subject.solve_part2).to eq(8)
     end
   end
 end
