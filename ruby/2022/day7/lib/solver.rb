@@ -4,8 +4,6 @@ class TopLevelClass
 
   def initialize(input_data)
     @input_data = input_data
-    # @directory_contents = {}
-    # @file_totals = {}
   end
 
   def self.from_file(filepath)
@@ -23,6 +21,16 @@ class TopLevelClass
   end
 
   def solve_part1
+    result = 0
+    directory_sizes.each do |directory, total_size|
+      # puts "checking directory: #{directory} with total_size: #{total_size}"
+      if total_size < 100_000
+        # puts "directory: #{directory} has total_size #{total_size}"
+        result += total_size
+        # puts "Now have result: #{result}"
+      end
+    end
+    result
   end
 
   def absolute_paths
@@ -33,20 +41,20 @@ class TopLevelClass
     input_data.each do |item|
       # puts "Checking item #{item}"
       if item.first == "cd"
-        puts "Looking at a cd - item: #{item}"
+        # puts "Looking at a cd - item: #{item}"
         if item.last == ".."
           current_path.pop
-          puts "Moved down a directory - current_path: #{current_path.join}"
+          # puts "Moved down a directory - current_path: #{current_path.join}"
         elsif item.last != ".."
           if item.last == "/"
             current_path.push(item.last)
           else
-          current_path.push("#{item.last}/")
+            current_path.push("#{item.last}/")
           end
-          puts "Moved into a directory - current_path: #{current_path.join}"
+          # puts "Moved into a directory - current_path: #{current_path.join}"
         end
         last_command = "cd"
-        puts "set last_command to cd - last_command: #{last_command}"
+        # puts "set last_command to cd - last_command: #{last_command}"
       elsif item.first == "ls"
         last_command = "ls"
       elsif last_command == "ls"
@@ -71,7 +79,7 @@ class TopLevelClass
   def directory_sizes
     sizes = Hash.new(0)
     absolute_paths.each do |path|
-      puts "path: #{path}"
+      # puts "path: #{path}"
       file_path, file_size = path
 
       # Check for paths by splitting on directory
