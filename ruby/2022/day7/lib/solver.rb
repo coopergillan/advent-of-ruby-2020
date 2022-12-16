@@ -1,111 +1,91 @@
 class TopLevelClass
 
-  attr_accessor :input_data, :file_totals
+  attr_accessor :input_data # , :file_totals
 
   def initialize(input_data)
     @input_data = input_data
-    @directory_contents = {}
-    @file_totals = {}
+    # @directory_contents = {}
+    # @file_totals = {}
   end
 
   def self.from_file(filepath)
-    ###
-    # For reading each line into an array
-    raw_content = File.foreach(filepath, chomp: true).to_a
+    raw_contents = File.foreach(filepath, chomp: true).map do |line|
+      line.split(/ /).filter_map do |item|
+        if item.to_i > 0
+          item.to_i
+        elsif !item.start_with?("$")
+          item
+        end
+      end
+    end
 
-    # For processing that content, for example to an integer
-    # processed_content = raw_content.map { |line| line.map(:&to_i) }
-
-    ###
-    # For reading input with line breaks that distinguish separate objects
-    # raw_content = File.read(filepath, chomp: true).split(/\n\n/)
-
-    # For processing each line within the separate objects, for example, getting the integer of each line
-    # processed_content = raw_content.map { |line| line.split(/\n/).map(&:to_i) }
-
-    # Delete this placeholder processed content before using
-
-    # Instantiate the top-level class with processed data
-    new(raw_content)
+    new(raw_contents)
   end
 
   def solve_part1
-    current_dir = ""
-    command = ""
-    last_command = ""
-    input_data.each do |line|
-      if line.start_with?("$ ")
-        command = line.split("$ ").last
-        if command.start_with?("cd")
-          current_dir = command.split(/ /).last
-          last_command = "cd"
-        end
-        # Move on if ls
-        if command.start_with?("ls")
-          last_command = "ls"
-          next
-        end
-      elsif !line.start_with?("$ ") && last_command == "ls"
-        if !@directory_contents.has_key?(current_dir)
-          @directory_contents[current_dir] = []
-        end
-        @directory_contents[current_dir].push(line)
-      end
-    end
-
-    # Now go through and total stuff that isn't a directory?
-    @directory_contents.each do |directory, contents|
-      contents.each do |item|
-        next if item.start_with?("dir ")
-        if !@file_totals.has_key?(directory)
-          @file_totals[directory] = 0
-        end
-        @file_totals[directory] += item.split(/ /).first.to_i
-
-      end
-    end
-
-    puts "@file_totals: #{@file_totals}"
-    puts "@directory_contents: #{@directory_contents}"
-    # Okay now total them????
-    # puts "Getting ready for final total"
-    # threshold = 100_000
-    # result = 0
-    # @directory_contents.each do |directory, _|
-    #   this_result = get_directory_size(directory)
-    #   if this_result < threshold
-    #     # puts "About to add to result #{result}"
-    #     result += this_result
-    #     # puts "Added to result which is now #{result}"
-    #   end
-    # end
-    # #   contents.each do |item|
-    # #     if item.start_with?("dir ")
-    # #       this_dir_total += file_totals[item.split("dir ").last]
-    # #     else
-    # #       this_dir_total += item.split(" ").first.to_i
-    # #     end
-    # #   end
-    # #   result += this_dir_total
-    # # end
-    # result
   end
 
-  def get_directory_size(directory)
-    total = 0
-    @directory_contents[directory].each do |item|
-      if !item.start_with?("dir ")
-        # puts "item: #{item}"
-        total += item.split(" ").first.to_i
-      elsif item.start_with?("dir ")
-        checked_dir = item.split(" ").last
-        # puts "Checking dir: #{checked_dir}"
-        this_dir_size = get_directory_size(checked_dir)
-        # puts "directory #{checked_dir} has this_dir_size: #{this_dir_size}\n\n"
-        total += this_dir_size
+  def absolute_paths
+    current_path = []
+    result = []
+
+    last_command = nil
+    input_data.each do |item|
+      # puts "Checking item #{item}"
+      if item.first == "cd"
+        puts "Looking at a cd - item: #{item}"
+        if item.last == ".."
+          current_path.pop
+          puts "Moved down a directory - current_path: #{current_path.join}"
+        elsif item.last != ".."
+          if item.last == "/"
+            current_path.push(item.last)
+          else
+          current_path.push("#{item.last}/")
+          end
+          puts "Moved into a directory - current_path: #{current_path.join}"
+        end
+        last_command = "cd"
+        puts "set last_command to cd - last_command: #{last_command}"
+      elsif item.first == "ls"
+        last_command = "ls"
+      elsif last_command == "ls"
+        # puts "last command ls"
+        # if item.first == "dir"
+        #   result.push(
+        # end
+        if item.first.to_i > 0
+          # puts "found item for filename? #{item}"
+          file_name = current_path.join + item.last
+          # puts "about to append file_name #{file_name} and item.first #{item.first} to result"
+          # puts "working with current_path: #{current_path.join}"
+          result.push([file_name, item.first])
+        end
+        # puts "What is item: #{item} if we don't have an integer"
+        # next
       end
     end
-    total
+    result
+  end
+
+  def directory_sizes
+    sizes = Hash.new(0)
+    absolute_paths.each do |path|
+      puts "path: #{path}"
+      file_path, file_size = path
+
+      # Check for paths by splitting on directory
+      details = file_path.split("/")
+      while details.size > 1
+        next_check = details.shift
+        if next_check == ""
+            sizes["/"] += file_size
+        else
+          sizes[next_check] += file_size
+        end
+      end
+    end
+    sizes
   end
 
   def solve_part2

@@ -4,10 +4,43 @@ describe TopLevelClass do
   subject { described_class.from_file("spec/test_input.txt") }
 
   context "#from_file" do
-    xit "converts a file path to the data" do
-      expect(subject.input_data).to match_array([
-        [4, 7], [3, 3], [2, 9]
+    it "converts a file path to the data" do
+      expect(subject.input_data[...6]).to match_array([
+        ["cd", "/"],
+        ["ls"],
+        ["dir", "a"],
+        [14848514, "b.txt"],
+        [8504156, "c.dat"],
+        ["dir", "d"],
       ])
+    end
+  end
+
+  context "#absolute_paths" do
+    it "builds array of absolute file paths" do
+      expect(subject.absolute_paths).to match_array([
+        ["/a/e/i", 584],
+        ["/a/f", 29116],
+        ["/a/g", 2557],
+        ["/b.txt", 14848514],
+        ["/c.dat", 8504156],
+        ["/a/h.lst", 62596],
+        ["/d/j", 4060174],
+        ["/d/d.log", 8033020],
+        ["/d/d.ext", 5626152],
+        ["/d/k", 7214296],
+      ])
+    end
+  end
+
+  context "#directory_sizes" do
+    it "builds a hash with each directory's total size" do
+      expect(subject.directory_sizes).to include(
+        "a" => 94853,
+        "e" => 584,
+        "d" => 24933642,
+        "/" => 48381165,
+      )
     end
   end
 
