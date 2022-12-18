@@ -179,6 +179,29 @@ fn get_operation_data(raw_text: &str) -> Operation {
     }
 }
 
+fn divisor_results(raw_text: &str) -> [usize; 2] {
+    let re = Regex::new(
+        r"\s+If true: throw to monkey (?P<true_monkey>\d+)\n    If false: throw to monkey (?P<false_monkey>\d+$",
+    )
+    .unwrap();
+
+    let true_monkey = re
+        .captures(raw_text)
+        .expect("true_monkey divisor results did not have a capture")
+        .name("true_monkey")
+        .unwrap()
+        .as_str();
+
+    let false_monkey = re
+        .captures(raw_text)
+        .expect("false_monkey divisor results did not have a capture")
+        .name("false_monkey")
+        .unwrap()
+        .as_str();
+
+    [true_monkey.parse::<usize>().expect("Unable to parse"), false_monkey.parse::<usize>().expect("Unable to parse")]
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -223,13 +246,13 @@ mod tests {
         );
     }
 
-    // #[test]
-    // fn test_divisor_results() {
-    //     assert_eq!(
-    //         divisor_results("  If true: throw to monkey 0\n  If false: throw to monkey 1"),
-    //         5,
-    //     );
-    // }
+    #[test]
+    fn test_divisor_results() {
+        assert_eq!(
+            divisor_results("  If true: throw to monkey 0\n  If false: throw to monkey 1"),
+            [0, 1],
+        );
+    }
 
     // #[test]
     // fn test_monkey_new() {
