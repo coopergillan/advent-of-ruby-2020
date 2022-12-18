@@ -129,6 +129,12 @@ mod tests {
         assert_eq!(get_test_divisor(raw_text), 17);
     }
 
+    #[test]
+    fn test_get_operation() {
+        let raw_text = "  Operation: new = old * 19";
+        assert_eq!(get_operation(raw_text), 17);
+    }
+
     // #[test]
     // fn test_monkey_new() {
     //     let monkey = Monkey::new(
