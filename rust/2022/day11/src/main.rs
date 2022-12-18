@@ -57,7 +57,8 @@ fn main() {
 #[derive(Debug, PartialEq)]
 struct Monkey {
     items: Vec<usize>,
-    operation: String,
+    operation: Operation,
+    operation_value: usize,
     test_divisor: usize,
     true_monkey: usize,
     false_monkey: usize,
@@ -72,13 +73,18 @@ impl Monkey {
     ) -> Self {
         let items = starting_items_vec(raw_starting_items);
         // let items = vec![];
-        let operation = String::from("what is it?");
+        let operation = Operation {
+            operation_type: OperationType::Addition,
+            operation_value: 6,
+        };
+        let operation_value = 6;
         let test_divisor = get_test_divisor(raw_test_divisor);
         let true_monkey = 2;
         let false_monkey = 4;
         Monkey {
             items,
             operation,
+            operation_value,
             test_divisor,
             true_monkey,
             false_monkey,
@@ -113,6 +119,50 @@ fn get_test_divisor(raw_text: &str) -> usize {
         .expect("Could not parse")
 }
 
+fn get_operation_data(raw_text: &str) -> String {
+// fn get_operation_data(raw_text: &str) -> Operation {
+    let re = Regex::new(r"\s+Operation: new = old (?P<raw_operation_type>[+\*]) (?P<operation_value>\d+|old)$").unwrap();
+
+    let raw_operation_type = re.captures(raw_text)
+        .expect("raw_operation_type did not have a capture")
+        .name("raw_operation_type")
+        .unwrap()
+        .as_str();
+    println!("raw_operation_type: {:?}", raw_operation_type);
+    // return raw_operation_type.to_string();
+
+    let raw_operation_value = re.captures(raw_text)
+        .expect("operation_value did not have a capture")
+        .name("operation_value")
+        .unwrap()
+        .as_str();
+
+    println!("raw_operation_value: {:?}", raw_operation_value);
+    return raw_operation_value.to_string();
+    // Operation {
+    //     operation_type: OperationType::Multiplication,
+    //     operation_value: 19,
+    // }
+}
+
+#[derive(Debug, PartialEq)]
+enum OperationType {
+    Addition,
+    Multiplication,
+    Exponent,
+}
+
+#[derive(Debug, PartialEq)]
+struct Operation {
+    operation_type: OperationType,
+    operation_value: usize,
+}
+
+// impl Operation {
+//     fn call(&self, original_value: usize) {
+//         match
+// }
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -130,9 +180,22 @@ mod tests {
     }
 
     #[test]
-    fn test_get_operation() {
-        let raw_text = "  Operation: new = old * 19";
-        assert_eq!(get_operation(raw_text), 17);
+    fn test_get_operation_data() {
+        // assert_eq!(
+        //     get_operation_data("  Operation: new = old * 19"),
+        //     Operation {
+        //         operation_type: OperationType::Multiplication,
+        //         operation_value: 19,
+        //     }
+        // );
+        assert_eq!(
+            get_operation_data("  Operation: new = old + 6"),
+            "+",
+            // Operation {
+            //     operation_type: OperationType::Addition,
+            //     operation_value: 6,
+            // }
+        );
     }
 
     // #[test]
