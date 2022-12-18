@@ -92,6 +92,19 @@ impl Monkey {
     }
 }
 
+#[derive(Debug, PartialEq)]
+enum OperationType {
+    Addition,
+    Multiplication,
+    Exponent,
+}
+
+#[derive(Debug, PartialEq)]
+struct Operation {
+    operation_type: OperationType,
+    operation_value: usize,
+}
+
 fn starting_items_vec(raw_text: &str) -> Vec<usize> {
     let re = Regex::new(r"\s+Starting items:\s{1}(?P<starting_items>.*)$").unwrap();
 
@@ -119,49 +132,57 @@ fn get_test_divisor(raw_text: &str) -> usize {
         .expect("Could not parse")
 }
 
-fn get_operation_data(raw_text: &str) -> String {
-// fn get_operation_data(raw_text: &str) -> Operation {
-    let re = Regex::new(r"\s+Operation: new = old (?P<raw_operation_type>[+\*]) (?P<operation_value>\d+|old)$").unwrap();
+// fn get_operation_data(raw_text: &str) -> String {
+fn get_operation_data(raw_text: &str) -> Operation {
+    let re = Regex::new(
+        r"\s+Operation: new = old (?P<raw_operation_type>[+\*]) (?P<operation_value>\d+|old)$",
+    )
+        .unwrap();
 
-    let raw_operation_type = re.captures(raw_text)
-        .expect("raw_operation_type did not have a capture")
-        .name("raw_operation_type")
-        .unwrap()
-        .as_str();
-    println!("raw_operation_type: {:?}", raw_operation_type);
-    // return raw_operation_type.to_string();
-
-    let raw_operation_value = re.captures(raw_text)
+    let raw_operation_value = re
+        .captures(raw_text)
         .expect("operation_value did not have a capture")
         .name("operation_value")
         .unwrap()
         .as_str();
 
-    println!("raw_operation_value: {:?}", raw_operation_value);
-    return raw_operation_value.to_string();
-    // Operation {
-    //     operation_type: OperationType::Multiplication,
-    //     operation_value: 19,
-    // }
-}
+    let raw_operation_type: Vec<char> = re
+        .captures(raw_text)
+        .expect("raw_operation_type did not have a capture")
+        .name("raw_operation_type")
+        .unwrap()
+        .as_str()
+        .chars()
+        .collect();
 
-#[derive(Debug, PartialEq)]
-enum OperationType {
-    Addition,
-    Multiplication,
-    Exponent,
-}
+    let mut operation_value: usize = 0;
+    let operation_type = match raw_operation_type[0] {
+        '+' => {
+            operation_value = raw_operation_value.parse::<usize>().expect("Unable to parse");
+            Some(OperationType::Addition)
+        },
+        '*' => match raw_operation_value {
+            "old" => {
+                operation_value = 2;
+                Some(OperationType::Exponent)
+            },
+            _ => {
+                operation_value = raw_operation_value.parse::<usize>().expect("Unable to parse");
+                Some(OperationType::Multiplication)
+            },
+        },
+        _ => {
+            println!("Didn't find anything");
+            None
+        }
+    };
+    println!("operation_type: {:?}", operation_type);
 
-#[derive(Debug, PartialEq)]
-struct Operation {
-    operation_type: OperationType,
-    operation_value: usize,
+    Operation {
+        operation_type: operation_type.unwrap(),
+        operation_value,
+    }
 }
-
-// impl Operation {
-//     fn call(&self, original_value: usize) {
-//         match
-// }
 
 #[cfg(test)]
 mod tests {
@@ -181,6 +202,26 @@ mod tests {
 
     #[test]
     fn test_get_operation_data() {
+        assert_eq!(
+            get_operation_data("  Operation: new = old + 6"),
+            Operation { operation_type: OperationType::Addition, operation_value: 6 },
+        );
+        assert_eq!(
+            get_operation_data("  Operation: new = old * 19"),
+            Operation { operation_type: OperationType::Multiplication, operation_value: 19 },
+        );
+        assert_eq!(
+            get_operation_data("  Operation: new = old * old"),
+            Operation { operation_type: OperationType::Exponent, operation_value: 2 },
+        );
+    }
+
+        // assert_eq!(
+        //     get_operation_data("  Operation: new = old + 6"),
+        //     operation_type: OperationType::Addition,
+        //     operation_value: 6,
+        //     }
+        // );
         // assert_eq!(
         //     get_operation_data("  Operation: new = old * 19"),
         //     Operation {
@@ -188,15 +229,6 @@ mod tests {
         //         operation_value: 19,
         //     }
         // );
-        assert_eq!(
-            get_operation_data("  Operation: new = old + 6"),
-            "+",
-            // Operation {
-            //     operation_type: OperationType::Addition,
-            //     operation_value: 6,
-            // }
-        );
-    }
 
     // #[test]
     // fn test_monkey_new() {
