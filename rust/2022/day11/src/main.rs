@@ -132,12 +132,11 @@ fn get_test_divisor(raw_text: &str) -> usize {
         .expect("Could not parse")
 }
 
-// fn get_operation_data(raw_text: &str) -> String {
 fn get_operation_data(raw_text: &str) -> Operation {
     let re = Regex::new(
         r"\s+Operation: new = old (?P<raw_operation_type>[+\*]) (?P<operation_value>\d+|old)$",
     )
-        .unwrap();
+    .unwrap();
 
     let raw_operation_value = re
         .captures(raw_text)
@@ -155,21 +154,15 @@ fn get_operation_data(raw_text: &str) -> Operation {
         .chars()
         .collect();
 
-    let mut operation_value: usize = 0;
+    let mut operation_value = raw_operation_value;
     let operation_type = match raw_operation_type[0] {
-        '+' => {
-            operation_value = raw_operation_value.parse::<usize>().expect("Unable to parse");
-            Some(OperationType::Addition)
-        },
+        '+' => Some(OperationType::Addition),
         '*' => match raw_operation_value {
             "old" => {
-                operation_value = 2;
+                operation_value = "2";
                 Some(OperationType::Exponent)
-            },
-            _ => {
-                operation_value = raw_operation_value.parse::<usize>().expect("Unable to parse");
-                Some(OperationType::Multiplication)
-            },
+            }
+            _ => Some(OperationType::Multiplication),
         },
         _ => {
             println!("Didn't find anything");
@@ -180,7 +173,9 @@ fn get_operation_data(raw_text: &str) -> Operation {
 
     Operation {
         operation_type: operation_type.unwrap(),
-        operation_value,
+        operation_value: operation_value
+            .parse::<usize>()
+            .expect("Unable to parse operation value into usize"),
     }
 }
 
@@ -190,45 +185,51 @@ mod tests {
 
     #[test]
     fn test_starting_items_vec() {
-        let raw_text = "  Starting items: 54, 65, 75, 74";
-        assert_eq!(starting_items_vec(raw_text), vec![54, 65, 75, 74]);
+        assert_eq!(
+            starting_items_vec("  Starting items: 54, 65, 75, 74"),
+            vec![54, 65, 75, 74]
+        );
+        assert_eq!(starting_items_vec("  Starting items: 79, 98"), vec![79, 98]);
     }
 
     #[test]
     fn test_get_test_divisor() {
-        let raw_text = "  Test: divisible by 17";
-        assert_eq!(get_test_divisor(raw_text), 17);
+        assert_eq!(get_test_divisor("  Test: divisible by 17"), 17);
+        assert_eq!(get_test_divisor("  Test: divisible by 23"), 23);
     }
 
     #[test]
     fn test_get_operation_data() {
         assert_eq!(
             get_operation_data("  Operation: new = old + 6"),
-            Operation { operation_type: OperationType::Addition, operation_value: 6 },
+            Operation {
+                operation_type: OperationType::Addition,
+                operation_value: 6
+            },
         );
         assert_eq!(
             get_operation_data("  Operation: new = old * 19"),
-            Operation { operation_type: OperationType::Multiplication, operation_value: 19 },
+            Operation {
+                operation_type: OperationType::Multiplication,
+                operation_value: 19
+            },
         );
         assert_eq!(
             get_operation_data("  Operation: new = old * old"),
-            Operation { operation_type: OperationType::Exponent, operation_value: 2 },
+            Operation {
+                operation_type: OperationType::Exponent,
+                operation_value: 2
+            },
         );
     }
 
-        // assert_eq!(
-        //     get_operation_data("  Operation: new = old + 6"),
-        //     operation_type: OperationType::Addition,
-        //     operation_value: 6,
-        //     }
-        // );
-        // assert_eq!(
-        //     get_operation_data("  Operation: new = old * 19"),
-        //     Operation {
-        //         operation_type: OperationType::Multiplication,
-        //         operation_value: 19,
-        //     }
-        // );
+    // #[test]
+    // fn test_divisor_results() {
+    //     assert_eq!(
+    //         divisor_results("  If true: throw to monkey 0\n  If false: throw to monkey 1"),
+    //         5,
+    //     );
+    // }
 
     // #[test]
     // fn test_monkey_new() {
