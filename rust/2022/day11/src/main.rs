@@ -1,7 +1,7 @@
 // Advent of Code solver
 
-use std::fs;
 use regex::Regex;
+use std::fs;
 
 // #[derive(Debug, PartialEq)]
 // struct MonkeyBusiness {
@@ -58,37 +58,39 @@ fn main() {
 struct Monkey {
     items: Vec<usize>,
     operation: String,
-    test_for_monkey: String,
+    test_divisor: usize,
     true_monkey: usize,
     false_monkey: usize,
 }
 
 impl Monkey {
-    fn new(raw_starting_items: &str, raw_operation: &str, raw_test: &str, raw_true: &str) -> Self {
-        let starting_items = starting_items_vec(raw_starting_items);
-        let items = vec![];
+    fn new(
+        raw_starting_items: &str,
+        raw_operation: &str,
+        raw_test_divisor: &str,
+        raw_true: &str,
+    ) -> Self {
+        let items = starting_items_vec(raw_starting_items);
+        // let items = vec![];
         let operation = String::from("what is it?");
-        let test_for_monkey = String::from("divisible by 23");
+        let test_divisor = get_test_divisor(raw_test_divisor);
         let true_monkey = 2;
         let false_monkey = 4;
         Monkey {
             items,
             operation,
-            test_for_monkey,
+            test_divisor,
             true_monkey,
             false_monkey,
         }
     }
 }
 
-fn starting_items_vec(raw_input: &str) -> Vec<usize> {
-    let re_pattern = r"\s+Starting items:\s{1}(?P<starting_items>.*)$";
-    let re = Regex::new(re_pattern).unwrap();
-
-    // let collected = ;
+fn starting_items_vec(raw_text: &str) -> Vec<usize> {
+    let re = Regex::new(r"\s+Starting items:\s{1}(?P<starting_items>.*)$").unwrap();
 
     let starting_items: Vec<usize> = re
-        .captures(raw_input)
+        .captures(raw_text)
         .unwrap()
         .name("starting_items")
         .unwrap()
@@ -99,14 +101,32 @@ fn starting_items_vec(raw_input: &str) -> Vec<usize> {
     starting_items
 }
 
+fn get_test_divisor(raw_text: &str) -> usize {
+    let re = Regex::new(r"\s+Test:\s{1}divisible by (?P<divisor>\d+)$").unwrap();
+
+    re.captures(raw_text)
+        .expect("Did not have a capture")
+        .name("divisor")
+        .unwrap()
+        .as_str()
+        .parse::<usize>()
+        .expect("Could not parse")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_starting_items_vec() {
-        let raw_input = "  Starting items: 54, 65, 75, 74";
-        assert_eq!(starting_items_vec(raw_input), vec![54, 65, 75, 74]);
+        let raw_text = "  Starting items: 54, 65, 75, 74";
+        assert_eq!(starting_items_vec(raw_text), vec![54, 65, 75, 74]);
+    }
+
+    #[test]
+    fn test_get_test_divisor() {
+        let raw_text = "  Test: divisible by 17";
+        assert_eq!(get_test_divisor(raw_text), 17);
     }
 
     // #[test]
