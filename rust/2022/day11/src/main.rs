@@ -54,42 +54,35 @@ fn main() {
     //     println!("Part 2 answer: {}", top_level.solve_part2());
 }
 
-// #[derive(Debug, PartialEq)]
-// struct Monkey {
-//     items: Vec<usize>,
-//     operation: Operation,
-//     operation_value: usize,
-//     test_divisor: usize,
-//     divisor_results: DivisorResult,
-// }
-//
-// impl Monkey {
-//     fn new(
-//         raw_starting_items: &str,
-//         raw_operation: &str,
-//         raw_test_divisor: &str,
-//         raw_true: &str,
-//     ) -> Self {
-//         let items = starting_items_vec(raw_starting_items);
-//         // let items = vec![];
-//         let operation = Operation {
-//             operation_type: OperationType::Addition,
-//             operation_value: 6,
-//         };
-//         let operation_value = 6;
-//         let test_divisor = get_test_divisor(raw_test_divisor);
-//         let true_monkey = 2;
-//         let false_monkey = 4;
-//         Monkey {
-//             items,
-//             operation,
-//             operation_value,
-//             test_divisor,
-//             true_monkey,
-//             false_monkey,
-//         }
-//     }
-// }
+#[derive(Debug, PartialEq)]
+struct Monkey {
+    items: Vec<usize>,
+    operation: Operation,
+    test_divisor: usize,
+    divisor_results: DivisorResult,
+}
+
+impl Monkey {
+    fn new(
+        raw_starting_items: &str,
+        raw_operation: &str,
+        raw_test_divisor: &str,
+        raw_true_false: &str,
+    ) -> Self {
+        let items = starting_items_vec(raw_starting_items);
+        // let items = vec![];
+        let operation = get_operation_data(raw_operation);
+        let operation_value = 6;
+        let test_divisor = get_test_divisor(raw_test_divisor);
+        Monkey {
+            items,
+            operation,
+            operation_value,
+            test_divisor,
+            divisor_results,
+        }
+    }
+}
 
 #[derive(Debug, PartialEq)]
 enum OperationType {
@@ -268,13 +261,22 @@ mod tests {
         );
     }
 
-    // #[test]
-    // fn test_monkey_new() {
-    //     let monkey = Monkey::new(
-    //     "  Starting items: 54, 65, 75, 74",
-    //     );
-    //     assert_eq!(monkey.items, vec![4, 5]);
-    // }
+    fn raw_monkey_input() -> &str {
+        "Monkey 0:\n
+          Starting items: 79, 98\n
+          Operation: new = old * 19\n
+          Test: divisible by 23\n
+            If true: throw to monkey 2\n
+            If false: throw to monkey 3"
+    }
+
+    #[test]
+    fn test_monkey_new() {
+        let monkey = Monkey::new(
+            raw_monkey_input()
+        );
+        assert_eq!(monkey.items, vec![79, 98]);
+    }
 
     // #[test]
     // #[ignore]
