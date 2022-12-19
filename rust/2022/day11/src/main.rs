@@ -1,7 +1,7 @@
 // Advent of Code solver
 
 use regex::Regex;
-use std::fs;
+// use std::fs;
 
 // #[derive(Debug, PartialEq)]
 // struct MonkeyBusiness {
@@ -54,43 +54,42 @@ fn main() {
     //     println!("Part 2 answer: {}", top_level.solve_part2());
 }
 
-#[derive(Debug, PartialEq)]
-struct Monkey {
-    items: Vec<usize>,
-    operation: Operation,
-    operation_value: usize,
-    test_divisor: usize,
-    true_monkey: usize,
-    false_monkey: usize,
-}
-
-impl Monkey {
-    fn new(
-        raw_starting_items: &str,
-        raw_operation: &str,
-        raw_test_divisor: &str,
-        raw_true: &str,
-    ) -> Self {
-        let items = starting_items_vec(raw_starting_items);
-        // let items = vec![];
-        let operation = Operation {
-            operation_type: OperationType::Addition,
-            operation_value: 6,
-        };
-        let operation_value = 6;
-        let test_divisor = get_test_divisor(raw_test_divisor);
-        let true_monkey = 2;
-        let false_monkey = 4;
-        Monkey {
-            items,
-            operation,
-            operation_value,
-            test_divisor,
-            true_monkey,
-            false_monkey,
-        }
-    }
-}
+// #[derive(Debug, PartialEq)]
+// struct Monkey {
+//     items: Vec<usize>,
+//     operation: Operation,
+//     operation_value: usize,
+//     test_divisor: usize,
+//     divisor_results: DivisorResult,
+// }
+//
+// impl Monkey {
+//     fn new(
+//         raw_starting_items: &str,
+//         raw_operation: &str,
+//         raw_test_divisor: &str,
+//         raw_true: &str,
+//     ) -> Self {
+//         let items = starting_items_vec(raw_starting_items);
+//         // let items = vec![];
+//         let operation = Operation {
+//             operation_type: OperationType::Addition,
+//             operation_value: 6,
+//         };
+//         let operation_value = 6;
+//         let test_divisor = get_test_divisor(raw_test_divisor);
+//         let true_monkey = 2;
+//         let false_monkey = 4;
+//         Monkey {
+//             items,
+//             operation,
+//             operation_value,
+//             test_divisor,
+//             true_monkey,
+//             false_monkey,
+//         }
+//     }
+// }
 
 #[derive(Debug, PartialEq)]
 enum OperationType {
@@ -103,6 +102,12 @@ enum OperationType {
 struct Operation {
     operation_type: OperationType,
     operation_value: usize,
+}
+
+#[derive(Debug, PartialEq)]
+struct DivisorResult {
+    true_monkey: usize,
+    false_monkey: usize,
 }
 
 fn starting_items_vec(raw_text: &str) -> Vec<usize> {
@@ -169,7 +174,6 @@ fn get_operation_data(raw_text: &str) -> Operation {
             None
         }
     };
-    println!("operation_type: {:?}", operation_type);
 
     Operation {
         operation_type: operation_type.unwrap(),
@@ -179,9 +183,9 @@ fn get_operation_data(raw_text: &str) -> Operation {
     }
 }
 
-fn divisor_results(raw_text: &str) -> [usize; 2] {
+fn divisor_results(raw_text: &str) -> DivisorResult {
     let re = Regex::new(
-        r"\s+If true: throw to monkey (?P<true_monkey>\d+)\n    If false: throw to monkey (?P<false_monkey>\d+$",
+        r"\s+If true: throw to monkey (?P<true_monkey>\d+)\s+If false: throw to monkey (?P<false_monkey>\d)\s+$",
     )
     .unwrap();
 
@@ -190,16 +194,23 @@ fn divisor_results(raw_text: &str) -> [usize; 2] {
         .expect("true_monkey divisor results did not have a capture")
         .name("true_monkey")
         .unwrap()
-        .as_str();
+        .as_str()
+        .parse::<usize>()
+        .expect("Unable to parse true_monkey to usize");
 
     let false_monkey = re
         .captures(raw_text)
         .expect("false_monkey divisor results did not have a capture")
         .name("false_monkey")
         .unwrap()
-        .as_str();
+        .as_str()
+        .parse::<usize>()
+        .expect("Unable to parse true_monkey to usize");
 
-    [true_monkey.parse::<usize>().expect("Unable to parse"), false_monkey.parse::<usize>().expect("Unable to parse")]
+    DivisorResult {
+        true_monkey,
+        false_monkey,
+    }
 }
 
 #[cfg(test)]
@@ -249,8 +260,11 @@ mod tests {
     #[test]
     fn test_divisor_results() {
         assert_eq!(
-            divisor_results("  If true: throw to monkey 0\n  If false: throw to monkey 1"),
-            [0, 1],
+            divisor_results("    If true: throw to monkey 0\n    If false: throw to monkey 1  "),
+            DivisorResult {
+                true_monkey: 0,
+                false_monkey: 1
+            },
         );
     }
 
@@ -260,50 +274,6 @@ mod tests {
     //     "  Starting items: 54, 65, 75, 74",
     //     );
     //     assert_eq!(monkey.items, vec![4, 5]);
-    // }
-
-    // #[test]
-    // #[ignore]
-    // fn test_from_file_top_level_one_int_per_line() {
-    //     let input_file = "test_input_one_int_per_line.txt";
-    //     let top_level = TopLevelStructOneIntPerLine::from_file(input_file);
-    //     assert_eq!(top_level.input_data, vec![5, 9, 13, 4])
-    // }
-
-    // #[test]
-    // #[ignore]
-    // fn test_from_file_top_level_multiple_ints_per_line() {
-    //     let input_file = "test_input_multiple_ints_per_line.txt";
-    //     let top_level = TopLevelStructMultipleIntsPerLine::from_file(input_file);
-    //     println!("top_level_struct.input_data: {:?}", top_level.input_data);
-    //     assert_eq!(
-    //         top_level.input_data,
-    //         vec![
-    //             vec![5, 7, 13, 2],
-    //             vec![9, 314, 2718, 17],
-    //             vec![13, 8, 7, 4],
-    //             vec![4, 22, 19, 33],
-    //             vec![5, 20, 79, 13],
-    //         ]
-    //     )
-    // }
-
-    // #[test]
-    // #[ignore]
-    // fn test_from_file_top_level_double_line_breaks() {
-    //     let input_file = "test_double_line_break_input.txt";
-    //     let top_level = TopLevelStructDoubleLineBreak::from_file(input_file);
-    //     println!("top_level_struct.input_data: {:?}", top_level.input_data);
-    //     assert_eq!(
-    //         top_level.input_data,
-    //         vec![
-    //             vec![1000, 2000, 3000],
-    //             vec![4000],
-    //             vec![5000, 6000],
-    //             vec![7000, 8000, 9000],
-    //             vec![10000],
-    //         ]
-    //     )
     // }
 
     // #[test]
