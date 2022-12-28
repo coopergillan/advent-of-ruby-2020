@@ -1,48 +1,37 @@
 // Advent of Code solver
 
 use regex::Regex;
-// use std::fs;
+use std::fs;
 
-// #[derive(Debug, PartialEq)]
-// struct MonkeyBusiness {
-//     // For a graph type of problem use a vector of vectors
-//     monkeys: Vec<Monkey>,
-// }
-//
-// impl MonkeyBusiness {
-//     // For one value per line use a vector of integers
-//     // If negative numbers needed, change to usize
-//     fn new(monkeys: Vec<Monkey>) -> Self {
-//         MonkeyBusiness { monkeys }
-//     }
-//
-//     fn from_file(file_path: &str) -> Self {
-//         // For reading each line into an array
-//         // let raw_content = fs::read_to_string(file_path).expect("Unable to read file");
-//         //
-//         // let processed_contents: Vec<Vec<usize>> = raw_content
-//         //     .lines()
-//         //     .map(|line| {
-//         //         line.split(",")
-//         //             .map(|v| v.parse::<usize>().expect("Unable to parse"))
-//         //             .collect() // Inside Vec<usize> created here
-//         //     })
-//         //     .collect();
-//         //
-//         // println!(
-//         //     "Creating struct with processed contents: {:?}",
-//         //     processed_contents
-//         // );
-//         let processed_contents = Monkey::new(
-//             // vec![5, 3], "old * old", "divisible by 13", 1, 3
-//         );
-//         Self::new(vec![processed_contents])
-//     }
-//
-//     fn solve_part1() -> usize {
-//         7
-//     }
-// }
+#[derive(Debug, PartialEq)]
+struct MonkeyBusiness {
+    // For a graph type of problem use a vector of vectors
+    monkeys: Vec<Monkey>,
+}
+
+impl MonkeyBusiness {
+    fn from_file(file_path: &str) -> Self {
+        // For reading each line into an array
+        let raw_content = fs::read_to_string(file_path).expect("Unable to read file");
+
+        let processed_contents: Vec<Monkey> = raw_content
+            .split("\n\n")
+            .map(|raw_monkey| Monkey::new(raw_monkey))
+            .collect();
+
+        println!(
+            "Creating struct with processed contents: {:?}",
+            processed_contents
+        );
+        Self {
+            monkeys: processed_contents,
+        }
+    }
+
+    fn solve_part1() -> usize {
+        7
+    }
+}
 
 fn main() {
     println!("Hello world");
@@ -139,7 +128,7 @@ fn starting_items_vec(raw_text: &str) -> Vec<usize> {
         .captures(raw_text)
         .expect("No captures found for starting_items")
         .name("starting_items")
-        .unwrap()
+        .expect("no named group found for starting_items")
         .as_str()
         .split(", ")
         .map(|v| v.parse::<usize>().unwrap())
@@ -318,6 +307,28 @@ mod tests {
             DivisorResult {
                 true_monkey: 2,
                 false_monkey: 3
+            }
+        );
+    }
+
+    #[test]
+    fn test_monkey_business_from_file() {
+        let monkey_business = MonkeyBusiness::from_file("test_input.txt");
+        assert_eq!(monkey_business.monkeys.len(), 4);
+        assert_eq!(monkey_business.monkeys[1].test_divisor, 19);
+        assert_eq!(monkey_business.monkeys[2].items, vec![79, 60, 97]);
+        assert_eq!(
+            monkey_business.monkeys[3].operation,
+            Operation {
+                operation_type: OperationType::Addition,
+                operation_value: 3
+            }
+        );
+        assert_eq!(
+            monkey_business.monkeys[3].divisor_results,
+            DivisorResult {
+                true_monkey: 0,
+                false_monkey: 1,
             }
         );
     }
