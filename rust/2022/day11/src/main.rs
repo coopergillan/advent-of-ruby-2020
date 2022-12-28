@@ -20,10 +20,6 @@ impl MonkeyBusiness {
             .map(|raw_monkey| Monkey::new(raw_monkey))
             .collect();
 
-        // println!(
-        //     // "Creating struct with processed contents: {:?}",
-        //     processed_contents
-        // );
         Self {
             monkeys: processed_contents,
         }
@@ -34,18 +30,17 @@ impl MonkeyBusiness {
         for monkey_number in 0..total_monkey_count {
             println!("Processing monkey number {}", monkey_number);
             // Make a copy of the monkey being checked
-            let mut checked_monkey = &mut self.monkeys[monkey_number];
+            let checked_monkey = &mut self.monkeys[monkey_number];
             println!("checked_monkey {:?}", checked_monkey);
 
             // Start assembling which items will go to which monkeys
-            let mut todo_list: HashMap::<usize, Vec<usize>> = HashMap::new();
+            let mut todo_list: HashMap<usize, Vec<usize>> = HashMap::new();
             for k in 0..total_monkey_count {
                 todo_list.insert(k, Vec::new());
             }
 
             // Go through each item for each monkey
-            for item_number in 0..checked_monkey.items.len() {
-                // println!("Inspecting item_number {:?} for checked_monkey {:?}", item_number, &checked_monkey);
+            for _ in 0..checked_monkey.items.len() {
                 // After finding out which monkey it should be thrown to, append worry_level to that monkey's items and remove from checked_monkey
                 let item_to_check = checked_monkey.items.remove(0);
                 let (dest_monkey, worry_level) = inspect_item(&checked_monkey, item_to_check);
@@ -130,7 +125,6 @@ impl Monkey {
             divisor_results,
         }
     }
-
 }
 fn inspect_item(monkey: &Monkey, worry_level: usize) -> (usize, usize) {
     let mut result = worry_level;
@@ -149,7 +143,6 @@ enum OperationType {
     Exponent,
 }
 
-
 #[derive(Clone, Debug, PartialEq)]
 struct Operation {
     operation_type: OperationType,
@@ -157,7 +150,7 @@ struct Operation {
 }
 
 impl Operation {
-    fn compute(&self,start_value: usize) -> usize {
+    fn compute(&self, start_value: usize) -> usize {
         match self.operation_type {
             OperationType::Addition => start_value + self.operation_value,
             OperationType::Multiplication => start_value * self.operation_value,
@@ -409,7 +402,26 @@ mod tests {
         monkey_business.play_round();
 
         assert_eq!(monkey_business.monkeys[0].items, vec![20, 23, 27, 26]);
-        assert_eq!(monkey_business.monkeys[1].items, vec![2080, 25, 167, 207, 401, 1046]);
+        assert_eq!(
+            monkey_business.monkeys[1].items,
+            vec![2080, 25, 167, 207, 401, 1046]
+        );
+        assert_eq!(monkey_business.monkeys[2].items, vec![]);
+        assert_eq!(monkey_business.monkeys[3].items, vec![]);
+    }
+
+    #[test]
+    fn test_monkey_business_multiple_rounds() {
+        let mut monkey_business = MonkeyBusiness::from_file("test_input.txt");
+        for _ in 0..2 {
+            monkey_business.play_round();
+        }
+
+        assert_eq!(
+            monkey_business.monkeys[0].items,
+            vec![695, 10, 71, 135, 350]
+        );
+        assert_eq!(monkey_business.monkeys[1].items, vec![43, 49, 58, 55, 362]);
         assert_eq!(monkey_business.monkeys[2].items, vec![]);
         assert_eq!(monkey_business.monkeys[3].items, vec![]);
     }
