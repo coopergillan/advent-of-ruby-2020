@@ -19,12 +19,26 @@ impl MonkeyBusiness {
             .map(|raw_monkey| Monkey::new(raw_monkey))
             .collect();
 
-        println!(
-            "Creating struct with processed contents: {:?}",
-            processed_contents
-        );
+        // println!(
+        //     // "Creating struct with processed contents: {:?}",
+        //     processed_contents
+        // );
         Self {
             monkeys: processed_contents,
+        }
+    }
+
+    fn play_round(&mut self) {
+        for (monkey_number, monkey) in self.monkeys.iter_mut().enumerate() {
+            println!("Processing monkey number {}", monkey_number);
+            println!("Processing monkey {:?}", monkey);
+
+            // Go through each item for each monkey
+            for item in &monkey.items {
+                // After finding out which monkey it should be thrown to, append worry_level to that monkey's items
+                let (dest_monkey, worry_level) = inspect_item(&monkey, *item);
+                self.monkeys[dest_monkey].items.push(worry_level)
+            }
         }
     }
 
@@ -100,14 +114,14 @@ impl Monkey {
         }
     }
 
-    fn inspect_item(self, worry_level: usize) -> usize {
-        let mut result = worry_level;
-        result = self.operation.compute(result);
-        result = result / 3;
-        match result % self.test_divisor {
-            0 => self.divisor_results.true_monkey,
-            _ => self.divisor_results.false_monkey,
-        }
+}
+fn inspect_item(monkey: &Monkey, worry_level: usize) -> (usize, usize) {
+    let mut result = worry_level;
+    result = monkey.operation.compute(result);
+    result = result / 3;
+    match result % monkey.test_divisor {
+        0 => (monkey.divisor_results.true_monkey, result),
+        _ => (monkey.divisor_results.false_monkey, result),
     }
 }
 
@@ -343,10 +357,10 @@ mod tests {
     #[test]
     fn test_monkey_inspect_item() {
         let monkey = Monkey::new(raw_monkey_0_input());
-        assert_eq!(monkey.inspect_item(98), 3);
+        assert_eq!(inspect_item(&monkey, 98), (3, 620));
 
         let monkey = Monkey::new(raw_monkey_2_input());
-        assert_eq!(monkey.inspect_item(79), 1);
+        assert_eq!(inspect_item(&monkey, 79), (1, 2080));
     }
 
     #[test]
@@ -373,25 +387,14 @@ mod tests {
 
     #[test]
     fn test_monkey_business_round() {
-        let monkey_business = MonkeyBusiness::from_file("test_input.txt");
-        assert!(false, "pick up here to process the rounds");
-        // assert_eq!(monkey_business.monkeys.len(), 4);
-        // assert_eq!(monkey_business.monkeys[1].test_divisor, 19);
-        // assert_eq!(monkey_business.monkeys[2].items, vec![79, 60, 97]);
-        // assert_eq!(
-        //     monkey_business.monkeys[3].operation,
-        //     Operation {
-        //         operation_type: OperationType::Addition,
-        //         operation_value: 3
-        //     }
-        // );
-        // assert_eq!(
-        //     monkey_business.monkeys[3].divisor_results,
-        //     DivisorResult {
-        //         true_monkey: 0,
-        //         false_monkey: 1,
-        //     }
-        // );
+        let mut monkey_business = MonkeyBusiness::from_file("test_input.txt");
+
+        monkey_business.play_round();
+
+        assert_eq!(monkey_business.monkeys[0].items, vec![20, 23, 27, 26]);
+        assert_eq!(monkey_business.monkeys[1].items, vec![2080, 25, 167, 207, 401, 1046]);
+        assert_eq!(monkey_business.monkeys[2].items, vec![]);
+        assert_eq!(monkey_business.monkeys[3].items, vec![]);
     }
 
     // #[test]
