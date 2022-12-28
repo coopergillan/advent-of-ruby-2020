@@ -47,7 +47,7 @@ use regex::Regex;
 fn main() {
     println!("Hello world");
 
-    let input_file = "test_input.txt";
+    let _input_file = "test_input.txt";
 
     //     let monkey_business = MonkeyBusiness::from_file(input_file);
     //
@@ -66,29 +66,49 @@ struct Monkey {
 impl Monkey {
     // fn new(raw_input: &str) {
     fn new(raw_input: &str) -> Self {
+        println!("Processing raw_input: {:?}", raw_input);
 
         let processed_input = raw_input
             .lines()
-            .map(|v| v.trim())
             .filter(|v| v != &"")
             .collect::<Vec<&str>>();
 
-        println!("processed_input: {:?}", processed_input);
+        // Set of the four variables needed to initialize
+        let items: Vec<usize>;
+        let operation: Operation;
+        let test_divisor: usize;
+        let divisor_results: DivisorResult;
 
-        if let [_, raw_starting_items, raw_operation, raw_test_divisor, raw_true, raw_false] = &processed_input[..4] {
+        // Conditionally set values when matches found
+        if let [_, raw_starting_items, raw_operation, raw_test_divisor, raw_true, raw_false] =
+            &processed_input[..6]
+        {
+            items = starting_items_vec(raw_starting_items);
+            operation = get_operation_data(raw_operation);
+            test_divisor = get_test_divisor(raw_test_divisor);
 
-            let items = starting_items_vec(raw_starting_items);
-            let operation = get_operation_data(raw_operation);
-            let test_divisor = get_test_divisor(raw_test_divisor);
-            let raw_true_false = raw_true.push_str(raw_false);
-            println!("raw_true_false: {:?}", raw_true_false);
-            let divisor_results = get_divisor_results(raw_true_false);
-            Monkey {
-                items,
-                operation,
-                test_divisor,
-                divisor_results,
-            }
+            let mut true_false = String::from(*raw_true);
+            let deref_false = String::from(*raw_false);
+            true_false.push_str(&deref_false);
+
+            divisor_results = get_divisor_results(&true_false);
+        } else {
+            items = vec![];
+            operation = Operation {
+                operation_type: OperationType::Addition,
+                operation_value: 1,
+            };
+            test_divisor = 1;
+            divisor_results = DivisorResult {
+                true_monkey: 1,
+                false_monkey: 1,
+            };
+        }
+        Monkey {
+            items,
+            operation,
+            test_divisor,
+            divisor_results,
         }
     }
 }
@@ -117,7 +137,7 @@ fn starting_items_vec(raw_text: &str) -> Vec<usize> {
 
     let starting_items: Vec<usize> = re
         .captures(raw_text)
-        .unwrap()
+        .expect("No captures found for starting_items")
         .name("starting_items")
         .unwrap()
         .as_str()
@@ -131,12 +151,12 @@ fn get_test_divisor(raw_text: &str) -> usize {
     let re = Regex::new(r"\s+Test:\s{1}divisible by (?P<divisor>\d+)$").unwrap();
 
     re.captures(raw_text)
-        .expect("Did not have a capture")
+        .expect("get_test_divisor did not have a capture")
         .name("divisor")
-        .unwrap()
+        .expect("divisor match group not found")
         .as_str()
         .parse::<usize>()
-        .expect("Could not parse")
+        .expect("Could not parse get_test_divisor into usize")
 }
 
 fn get_operation_data(raw_text: &str) -> Operation {
@@ -149,7 +169,7 @@ fn get_operation_data(raw_text: &str) -> Operation {
         .captures(raw_text)
         .expect("operation_value did not have a capture")
         .name("operation_value")
-        .unwrap()
+        .expect("no operation_value named capture group")
         .as_str();
 
     let raw_operation_type: Vec<char> = re
@@ -187,7 +207,7 @@ fn get_operation_data(raw_text: &str) -> Operation {
 
 fn get_divisor_results(raw_text: &str) -> DivisorResult {
     let re = Regex::new(
-        r"\s+If true: throw to monkey (?P<true_monkey>\d+)\s+If false: throw to monkey (?P<false_monkey>\d)\s+$",
+        r"\s+If true: throw to monkey (?P<true_monkey>\d+)\s+If false: throw to monkey (?P<false_monkey>\d)\s*$",
     )
     .unwrap();
 
@@ -262,7 +282,9 @@ mod tests {
     #[test]
     fn test_divisor_results() {
         assert_eq!(
-            get_divisor_results("    If true: throw to monkey 0\n    If false: throw to monkey 1  "),
+            get_divisor_results(
+                "    If true: throw to monkey 0\n    If false: throw to monkey 1  "
+            ),
             DivisorResult {
                 true_monkey: 0,
                 false_monkey: 1
@@ -282,8 +304,22 @@ mod tests {
     #[test]
     fn test_monkey_new() {
         let monkey = Monkey::new(raw_monkey_input());
-        assert!(true);
-        // assert_eq!(monkey.items, vec![79, 98]);
+        assert_eq!(monkey.items, vec![79, 98]);
+        assert_eq!(
+            monkey.operation,
+            Operation {
+                operation_type: OperationType::Multiplication,
+                operation_value: 19
+            }
+        );
+        assert_eq!(monkey.test_divisor, 23);
+        assert_eq!(
+            monkey.divisor_results,
+            DivisorResult {
+                true_monkey: 2,
+                false_monkey: 3
+            }
+        );
     }
 
     // #[test]
