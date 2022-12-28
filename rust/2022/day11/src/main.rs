@@ -1,6 +1,7 @@
 // Advent of Code solver
 
 use regex::Regex;
+use std::collections::HashMap;
 use std::fs;
 
 #[derive(Debug, PartialEq)]
@@ -29,15 +30,31 @@ impl MonkeyBusiness {
     }
 
     fn play_round(&mut self) {
-        for (monkey_number, monkey) in self.monkeys.iter_mut().enumerate() {
+        let total_monkey_count = self.monkeys.len();
+        for monkey_number in 0..total_monkey_count {
             println!("Processing monkey number {}", monkey_number);
-            println!("Processing monkey {:?}", monkey);
+            // Make a copy of the monkey being checked
+            let mut checked_monkey = &mut self.monkeys[monkey_number];
+            println!("checked_monkey {:?}", checked_monkey);
+
+            // Start assembling which items will go to which monkeys
+            let mut todo_list: HashMap::<usize, Vec<usize>> = HashMap::new();
+            for k in 0..total_monkey_count {
+                todo_list.insert(k, Vec::new());
+            }
 
             // Go through each item for each monkey
-            for item in &monkey.items {
-                // After finding out which monkey it should be thrown to, append worry_level to that monkey's items
-                let (dest_monkey, worry_level) = inspect_item(&monkey, *item);
-                self.monkeys[dest_monkey].items.push(worry_level)
+            for item_number in 0..checked_monkey.items.len() {
+                // println!("Inspecting item_number {:?} for checked_monkey {:?}", item_number, &checked_monkey);
+                // After finding out which monkey it should be thrown to, append worry_level to that monkey's items and remove from checked_monkey
+                let item_to_check = checked_monkey.items.remove(0);
+                let (dest_monkey, worry_level) = inspect_item(&checked_monkey, item_to_check);
+                todo_list.get_mut(&dest_monkey).unwrap().push(worry_level);
+            }
+            for (monkey_number, worry_levels) in todo_list {
+                for worry_level in worry_levels {
+                    self.monkeys[monkey_number].items.push(worry_level);
+                }
             }
         }
     }
@@ -59,7 +76,7 @@ fn main() {
     //     println!("Part 2 answer: {}", top_level.solve_part2());
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 struct Monkey {
     items: Vec<usize>,
     operation: Operation,
@@ -125,7 +142,7 @@ fn inspect_item(monkey: &Monkey, worry_level: usize) -> (usize, usize) {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum OperationType {
     Addition,
     Multiplication,
@@ -133,7 +150,7 @@ enum OperationType {
 }
 
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 struct Operation {
     operation_type: OperationType,
     operation_value: usize,
@@ -149,7 +166,7 @@ impl Operation {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 struct DivisorResult {
     true_monkey: usize,
     false_monkey: usize,
