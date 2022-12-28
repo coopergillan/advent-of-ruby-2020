@@ -36,10 +36,11 @@ impl MonkeyBusiness {
 fn main() {
     println!("Hello world");
 
-    let _input_file = "test_input.txt";
+    let input_file = "test_input.txt";
 
-    //     let monkey_business = MonkeyBusiness::from_file(input_file);
-    //
+    let monkey_business = MonkeyBusiness::from_file(input_file);
+    println!("monkey_business: {:?}", monkey_business);
+
     //     println!("Part 1 answer: {}", top_level.solve_part1());
     //     println!("Part 2 answer: {}", top_level.solve_part2());
 }
@@ -55,8 +56,6 @@ struct Monkey {
 impl Monkey {
     // fn new(raw_input: &str) {
     fn new(raw_input: &str) -> Self {
-        println!("Processing raw_input: {:?}", raw_input);
-
         let processed_input = raw_input
             .lines()
             .filter(|v| v != &"")
@@ -100,6 +99,16 @@ impl Monkey {
             divisor_results,
         }
     }
+
+    fn inspect_item(self, worry_level: usize) -> usize {
+        let mut result = worry_level;
+        result = self.operation.compute(result);
+        result = result / 3;
+        match result % self.test_divisor {
+            0 => self.divisor_results.true_monkey,
+            _ => self.divisor_results.false_monkey,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -109,10 +118,21 @@ enum OperationType {
     Exponent,
 }
 
+
 #[derive(Debug, PartialEq)]
 struct Operation {
     operation_type: OperationType,
     operation_value: usize,
+}
+
+impl Operation {
+    fn compute(&self,start_value: usize) -> usize {
+        match self.operation_type {
+            OperationType::Addition => start_value + self.operation_value,
+            OperationType::Multiplication => start_value * self.operation_value,
+            OperationType::Exponent => start_value * start_value,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -281,7 +301,7 @@ mod tests {
         );
     }
 
-    fn raw_monkey_input() -> &'static str {
+    fn raw_monkey_0_input() -> &'static str {
         "Monkey 0:\n
           Starting items: 79, 98\n
           Operation: new = old * 19\n
@@ -290,9 +310,18 @@ mod tests {
             If false: throw to monkey 3"
     }
 
+    fn raw_monkey_2_input() -> &'static str {
+        "Monkey 2:\n
+          Starting items: 79, 60, 97\n
+          Operation: new = old * old\n
+          Test: divisible by 13\n
+            If true: throw to monkey 1\n
+            If false: throw to monkey 3"
+    }
+
     #[test]
     fn test_monkey_new() {
-        let monkey = Monkey::new(raw_monkey_input());
+        let monkey = Monkey::new(raw_monkey_0_input());
         assert_eq!(monkey.items, vec![79, 98]);
         assert_eq!(
             monkey.operation,
@@ -309,6 +338,15 @@ mod tests {
                 false_monkey: 3
             }
         );
+    }
+
+    #[test]
+    fn test_monkey_inspect_item() {
+        let monkey = Monkey::new(raw_monkey_0_input());
+        assert_eq!(monkey.inspect_item(98), 3);
+
+        let monkey = Monkey::new(raw_monkey_2_input());
+        assert_eq!(monkey.inspect_item(79), 1);
     }
 
     #[test]
