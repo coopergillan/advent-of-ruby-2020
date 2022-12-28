@@ -371,6 +371,29 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_monkey_business_round() {
+        let monkey_business = MonkeyBusiness::from_file("test_input.txt");
+        assert!(false, "pick up here to process the rounds");
+        // assert_eq!(monkey_business.monkeys.len(), 4);
+        // assert_eq!(monkey_business.monkeys[1].test_divisor, 19);
+        // assert_eq!(monkey_business.monkeys[2].items, vec![79, 60, 97]);
+        // assert_eq!(
+        //     monkey_business.monkeys[3].operation,
+        //     Operation {
+        //         operation_type: OperationType::Addition,
+        //         operation_value: 3
+        //     }
+        // );
+        // assert_eq!(
+        //     monkey_business.monkeys[3].divisor_results,
+        //     DivisorResult {
+        //         true_monkey: 0,
+        //         false_monkey: 1,
+        //     }
+        // );
+    }
+
     // #[test]
     // #[ignore]
     // fn test_part1() {
