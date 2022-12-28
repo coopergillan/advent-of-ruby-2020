@@ -5,6 +5,9 @@ use std::collections::HashMap;
 use std::fs;
 
 const PART1_ROUNDS: usize = 20;
+const PART1_WORRY_DIVISOR: f64 = 3.0;
+const PART2_ROUNDS: usize = 10000;
+const PART2_WORRY_DIVISOR: f64 = 6.25;
 
 #[derive(Debug, PartialEq)]
 struct MonkeyBusiness {
@@ -27,7 +30,7 @@ impl MonkeyBusiness {
         }
     }
 
-    fn play_round(&mut self) {
+    fn play_round(&mut self, puzzle_part: usize) {
         let total_monkey_count = self.monkeys.len();
         for monkey_number in 0..total_monkey_count {
             println!("Processing monkey number {}", monkey_number);
@@ -45,7 +48,12 @@ impl MonkeyBusiness {
             for _ in 0..checked_monkey.items.len() {
                 // After finding out which monkey it should be thrown to, append worry_level to that monkey's items and remove from checked_monkey
                 let item_to_check = checked_monkey.items.remove(0);
-                let (dest_monkey, worry_level) = inspect_item(&checked_monkey, item_to_check);
+                let worry_divisor = match puzzle_part {
+                    1 => PART1_WORRY_DIVISOR,
+                    _ => PART2_WORRY_DIVISOR,
+                };
+
+                let (dest_monkey, worry_level) = inspect_item(&checked_monkey, item_to_check, worry_divisor);
                 checked_monkey.checked_items_count += 1;
                 todo_list.get_mut(&dest_monkey).unwrap().push(worry_level);
             }
@@ -73,7 +81,15 @@ impl MonkeyBusiness {
 
     fn solve_part1(&mut self) -> usize {
         for _ in 0..PART1_ROUNDS {
-            self.play_round();
+            self.play_round(1);
+        }
+        self.calculate_monkey_business()
+    }
+
+    fn solve_part2(&mut self) -> usize {
+        for i in 0..PART2_ROUNDS {
+            println!("Starting round {}", i);
+            self.play_round(2);
         }
         self.calculate_monkey_business()
     }
@@ -87,8 +103,8 @@ fn main() {
     let mut monkey_business = MonkeyBusiness::from_file(input_file);
     println!("monkey_business: {:?}", monkey_business);
 
-    println!("Part 1 answer: {}", monkey_business.solve_part1());
-    //     println!("Part 2 answer: {}", top_level.solve_part2());
+    // println!("Part 1 answer: {}", monkey_business.solve_part1());
+    println!("Part 2 answer: {}", monkey_business.solve_part2());
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -148,10 +164,12 @@ impl Monkey {
         }
     }
 }
-fn inspect_item(monkey: &Monkey, worry_level: usize) -> (usize, usize) {
+
+fn inspect_item(monkey: &Monkey, worry_level: usize, worry_divisor: f64) -> (usize, usize) {
     let mut result = worry_level;
     result = monkey.operation.compute(result);
-    result = result / 3;
+    let float_result = result as f64 / worry_divisor;
+    // println!("float_result: {:?}", float_result);
     match result % monkey.test_divisor {
         0 => (monkey.divisor_results.true_monkey, result),
         _ => (monkey.divisor_results.false_monkey, result),
@@ -389,10 +407,10 @@ mod tests {
     #[test]
     fn test_monkey_inspect_item() {
         let monkey = Monkey::new(raw_monkey_0_input());
-        assert_eq!(inspect_item(&monkey, 98), (3, 620));
+        assert_eq!(inspect_item(&monkey, 98, PART1_WORRY_DIVISOR), (3, 620));
 
         let monkey = Monkey::new(raw_monkey_2_input());
-        assert_eq!(inspect_item(&monkey, 79), (1, 2080));
+        assert_eq!(inspect_item(&monkey, 79, PART1_WORRY_DIVISOR), (1, 2080));
     }
 
     #[test]
@@ -418,10 +436,10 @@ mod tests {
     }
 
     #[test]
-    fn test_monkey_business_round() {
+    fn test_monkey_business_round_part_one() {
         let mut monkey_business = MonkeyBusiness::from_file("test_input.txt");
 
-        monkey_business.play_round();
+        monkey_business.play_round(1);
 
         assert_eq!(monkey_business.monkeys[0].items, vec![20, 23, 27, 26]);
         assert_eq!(monkey_business.monkeys[0].checked_items_count, 2);
@@ -440,10 +458,25 @@ mod tests {
     }
 
     #[test]
+    fn test_monkey_business_round_part_two() {
+        let mut monkey_business = MonkeyBusiness::from_file("test_input.txt");
+
+        for _ in 0..PART1_ROUNDS {
+            monkey_business.play_round(2);
+        }
+
+        assert_eq!(monkey_business.monkeys[0].checked_items_count, 99);
+        assert_eq!(monkey_business.monkeys[1].checked_items_count, 97);
+        assert_eq!(monkey_business.monkeys[2].checked_items_count, 8);
+        assert_eq!(monkey_business.monkeys[3].checked_items_count, 103);
+    }
+
+    #[test]
+    #[ignore]
     fn test_monkey_business_multiple_rounds() {
         let mut monkey_business = MonkeyBusiness::from_file("test_input.txt");
         for _ in 0..PART1_ROUNDS {
-            monkey_business.play_round();
+            monkey_business.play_round(1);
         }
 
         assert_eq!(
@@ -465,13 +498,16 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_solve_part1() {
         let mut monkey_business = MonkeyBusiness::from_file("test_input.txt");
         assert_eq!(monkey_business.solve_part1(), 10605);
     }
 
-    // #[test]
-    // fn test_part2() {
-    //     assert_eq!(22, 10);
-    // }
+    #[test]
+    #[ignore]
+    fn test_solve_part2() {
+        let mut monkey_business = MonkeyBusiness::from_file("test_input.txt");
+        assert_eq!(monkey_business.solve_part2(), 2713310158);
+    }
 }
