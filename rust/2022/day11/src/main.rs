@@ -4,6 +4,8 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::fs;
 
+const PART1_ROUNDS: usize = 20;
+
 #[derive(Debug, PartialEq)]
 struct MonkeyBusiness {
     // For a graph type of problem use a vector of vectors
@@ -44,6 +46,7 @@ impl MonkeyBusiness {
                 // After finding out which monkey it should be thrown to, append worry_level to that monkey's items and remove from checked_monkey
                 let item_to_check = checked_monkey.items.remove(0);
                 let (dest_monkey, worry_level) = inspect_item(&checked_monkey, item_to_check);
+                checked_monkey.checked_items_count += 1;
                 todo_list.get_mut(&dest_monkey).unwrap().push(worry_level);
             }
             for (monkey_number, worry_levels) in todo_list {
@@ -54,20 +57,37 @@ impl MonkeyBusiness {
         }
     }
 
-    fn solve_part1() -> usize {
-        7
+    fn calculate_monkey_business(&self) -> usize {
+        // Go through each monkey, get the count of items, take the top two, then multiply
+        let monkeys_copy = self.monkeys.clone();
+        let mut item_counts: Vec<usize> = monkeys_copy.into_iter().map(|m| m.checked_items_count).collect();
+        println!("item_counts: {:?}", item_counts);
+        item_counts.sort();
+        println!("item_counts: {:?}", item_counts);
+
+        // Pop last two elements off and multiply together
+        (0..2).fold(1, |result, _| {
+            result * item_counts.pop().expect("Unable to pop value")
+        })
+    }
+
+    fn solve_part1(&mut self) -> usize {
+        for _ in 0..PART1_ROUNDS {
+            self.play_round();
+        }
+        self.calculate_monkey_business()
     }
 }
 
 fn main() {
     println!("Hello world");
 
-    let input_file = "test_input.txt";
+    let input_file = "input.txt";
 
-    let monkey_business = MonkeyBusiness::from_file(input_file);
+    let mut monkey_business = MonkeyBusiness::from_file(input_file);
     println!("monkey_business: {:?}", monkey_business);
 
-    //     println!("Part 1 answer: {}", top_level.solve_part1());
+    println!("Part 1 answer: {}", monkey_business.solve_part1());
     //     println!("Part 2 answer: {}", top_level.solve_part2());
 }
 
@@ -77,6 +97,7 @@ struct Monkey {
     operation: Operation,
     test_divisor: usize,
     divisor_results: DivisorResult,
+    checked_items_count: usize,
 }
 
 impl Monkey {
@@ -123,6 +144,7 @@ impl Monkey {
             operation,
             test_divisor,
             divisor_results,
+            checked_items_count: 0,
         }
     }
 }
@@ -402,35 +424,51 @@ mod tests {
         monkey_business.play_round();
 
         assert_eq!(monkey_business.monkeys[0].items, vec![20, 23, 27, 26]);
+        assert_eq!(monkey_business.monkeys[0].checked_items_count, 2);
+
         assert_eq!(
             monkey_business.monkeys[1].items,
             vec![2080, 25, 167, 207, 401, 1046]
         );
+        assert_eq!(monkey_business.monkeys[1].checked_items_count, 4);
+
         assert_eq!(monkey_business.monkeys[2].items, vec![]);
+        assert_eq!(monkey_business.monkeys[2].checked_items_count, 3);
+
         assert_eq!(monkey_business.monkeys[3].items, vec![]);
+        assert_eq!(monkey_business.monkeys[3].checked_items_count, 5);
     }
 
     #[test]
     fn test_monkey_business_multiple_rounds() {
         let mut monkey_business = MonkeyBusiness::from_file("test_input.txt");
-        for _ in 0..2 {
+        for _ in 0..PART1_ROUNDS {
             monkey_business.play_round();
         }
 
         assert_eq!(
             monkey_business.monkeys[0].items,
-            vec![695, 10, 71, 135, 350]
+            vec![10, 12, 14, 26, 34]
         );
-        assert_eq!(monkey_business.monkeys[1].items, vec![43, 49, 58, 55, 362]);
+        assert_eq!(monkey_business.monkeys[0].checked_items_count, 101);
+
+        assert_eq!(monkey_business.monkeys[1].items, vec![245, 93, 53, 199, 115]);
+        assert_eq!(monkey_business.monkeys[1].checked_items_count, 95);
+
         assert_eq!(monkey_business.monkeys[2].items, vec![]);
+        assert_eq!(monkey_business.monkeys[2].checked_items_count, 7);
+
         assert_eq!(monkey_business.monkeys[3].items, vec![]);
+        assert_eq!(monkey_business.monkeys[3].checked_items_count, 105);
+
+        assert_eq!(monkey_business.calculate_monkey_business(), 10605);
     }
 
-    // #[test]
-    // #[ignore]
-    // fn test_part1() {
-    //     assert_eq!(5, 6);
-    // }
+    #[test]
+    fn test_solve_part1() {
+        let mut monkey_business = MonkeyBusiness::from_file("test_input.txt");
+        assert_eq!(monkey_business.solve_part1(), 10605);
+    }
 
     // #[test]
     // fn test_part2() {
