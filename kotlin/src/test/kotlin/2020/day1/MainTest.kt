@@ -1,7 +1,7 @@
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class day1Test {
+internal class dayOne2020Test {
 
     private val testInputFile = "src/main/kotlin/2020/day1/test_input.txt"
 
