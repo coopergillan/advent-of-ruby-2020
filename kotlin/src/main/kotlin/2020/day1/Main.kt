@@ -1,7 +1,21 @@
-fun main(args: Array<String>) {
-    println("Hello World!")
+import java.io.File
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+fun part1(inputFile: String): Int {
+    val numbers = File(inputFile)
+        .readLines()
+        .map(String::toInt)
+
+    for (first in numbers) {
+        for (second in numbers) {
+            if (first + second == 2020) {
+                return first * second
+            }
+        }
+    }
+    return 0
+}
+
+fun main() {
+    val partOneAnswer = part1("src/main/kotlin/2020/day1/input.txt")
+    println("Part one answer: $partOneAnswer")
 }
