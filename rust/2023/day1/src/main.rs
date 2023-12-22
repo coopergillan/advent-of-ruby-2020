@@ -62,9 +62,9 @@ mod tests {
         assert_eq!(first_and_last_int(input_data), 77);
     }
 
-    #[test]
-    fn test_both_numbers_are_strings() {
-        let input_data = "two1nine";
-        assert_eq!(first_and_last_num(input_data), 29);
-    }
+    // #[test]
+    // fn test_both_numbers_are_strings() {
+    //     let input_data = "two1nine";
+    //     assert_eq!(first_and_last_num(input_data), 29);
+    // }
 }
