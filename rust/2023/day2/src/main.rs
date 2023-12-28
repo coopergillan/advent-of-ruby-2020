@@ -1,9 +1,6 @@
 use std::collections::HashMap;
 use std::fs;
 
-const RED_CUBES: usize = 12;
-const GREEN_CUBES: usize = 13;
-const BLUE_CUBES: usize = 14;
 const GAME_INDEX: usize = 0;
 const GAME_PREFIX: &str = "Game ";
 
@@ -38,13 +35,17 @@ fn part2_parse(input_str: &str) -> usize {
             continue;
         }
 
-        let mut v: Vec<&str> = subset.split_whitespace().collect();
-        let color = v.pop().expect("Unable to pop color");
-        let count = v
-            .pop()
-            .expect("Unable to pop color")
-            .parse::<usize>()
-            .expect("Unable to parse to int");
+        let mut split_input = subset.split_whitespace();
+        let (count, color) = (
+            split_input
+                .next()
+                .expect("Unable to get second split item.")
+                .parse::<usize>()
+                .expect("Unable to parse to int in check_cubes"),
+            split_input
+                .next()
+                .expect("Unable to get next split parser item"),
+        );
 
         if &count > cube_counts.get_mut(&color).expect("Unable to get color.") {
             cube_counts
@@ -89,32 +90,23 @@ fn game_eligible(raw_input: &str) -> bool {
 /// Check a single string with a digit and color
 /// against the values given in the contsants above
 fn check_cubes(raw_input: &str) -> bool {
-    let mut v: Vec<&str> = raw_input.split_whitespace().collect();
+    let cube_counts = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
 
-    let color = v.pop().expect("Unable to pop color");
-    let count = v
-        .pop()
-        .expect("Unable to pop color")
-        .parse::<usize>()
-        .expect("Unable to parse to int");
+    let mut split_input = raw_input.split_whitespace();
 
-    match color {
-        "green" => {
-            if count > GREEN_CUBES {
-                return false;
-            }
-        }
-        "red" => {
-            if count > RED_CUBES {
-                return false;
-            }
-        }
-        "blue" => {
-            if count > BLUE_CUBES {
-                return false;
-            }
-        }
-        _ => println!("Unknown color!"),
+    let (count, color) = (
+        split_input
+            .next()
+            .expect("Unable to get second split item.")
+            .parse::<usize>()
+            .expect("Unable to parse to int in check_cubes"),
+        split_input
+            .next()
+            .expect("Unable to get next split parser item"),
+    );
+
+    if &count > cube_counts.get(color).expect("Unable to find color.") {
+        return false;
     }
     true
 }
@@ -144,12 +136,13 @@ mod tests {
 
     #[test]
     fn test_game_eligible() {
-        assert!(game_eligible(
-            "1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue"
-        ));
-        assert!(!game_eligible(
-            "1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red"
-        ));
+        assert!(game_eligible("1 blue, 2 green"));
+        assert!(game_eligible("3 green, 4 blue, 1 red"));
+        assert!(game_eligible("1 green, 1 blue"));
+        assert!(game_eligible("1 green, 3 red, 6 blue"));
+        assert!(game_eligible("3 green, 6 red"));
+
+        assert!(!game_eligible("3 green, 15 blue, 14 red"));
     }
 
     #[test]
@@ -164,7 +157,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn test_solve_part2() {
         assert_eq!(solve_part2("test_input.txt"), 2286);
     }
