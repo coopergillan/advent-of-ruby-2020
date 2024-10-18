@@ -2,7 +2,7 @@
 
 Include solutions written in Rust. Each day has its own directory and Cargo
 project to start. This makes it a little easier to get up and running for a
-given day. Perhaps later this can all be reorganized some.
+given day. Perhaps later this can all be reorganized.
 
 To run a given day, first navigate to the directory:
 
